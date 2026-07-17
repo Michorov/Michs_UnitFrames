@@ -1,0 +1,7 @@
+## Interface: 120100
+## Title: Michs UnitFrames
+## Notes: Custom unit frames for player, target, pet, boss, and related units.
+## Author: Mich
+## Version: 0.1.0
+
+Core.lua
