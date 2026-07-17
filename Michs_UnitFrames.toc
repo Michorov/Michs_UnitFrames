@@ -11,6 +11,7 @@ PixelPerfect.lua
 
 # Widgets
 Frames/Widgets/Background.lua
+Frames/Widgets/Health.lua
 Frames/Widgets/Border.lua
 
 # Infrastructure

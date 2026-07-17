@@ -21,6 +21,9 @@ function FrameRegistry:Initialize()
 
 	addon.Frames.Widgets.Background:Ensure(playerFrame)
 	addon.Frames.Widgets.Background:UpdateSettings(playerFrame)
+	addon.Frames.Widgets.Health:Ensure(playerFrame)
+	addon.Frames.Widgets.Health:UpdateSettings(playerFrame)
+	addon.Frames.Widgets.Health:UpdateState(playerFrame)
 	addon.Frames.Widgets.Border:Ensure(playerFrame)
 
 	map["player"] = playerFrame
