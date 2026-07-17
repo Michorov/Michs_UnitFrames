@@ -1,0 +1,3 @@
+local _, addon = ...
+
+addon.PixelPerfect = LibStub("MichsPixelPerfectLib-1.0"):CreateScaler()
