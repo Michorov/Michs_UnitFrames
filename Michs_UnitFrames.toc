@@ -8,4 +8,9 @@ Libs/LibStub/LibStub.lua
 Libs/MichsPixelPerfectLib-1.0/MichsPixelPerfectLib-1.0.lua
 
 PixelPerfect.lua
+
+# Infrastructure
+Infrastructure/EventHandler.lua
+
+# Entry Point
 Core.lua

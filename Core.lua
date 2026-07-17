@@ -1,6 +1,7 @@
 local addonName, addon = ...
 
 local function InitializeAddon()
+	addon.EventHandler:Initialize()
 end
 
 local core = CreateFrame("Frame")
