@@ -8,20 +8,20 @@ local Border = addon.Frames.Widgets.Border
 local PP = addon.PixelPerfect
 
 function Border:Ensure(frame)
-	if frame.border then
-		return
+	if not frame.border then
+		local border = CreateFrame("Frame", nil, frame)
+		border:SetAllPoints(frame)
+		border:SetFrameLevel(25)
+
+		border.top = border:CreateTexture(nil, "OVERLAY", nil, 0)
+		border.bottom = border:CreateTexture(nil, "OVERLAY", nil, 0)
+		border.left = border:CreateTexture(nil, "OVERLAY", nil, 0)
+		border.right = border:CreateTexture(nil, "OVERLAY", nil, 0)
+
+		frame.border = border
 	end
 
-	local border = CreateFrame("Frame", nil, frame)
-	border:SetAllPoints(frame)
-	border:SetFrameLevel(25)
-
-	border.top = border:CreateTexture(nil, "OVERLAY", nil, 0)
-	border.bottom = border:CreateTexture(nil, "OVERLAY", nil, 0)
-	border.left = border:CreateTexture(nil, "OVERLAY", nil, 0)
-	border.right = border:CreateTexture(nil, "OVERLAY", nil, 0)
-
-	frame.border = border
+	self:UpdateSettings(frame)
 end
 
 function Border:UpdateSettings(frame, settings)

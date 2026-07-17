@@ -7,15 +7,15 @@ addon.Frames.Widgets.Health = addon.Frames.Widgets.Health or {}
 local Health = addon.Frames.Widgets.Health
 
 function Health:Ensure(frame)
-	if frame.healthBar then
-		return
+	if not frame.healthBar then
+		local healthBar = CreateFrame("StatusBar", nil, frame)
+		healthBar:SetAllPoints(frame)
+		healthBar:SetMinMaxValues(0, 1)
+		healthBar:SetValue(0)
+		frame.healthBar = healthBar
 	end
 
-	local healthBar = CreateFrame("StatusBar", nil, frame)
-	healthBar:SetAllPoints(frame)
-	healthBar:SetMinMaxValues(0, 1)
-	healthBar:SetValue(0)
-	frame.healthBar = healthBar
+	self:UpdateSettings(frame)
 end
 
 function Health:UpdateSettings(frame, settings)
@@ -33,7 +33,7 @@ function Health:UpdateSettings(frame, settings)
 end
 
 function Health:UpdateState(frame)
-	local unit = frame:GetAttribute("unit")
+	local unit = frame.unit
 	if not unit then
 		return
 	end

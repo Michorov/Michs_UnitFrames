@@ -26,6 +26,10 @@ local function BuildStateUpdater(updateReasons)
 		if updateReasons.healthStateChanged or updateReasons.healthSettingsChanged then
 			addon.Frames.Widgets.Health:UpdateState(frame)
 		end
+
+		if updateReasons.nameStateChanged then
+			addon.Frames.Widgets.Name:UpdateState(frame)
+		end
 	end
 end
 

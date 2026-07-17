@@ -7,13 +7,13 @@ addon.Frames.Widgets.Background = addon.Frames.Widgets.Background or {}
 local Background = addon.Frames.Widgets.Background
 
 function Background:Ensure(frame)
-	if frame.background then
-		return
+	if not frame.background then
+		local background = frame:CreateTexture(nil, "BACKGROUND")
+		background:SetAllPoints(frame)
+		frame.background = background
 	end
 
-	local background = frame:CreateTexture(nil, "BACKGROUND")
-	background:SetAllPoints(frame)
-	frame.background = background
+	self:UpdateSettings(frame)
 end
 
 function Background:UpdateSettings(frame, settings)

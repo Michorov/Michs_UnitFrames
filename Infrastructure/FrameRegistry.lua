@@ -43,26 +43,52 @@ function FrameRegistry:Initialize()
 		error("FrameRegistry already initialized", 2)
 	end
 
+	local unit = "player"
 	local playerFrame = CreateFrame("Button", "MUF_PlayerFrame", UIParent, "SecureUnitButtonTemplate")
-	playerFrame:SetAttribute("unit", "player")
+	playerFrame.unit = unit
+	playerFrame:SetAttribute("unit", unit)
 	playerFrame:SetAttribute("toggleForVehicle", true)
 	playerFrame:SetAttribute("*type1", "target")
 	playerFrame:SetAttribute("*type2", "togglemenu")
 	playerFrame:RegisterForClicks("AnyUp")
 
 	addon.Frames.Widgets.Background:Ensure(playerFrame)
-	addon.Frames.Widgets.Background:UpdateSettings(playerFrame)
 	addon.Frames.Widgets.Health:Ensure(playerFrame)
-	addon.Frames.Widgets.Health:UpdateSettings(playerFrame)
 	addon.Frames.Widgets.Health:UpdateState(playerFrame)
+	addon.Frames.Widgets.Name:Ensure(playerFrame)
+	addon.Frames.Widgets.Name:UpdateState(playerFrame)
 	addon.Frames.Widgets.Border:Ensure(playerFrame)
 
-	map["player"] = playerFrame
+	map[unit] = playerFrame
+
+	local targetUnit = "target"
+	local targetFrame = CreateFrame("Button", "MUF_TargetFrame", UIParent, "SecureUnitButtonTemplate")
+	targetFrame.unit = targetUnit
+	targetFrame:SetAttribute("unit", targetUnit)
+	targetFrame:SetAttribute("toggleForVehicle", true)
+	targetFrame:SetAttribute("*type1", "target")
+	targetFrame:SetAttribute("*type2", "togglemenu")
+	targetFrame:RegisterForClicks("AnyUp")
+
+	addon.Frames.Widgets.Background:Ensure(targetFrame)
+	addon.Frames.Widgets.Health:Ensure(targetFrame)
+	addon.Frames.Widgets.Health:UpdateState(targetFrame)
+	addon.Frames.Widgets.Name:Ensure(targetFrame)
+	addon.Frames.Widgets.Name:UpdateState(targetFrame)
+	addon.Frames.Widgets.Border:Ensure(targetFrame)
+
+	map[targetUnit] = targetFrame
 
 	PP:RegisterForUpdate(function()
 		playerFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
 		PP:CenterElement(playerFrame, UIParent, PP:ToUIScaled(0), PP:ToUIScaled(0))
+		addon.Frames.Widgets.Name:UpdateSettings(playerFrame)
 		addon.Frames.Widgets.Border:UpdateSettings(playerFrame)
+
+		targetFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
+		PP:CenterElement(targetFrame, UIParent, PP:ToUIScaled(150), PP:ToUIScaled(0))
+		addon.Frames.Widgets.Name:UpdateSettings(targetFrame)
+		addon.Frames.Widgets.Border:UpdateSettings(targetFrame)
 	end)
 
 	initialized = true
