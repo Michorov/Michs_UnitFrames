@@ -12,6 +12,7 @@ function EventHandler:Initialize()
 	end
 
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
 
@@ -24,8 +25,11 @@ function EventHandler:Initialize()
 	initialized = true
 end
 
-function EventHandler:PLAYER_ENTERING_WORLD()
-	print("EventHandler test event")
+function EventHandler:PLAYER_ENTERING_WORLD() end
+
+function EventHandler:PLAYER_TARGET_CHANGED()
+	addon.UpdateScheduler:Notify("healthStateChanged", "target")
+	addon.UpdateScheduler:Notify("nameStateChanged", "target")
 end
 
 function EventHandler:UNIT_HEALTH(event, unit)

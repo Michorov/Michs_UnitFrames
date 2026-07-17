@@ -43,14 +43,15 @@ function FrameRegistry:Initialize()
 		error("FrameRegistry already initialized", 2)
 	end
 
-	local unit = "player"
+	local playerUnit = "player"
 	local playerFrame = CreateFrame("Button", "MUF_PlayerFrame", UIParent, "SecureUnitButtonTemplate")
-	playerFrame.unit = unit
-	playerFrame:SetAttribute("unit", unit)
+	playerFrame.unit = playerUnit
+	playerFrame:SetAttribute("unit", playerUnit)
 	playerFrame:SetAttribute("toggleForVehicle", true)
 	playerFrame:SetAttribute("*type1", "target")
 	playerFrame:SetAttribute("*type2", "togglemenu")
 	playerFrame:RegisterForClicks("AnyUp")
+	RegisterUnitWatch(playerFrame)
 
 	addon.Frames.Widgets.Background:Ensure(playerFrame)
 	addon.Frames.Widgets.Health:Ensure(playerFrame)
@@ -59,7 +60,7 @@ function FrameRegistry:Initialize()
 	addon.Frames.Widgets.Name:UpdateState(playerFrame)
 	addon.Frames.Widgets.Border:Ensure(playerFrame)
 
-	map[unit] = playerFrame
+	map[playerUnit] = playerFrame
 
 	local targetUnit = "target"
 	local targetFrame = CreateFrame("Button", "MUF_TargetFrame", UIParent, "SecureUnitButtonTemplate")
@@ -69,6 +70,7 @@ function FrameRegistry:Initialize()
 	targetFrame:SetAttribute("*type1", "target")
 	targetFrame:SetAttribute("*type2", "togglemenu")
 	targetFrame:RegisterForClicks("AnyUp")
+	RegisterUnitWatch(targetFrame)
 
 	addon.Frames.Widgets.Background:Ensure(targetFrame)
 	addon.Frames.Widgets.Health:Ensure(targetFrame)
@@ -81,12 +83,12 @@ function FrameRegistry:Initialize()
 
 	PP:RegisterForUpdate(function()
 		playerFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
-		PP:CenterElement(playerFrame, UIParent, PP:ToUIScaled(0), PP:ToUIScaled(0))
+		PP:CenterElement(playerFrame, UIParent, PP:ToUIScaled(-150), PP:ToUIScaled(-300))
 		addon.Frames.Widgets.Name:UpdateSettings(playerFrame)
 		addon.Frames.Widgets.Border:UpdateSettings(playerFrame)
 
 		targetFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
-		PP:CenterElement(targetFrame, UIParent, PP:ToUIScaled(150), PP:ToUIScaled(0))
+		PP:CenterElement(targetFrame, UIParent, PP:ToUIScaled(150), PP:ToUIScaled(-300))
 		addon.Frames.Widgets.Name:UpdateSettings(targetFrame)
 		addon.Frames.Widgets.Border:UpdateSettings(targetFrame)
 	end)
