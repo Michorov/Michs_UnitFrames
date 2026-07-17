@@ -3,6 +3,7 @@ local _, addon = ...
 local FrameRegistry = {}
 addon.FrameRegistry = FrameRegistry
 
+local PP = addon.PixelPerfect
 local initialized = false
 local map = {}
 
@@ -18,6 +19,17 @@ function FrameRegistry:Initialize()
 	playerFrame:SetAttribute("*type2", "togglemenu")
 	playerFrame:RegisterForClicks("AnyUp")
 
+	local background = playerFrame:CreateTexture(nil, "BACKGROUND")
+	background:SetAllPoints(playerFrame)
+	background:SetColorTexture(0.15, 0.15, 0.15, 1)
+	playerFrame.background = background
+
 	map["player"] = playerFrame
+
+	PP:RegisterForUpdate(function()
+		playerFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
+		PP:CenterElement(playerFrame, UIParent, PP:ToUIScaled(0), PP:ToUIScaled(0))
+	end)
+
 	initialized = true
 end
