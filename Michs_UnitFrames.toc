@@ -9,6 +9,10 @@ Libs/MichsPixelPerfectLib-1.0/MichsPixelPerfectLib-1.0.lua
 
 PixelPerfect.lua
 
+# Widgets
+Frames/Widgets/Background.lua
+Frames/Widgets/Border.lua
+
 # Infrastructure
 Infrastructure/UpdateScheduler.lua
 Infrastructure/Updater.lua

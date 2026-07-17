@@ -19,16 +19,16 @@ function FrameRegistry:Initialize()
 	playerFrame:SetAttribute("*type2", "togglemenu")
 	playerFrame:RegisterForClicks("AnyUp")
 
-	local background = playerFrame:CreateTexture(nil, "BACKGROUND")
-	background:SetAllPoints(playerFrame)
-	background:SetColorTexture(0.15, 0.15, 0.15, 1)
-	playerFrame.background = background
+	addon.Frames.Widgets.Background:Ensure(playerFrame)
+	addon.Frames.Widgets.Background:UpdateSettings(playerFrame)
+	addon.Frames.Widgets.Border:Ensure(playerFrame)
 
 	map["player"] = playerFrame
 
 	PP:RegisterForUpdate(function()
 		playerFrame:SetSize(PP:ToUIScaled(140), PP:ToUIScaled(32))
 		PP:CenterElement(playerFrame, UIParent, PP:ToUIScaled(0), PP:ToUIScaled(0))
+		addon.Frames.Widgets.Border:UpdateSettings(playerFrame)
 	end)
 
 	initialized = true
