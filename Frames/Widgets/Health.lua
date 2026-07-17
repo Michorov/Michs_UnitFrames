@@ -25,9 +25,9 @@ function Health:UpdateSettings(frame, settings)
 
 	healthBar:SetStatusBarTexture(healthSettings.texture or "Interface\\Buttons\\WHITE8x8")
 	healthBar:SetStatusBarColor(
-		color.r or 0.10,
-		color.g or 0.80,
-		color.b or 0.10,
+		color.r or 0.12,
+		color.g or 0.12,
+		color.b or 0.12,
 		color.a or 1
 	)
 end

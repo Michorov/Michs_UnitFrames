@@ -21,9 +21,9 @@ function Background:UpdateSettings(frame, settings)
 	local color = backgroundSettings.color or {}
 
 	frame.background:SetColorTexture(
-		color.r or 0.12,
-		color.g or 0.12,
-		color.b or 0.12,
+		color.r or 0.85,
+		color.g or 0.85,
+		color.b or 0.85,
 		color.a or 1
 	)
 end
