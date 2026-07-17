@@ -7,6 +7,37 @@ local PP = addon.PixelPerfect
 local initialized = false
 local map = {}
 
+local function UpdateFrame(frame, stateCallback, settingsCallback)
+	if not InCombatLockdown() and type(settingsCallback) == "function" then
+		settingsCallback(frame)
+	end
+
+	if type(stateCallback) == "function" then
+		stateCallback(frame)
+	end
+end
+
+function FrameRegistry:UpdateUnit(unit, stateCallback, settingsCallback)
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	local frame = map[unit]
+	if frame then
+		UpdateFrame(frame, stateCallback, settingsCallback)
+	end
+end
+
+function FrameRegistry:UpdateAllUnits(stateCallback, settingsCallback)
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	for _, frame in pairs(map) do
+		UpdateFrame(frame, stateCallback, settingsCallback)
+	end
+end
+
 function FrameRegistry:Initialize()
 	if initialized then
 		error("FrameRegistry already initialized", 2)
@@ -35,4 +66,8 @@ function FrameRegistry:Initialize()
 	end)
 
 	initialized = true
+end
+
+function FrameRegistry:IsInitialized()
+	return initialized
 end
