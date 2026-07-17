@@ -4,6 +4,7 @@ local FrameRegistry = {}
 addon.FrameRegistry = FrameRegistry
 
 local initialized = false
+local map = {}
 
 function FrameRegistry:Initialize()
 	if initialized then
@@ -17,6 +18,6 @@ function FrameRegistry:Initialize()
 	playerFrame:SetAttribute("*type2", "togglemenu")
 	playerFrame:RegisterForClicks("AnyUp")
 
-	self.playerFrame = playerFrame
+	map["player"] = playerFrame
 	initialized = true
 end
