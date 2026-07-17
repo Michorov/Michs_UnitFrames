@@ -1,6 +1,7 @@
 local addonName, addon = ...
 
 local function InitializeAddon()
+	addon.FrameRegistry:Initialize()
 	addon.EventHandler:Initialize()
 end
 
