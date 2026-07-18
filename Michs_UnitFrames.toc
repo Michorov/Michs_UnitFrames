@@ -1,5 +1,5 @@
 ## Interface: 120007, 120100
-## Title: Michs UnitFrames
+## Title: Mich's UnitFrames
 ## Notes: Custom unit frames for player, target, pet, boss, and related units.
 ## Author: Mich
 ## Version: 0.1.0
