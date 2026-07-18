@@ -4,6 +4,7 @@ local function InitializeAddon()
 	local flushCallback = addon.Updater:CreateFlushCallback()
 	addon.UpdateScheduler:SetFlushCallback(flushCallback)
 
+	addon.Options:Initialize()
 	addon.FrameRegistry:Initialize()
 	addon.EventHandler:Initialize()
 end
