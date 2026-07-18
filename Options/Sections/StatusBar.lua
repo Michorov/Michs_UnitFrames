@@ -24,10 +24,6 @@ function StatusBar:Ensure(parent)
 	statusBar.topBorder = statusBar:CreateTexture(nil, "OVERLAY")
 	statusBar.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
 
-	PP:RegisterForUpdate(function()
-		StatusBar:UpdateLayout()
-	end)
-
 	return statusBar
 end
 

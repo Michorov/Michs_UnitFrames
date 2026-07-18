@@ -68,10 +68,6 @@ function Options:Ensure()
 	panel.rightBorder:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, 0)
 	panel.rightBorder:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
 
-	PP:RegisterForUpdate(function()
-		Options:UpdateLayout()
-	end)
-
 	panel.header = addon.Options.Sections.Header:Ensure(panel)
 	panel.header:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
 	panel.header:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, 0)
@@ -105,7 +101,10 @@ function Options:Ensure()
 		PP:CenterElement(self, UIParent, panelCenterX - parentCenterX, panelCenterY - parentCenterY)
 	end)
 
-	Options:UpdateLayout()
+	PP:RegisterForUpdate(function()
+		Options:UpdateLayout()
+	end)
+
 	PP:CenterElement(panel, UIParent, 0, 0)
 end
 
@@ -122,13 +121,13 @@ function Options:UpdateLayout()
 	panel.leftBorder:SetWidth(borderThickness)
 	panel.rightBorder:SetWidth(borderThickness)
 
-	if panel.header then
-		panel.header:SetHeight(PP:ToUIScaled(40))
-		panel.statusBar:SetHeight(PP:ToUIScaled(32))
-		panel.sideMenu:SetWidth(PP:ToUIScaled(154))
+	panel.header:SetHeight(PP:ToUIScaled(40))
+	panel.statusBar:SetHeight(PP:ToUIScaled(32))
+	panel.sideMenu:SetWidth(PP:ToUIScaled(154))
 
-		addon.Options.Sections.SideMenu:UpdateLayout()
-	end
+	addon.Options.Sections.Header:UpdateLayout()
+	addon.Options.Sections.StatusBar:UpdateLayout()
+	addon.Options.Sections.SideMenu:UpdateLayout()
 end
 
 function Options:IsOpen()

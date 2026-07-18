@@ -24,10 +24,6 @@ function Header:Ensure(parent)
 	header.title:SetText("Mich's UnitFrames")
 	header.title:SetTextColor(0.96, 0.66, 0.31, 1)
 
-	PP:RegisterForUpdate(function()
-		Header:UpdateLayout()
-	end)
-
 	return header
 end
 
