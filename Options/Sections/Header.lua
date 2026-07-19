@@ -14,13 +14,8 @@ function Header:Ensure(parent)
 	end
 
 	header = CreateFrame("Frame", nil, parent)
-	header.title = header:CreateFontString(nil, "OVERLAY")
+	header.title = header:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	header.title:SetJustifyH("LEFT")
-	header.title:SetFont(
-		"Interface\\AddOns\\Michs_UnitFrames\\Media\\Fonts\\Philosopher-Bold.ttf",
-		PP:ScaleFont(22),
-		""
-	)
 	header.title:SetText("Mich's UnitFrames")
 	header.title:SetTextColor(0.96, 0.66, 0.31, 1)
 
