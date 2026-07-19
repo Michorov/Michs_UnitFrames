@@ -6,6 +6,8 @@ local Options = addon.Options
 local PP = addon.PixelPerfect
 local initialized = false
 local panel
+local panelOffsetX = 0
+local panelOffsetY = 0
 
 function Options:Initialize()
 	if initialized then
@@ -98,14 +100,14 @@ function Options:Ensure()
 
 		local panelCenterX, panelCenterY = self:GetCenter()
 		local parentCenterX, parentCenterY = UIParent:GetCenter()
-		PP:CenterElement(self, UIParent, panelCenterX - parentCenterX, panelCenterY - parentCenterY)
+		panelOffsetX = panelCenterX - parentCenterX
+		panelOffsetY = panelCenterY - parentCenterY
+		PP:CenterElement(self, UIParent, panelOffsetX, panelOffsetY)
 	end)
 
 	PP:RegisterForUpdate(function()
 		Options:UpdateLayout()
 	end)
-
-	PP:CenterElement(panel, UIParent, 0, 0)
 end
 
 function Options:UpdateLayout()
@@ -114,6 +116,7 @@ function Options:UpdateLayout()
 	end
 
 	panel:SetSize(PP:ToUIScaled(800), PP:ToUIScaled(500))
+	PP:CenterElement(panel, UIParent, panelOffsetX, panelOffsetY)
 
 	local borderThickness = PP:ToUIScaled(1)
 	panel.topBorder:SetHeight(borderThickness)
