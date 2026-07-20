@@ -64,6 +64,26 @@ function Layout:Ensure(parent)
 		addon.FrameRegistry:UpdateLayout(unit)
 	end)
 
+	page.frameWidthSlider = addon.Options.Controls.Slider:Create(page.body, "Frame Width")
+	page.frameWidthSlider:SetMinMaxValues(10, 500)
+	page.frameWidthSlider:SetStep(1)
+	page.frameWidthSlider:SetLayoutPoint("TOPLEFT", page.horizontalPositionSlider, "BOTTOMLEFT", 0, -24)
+	page.frameWidthSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].size.width = value
+		addon.FrameRegistry:UpdateLayout(unit)
+	end)
+
+	page.frameHeightSlider = addon.Options.Controls.Slider:Create(page.body, "Frame Height")
+	page.frameHeightSlider:SetMinMaxValues(10, 500)
+	page.frameHeightSlider:SetStep(1)
+	page.frameHeightSlider:SetLayoutPoint("TOPLEFT", page.frameWidthSlider, "TOPRIGHT", 32, 0)
+	page.frameHeightSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].size.height = value
+		addon.FrameRegistry:UpdateLayout(unit)
+	end)
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
@@ -78,6 +98,8 @@ function Layout:Ensure(parent)
 		self.hideBlizzardFrameCheckbox:SetChecked(settings.hideBlizzardFrame)
 		self.horizontalPositionSlider:SetValueSilently(settings.position.x)
 		self.verticalPositionSlider:SetValueSilently(settings.position.y)
+		self.frameWidthSlider:SetValueSilently(settings.size.width)
+		self.frameHeightSlider:SetValueSilently(settings.size.height)
 	end
 
 	page:UpdateState(addon.Database:GetProfile(), addon.Options.Sections.Content:GetSelectedUnit())
