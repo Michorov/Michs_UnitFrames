@@ -128,6 +128,7 @@ function Options:UpdateLayout()
 	addon.Options.Sections.Header:UpdateLayout()
 	addon.Options.Sections.StatusBar:UpdateLayout()
 	addon.Options.Sections.SideMenu:UpdateLayout()
+	addon.Options.Sections.Content:UpdateLayout()
 end
 
 function Options:IsOpen()

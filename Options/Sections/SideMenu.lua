@@ -8,7 +8,7 @@ local SideMenu = addon.Options.Sections.SideMenu
 local PP = addon.PixelPerfect
 local sideMenu
 
-local function CreateSideMenuButton(parent, text)
+local function CreateSideMenuButton(parent, text, pageKey)
 	local button = addon.Options.Controls.Button:Create(parent, text)
 	button:SetLayoutSize(138, 32)
 	button:SetBorderSize(0)
@@ -30,6 +30,10 @@ local function CreateSideMenuButton(parent, text)
 		self.hoverTexture:Hide()
 	end)
 
+	button:SetOnClick(function()
+		addon.Options.Sections.Content:SetActivePage(pageKey)
+	end)
+
 	return button
 end
 
@@ -40,13 +44,13 @@ function SideMenu:Ensure(parent)
 
 	sideMenu = CreateFrame("Frame", nil, parent)
 
-	local generalButton = CreateSideMenuButton(sideMenu, "General")
-	local layoutButton = CreateSideMenuButton(sideMenu, "Layout")
-	local barsButton = CreateSideMenuButton(sideMenu, "Bars")
-	local textsButton = CreateSideMenuButton(sideMenu, "Texts")
-	local aurasButton = CreateSideMenuButton(sideMenu, "Auras")
-	local indicatorsButton = CreateSideMenuButton(sideMenu, "Indicators")
-	local optionsButton = CreateSideMenuButton(sideMenu, "Options")
+	local generalButton = CreateSideMenuButton(sideMenu, "General", "general")
+	local layoutButton = CreateSideMenuButton(sideMenu, "Layout", "layout")
+	local barsButton = CreateSideMenuButton(sideMenu, "Bars", "bars")
+	local textsButton = CreateSideMenuButton(sideMenu, "Texts", "texts")
+	local aurasButton = CreateSideMenuButton(sideMenu, "Auras", "auras")
+	local indicatorsButton = CreateSideMenuButton(sideMenu, "Indicators", "indicators")
+	local optionsButton = CreateSideMenuButton(sideMenu, "Options", "options")
 
 	generalButton:SetLayoutPoint("TOPLEFT", sideMenu, "TOPLEFT", 8, -8)
 	layoutButton:SetLayoutPoint("TOPLEFT", generalButton, "BOTTOMLEFT", 0, -4)

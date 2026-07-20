@@ -17,6 +17,13 @@ Frames/Widgets/Border.lua
 
 # Options
 Options/Controls/Button.lua
+Options/Pages/General.lua
+Options/Pages/Layout.lua
+Options/Pages/Bars.lua
+Options/Pages/Texts.lua
+Options/Pages/Auras.lua
+Options/Pages/Indicators.lua
+Options/Pages/Options.lua
 Options/Sections/Header.lua
 Options/Sections/StatusBar.lua
 Options/Sections/SideMenu.lua
