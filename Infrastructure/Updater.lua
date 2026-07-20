@@ -9,6 +9,7 @@ local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Health:UpdateState(frame)
 	addon.Frames.Widgets.Health:UpdateColor(frame, settings)
 	addon.Frames.Widgets.Background:UpdateColor(frame, settings)
+	addon.Frames.Widgets.Absorbs:UpdateState(frame)
 	addon.Frames.Widgets.Name:UpdateState(frame)
 end
 
@@ -20,6 +21,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 
 		if updateReasons.healthSettingsChanged then
 			addon.Frames.Widgets.Health:UpdateSettings(frame, settings)
+		end
+
+		if updateReasons.absorbsSettingsChanged then
+			addon.Frames.Widgets.Absorbs:UpdateSettings(frame, settings)
 		end
 
 		if updateReasons.borderSettingsChanged then
@@ -37,6 +42,10 @@ local function BuildStateUpdater(updateReasons, settings)
 
 		if updateReasons.healthStateChanged then
 			addon.Frames.Widgets.Health:UpdateState(frame)
+		end
+
+		if updateReasons.absorbsStateChanged then
+			addon.Frames.Widgets.Absorbs:UpdateState(frame)
 		end
 
 		if updateReasons.unitColorStateChanged then

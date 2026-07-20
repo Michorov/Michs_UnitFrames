@@ -22,6 +22,9 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
 			},
 			target = {
 				enabled = true,
@@ -35,6 +38,9 @@ local DEFAULTS = {
 				background = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
 				},
 			},
 			pet = {
@@ -50,6 +56,9 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
 			},
 			targettarget = {
 				enabled = true,
@@ -63,6 +72,9 @@ local DEFAULTS = {
 				background = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
 				},
 			},
 			focus = {
@@ -78,6 +90,9 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
 			},
 			focustarget = {
 				enabled = true,
@@ -91,6 +106,9 @@ local DEFAULTS = {
 				background = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
 				},
 			},
 			boss = {
@@ -106,6 +124,9 @@ local DEFAULTS = {
 				background = {
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				absorbs = {
+					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
 				},
 			},
 		},
