@@ -6,11 +6,6 @@ addon.EventHandler = EventHandler
 local eventFrame = CreateFrame("Frame")
 local initialized = false
 
-local function NotifyUnitState(unit)
-	addon.UpdateScheduler:Notify("healthStateChanged", unit)
-	addon.UpdateScheduler:Notify("nameStateChanged", unit)
-end
-
 function EventHandler:Initialize()
 	if initialized then
 		error("EventHandler already initialized", 2)
@@ -22,6 +17,7 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_TARGET")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
+	eventFrame:RegisterEvent("UNIT_FACTION")
 	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
@@ -49,19 +45,19 @@ function EventHandler:PLAYER_REGEN_ENABLED()
 end
 
 function EventHandler:PLAYER_TARGET_CHANGED()
-	NotifyUnitState("target")
-	NotifyUnitState("targettarget")
+	addon.UpdateScheduler:Notify("unitChanged", "target")
+	addon.UpdateScheduler:Notify("unitChanged", "targettarget")
 end
 
 function EventHandler:UNIT_PET(event, unit)
 	if unit == "player" then
-		NotifyUnitState("pet")
+		addon.UpdateScheduler:Notify("unitChanged", "pet")
 	end
 end
 
 function EventHandler:UNIT_TARGET(event, unit)
 	if unit == "target" then
-		NotifyUnitState("targettarget")
+		addon.UpdateScheduler:Notify("unitChanged", "targettarget")
 	end
 end
 
@@ -71,4 +67,8 @@ end
 
 function EventHandler:UNIT_MAXHEALTH(event, unit)
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
+end
+
+function EventHandler:UNIT_FACTION(event, unit)
+	addon.UpdateScheduler:Notify("unitColorStateChanged", unit)
 end

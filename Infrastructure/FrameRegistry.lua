@@ -32,6 +32,8 @@ end
 
 local function CreateUnitFrame(unit, frameName, parent)
 	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate")
+	local settingsUnit = unit:match("^boss%d+$") and "boss" or unit
+	local settings = addon.Database:GetProfile().frames[settingsUnit]
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetFrameLevel(10)
 
@@ -62,8 +64,8 @@ local function CreateUnitFrame(unit, frameName, parent)
 		GameTooltip:Hide()
 	end)
 
-	addon.Frames.Widgets.Background:Ensure(frame)
-	addon.Frames.Widgets.Health:Ensure(frame)
+	addon.Frames.Widgets.Background:Ensure(frame, settings)
+	addon.Frames.Widgets.Health:Ensure(frame, settings)
 	addon.Frames.Widgets.Health:UpdateState(frame)
 	addon.Frames.Widgets.Name:Ensure(frame)
 	addon.Frames.Widgets.Name:UpdateState(frame)
@@ -177,9 +179,12 @@ function FrameRegistry:UpdateUnit(unit, stateCallback, settingsCallback)
 		error("FrameRegistry is not initialized", 2)
 	end
 
-	local frame = map[unit]
-	if frame then
-		UpdateFrame(frame, stateCallback, settingsCallback)
+	if unit == "boss" then
+		for bossIndex = 1, 5 do
+			UpdateFrame(map["boss" .. bossIndex], stateCallback, settingsCallback)
+		end
+	elseif map[unit] then
+		UpdateFrame(map[unit], stateCallback, settingsCallback)
 	end
 end
 

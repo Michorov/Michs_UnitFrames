@@ -24,8 +24,11 @@ Options/Controls/Button.lua
 Options/Controls/Checkbox.lua
 Options/Controls/Dropdown.lua
 Options/Controls/Slider.lua
+Options/Controls/ColorPicker.lua
 Options/Pages/General.lua
 Options/Pages/Layout.lua
+Options/Pages/Bars/Health.lua
+Options/Pages/Bars/Background.lua
 Options/Pages/Bars.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras.lua

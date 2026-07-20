@@ -14,36 +14,84 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = -400, y = -300 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			target = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = 400, y = -300 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			pet = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 80, height = 24 },
 				position = { x = -460, y = -338 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			targettarget = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 80, height = 24 },
 				position = { x = 460, y = -338 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			focus = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
 				position = { x = -450, y = -220 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			focustarget = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
 				position = { x = -350, y = -220 },
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 			boss = {
 				enabled = true,
@@ -51,6 +99,14 @@ local DEFAULTS = {
 				size = { width = 200, height = 48 },
 				position = { x = 500, y = 106 },
 				spacing = -1,
+				health = {
+					colorByClassOrReaction = true,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
+				background = {
+					colorByClassOrReaction = false,
+					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+				},
 			},
 		},
 	},
