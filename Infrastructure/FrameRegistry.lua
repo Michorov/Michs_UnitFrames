@@ -8,7 +8,7 @@ local initialized = false
 local map = {}
 local bossContainer
 local hiddenBlizzardFrames
-local blizzardFrameParents = {}
+local blizzardFrameStates = {}
 
 local blizzardFrameNames = {
 	player = "PlayerFrame",
@@ -32,6 +32,8 @@ end
 
 local function CreateUnitFrame(unit, frameName, parent)
 	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate")
+	frame:SetFrameStrata("MEDIUM")
+	frame:SetFrameLevel(10)
 
 	frame.unit = unit
 	frame:SetAttribute("unit", unit)
@@ -69,13 +71,23 @@ local function SetBlizzardFrameHidden(unit, hidden)
 	end
 
 	if hidden then
-		if not blizzardFrameParents[frame] then
-			blizzardFrameParents[frame] = frame:GetParent()
-		end
+		if frame:GetParent() ~= hiddenBlizzardFrames then
+			blizzardFrameStates[frame] = {
+				parent = frame:GetParent(),
+				strata = frame:GetFrameStrata(),
+				level = frame:GetFrameLevel(),
+			}
 
-		frame:SetParent(hiddenBlizzardFrames)
+			frame:SetParent(hiddenBlizzardFrames)
+		end
 	elseif frame:GetParent() == hiddenBlizzardFrames then
-		frame:SetParent(blizzardFrameParents[frame] or UIParent)
+		local state = blizzardFrameStates[frame]
+		frame:SetParent((state and state.parent) or UIParent)
+
+		if state then
+			frame:SetFrameStrata(state.strata)
+			frame:SetFrameLevel(state.level)
+		end
 	end
 end
 
@@ -212,6 +224,8 @@ function FrameRegistry:Initialize()
 	CreateUnitFrame("focustarget", "MUF_FocusTargetFrame")
 
 	bossContainer = CreateFrame("Frame", "MUF_BossContainer", UIParent)
+	bossContainer:SetFrameStrata("MEDIUM")
+	bossContainer:SetFrameLevel(9)
 	hiddenBlizzardFrames = CreateFrame("Frame", "MUF_HiddenBlizzardFrames", UIParent)
 	hiddenBlizzardFrames:Hide()
 
