@@ -6,12 +6,11 @@ addon.Updater = Updater
 local initialized = false
 
 local function UpdateUnitState(frame, settings)
-	addon.Frames.Widgets.Health:UpdateState(frame)
-	addon.Frames.Widgets.Health:UpdateColor(frame, settings)
-	addon.Frames.Widgets.Background:UpdateColor(frame, settings)
-	addon.Frames.Widgets.Absorbs:UpdateState(frame)
-	addon.Frames.Widgets.HealAbsorbs:UpdateState(frame)
-	addon.Frames.Widgets.Name:UpdateState(frame)
+	addon.Frames.Widgets.Health:UpdateState(frame, settings)
+	addon.Frames.Widgets.Background:UpdateState(frame, settings)
+	addon.Frames.Widgets.Absorbs:UpdateState(frame, settings)
+	addon.Frames.Widgets.HealAbsorbs:UpdateState(frame, settings)
+	addon.Frames.Widgets.Name:UpdateState(frame, settings)
 end
 
 local function BuildSettingsUpdater(updateReasons, settings)
@@ -32,9 +31,6 @@ local function BuildSettingsUpdater(updateReasons, settings)
 			addon.Frames.Widgets.HealAbsorbs:UpdateSettings(frame, settings)
 		end
 
-		if updateReasons.borderSettingsChanged then
-			addon.Frames.Widgets.Border:UpdateSettings(frame, settings)
-		end
 	end
 end
 
@@ -45,25 +41,24 @@ local function BuildStateUpdater(updateReasons, settings)
 			return
 		end
 
-		if updateReasons.healthStateChanged then
-			addon.Frames.Widgets.Health:UpdateState(frame)
+		if updateReasons.healthStateChanged or updateReasons.unitColorStateChanged then
+			addon.Frames.Widgets.Health:UpdateState(frame, settings)
 		end
 
 		if updateReasons.absorbsStateChanged then
-			addon.Frames.Widgets.Absorbs:UpdateState(frame)
+			addon.Frames.Widgets.Absorbs:UpdateState(frame, settings)
 		end
 
 		if updateReasons.healAbsorbsStateChanged then
-			addon.Frames.Widgets.HealAbsorbs:UpdateState(frame)
+			addon.Frames.Widgets.HealAbsorbs:UpdateState(frame, settings)
 		end
 
 		if updateReasons.unitColorStateChanged then
-			addon.Frames.Widgets.Health:UpdateColor(frame, settings)
-			addon.Frames.Widgets.Background:UpdateColor(frame, settings)
+			addon.Frames.Widgets.Background:UpdateState(frame, settings)
 		end
 
 		if updateReasons.nameStateChanged then
-			addon.Frames.Widgets.Name:UpdateState(frame)
+			addon.Frames.Widgets.Name:UpdateState(frame, settings)
 		end
 	end
 end

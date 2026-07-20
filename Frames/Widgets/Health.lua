@@ -20,7 +20,7 @@ function Health:Ensure(frame, settings)
 end
 
 function Health:UpdateSettings(frame, settings)
-	self:UpdateColor(frame, settings)
+	self:UpdateState(frame, settings)
 end
 
 function Health:UpdateColor(frame, settings)
@@ -48,7 +48,7 @@ function Health:UpdateColor(frame, settings)
 	frame.healthBar:SetStatusBarColor(r, g, b, a)
 end
 
-function Health:UpdateState(frame)
+function Health:UpdateState(frame, settings)
 	local unit = frame.unit
 	if not unit then
 		return
@@ -59,4 +59,5 @@ function Health:UpdateState(frame)
 
 	frame.healthBar:SetMinMaxValues(0, maximumHealth)
 	frame.healthBar:SetValue(currentHealth)
+	self:UpdateColor(frame, settings)
 end

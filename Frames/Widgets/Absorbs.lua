@@ -38,10 +38,10 @@ function Absorbs:UpdateSettings(frame, settings)
 		color.a or 0.5
 	)
 
-	self:UpdateState(frame)
+	self:UpdateState(frame, settings)
 end
 
-function Absorbs:UpdateState(frame)
+function Absorbs:UpdateState(frame, settings)
 	if not frame.absorbBar.enabled then
 		frame.absorbBar:Hide()
 		return

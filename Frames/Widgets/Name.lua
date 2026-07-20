@@ -7,7 +7,7 @@ addon.Frames.Widgets.Name = addon.Frames.Widgets.Name or {}
 local Name = addon.Frames.Widgets.Name
 local PP = addon.PixelPerfect
 
-function Name:Ensure(frame)
+function Name:Ensure(frame, settings)
 	if not frame.nameText then
 		local nameFrame = CreateFrame("Frame", nil, frame)
 		nameFrame:SetAllPoints(frame)
@@ -17,10 +17,10 @@ function Name:Ensure(frame)
 		frame.nameText = nameFrame
 	end
 
-	self:UpdateSettings(frame)
+	self:UpdateSettings(frame, settings)
 end
 
-function Name:UpdateSettings(frame)
+function Name:UpdateSettings(frame, settings)
 	local nameText = frame.nameText.text
 
 	nameText:ClearAllPoints()
@@ -30,9 +30,11 @@ function Name:UpdateSettings(frame)
 	nameText:SetShadowColor(0, 0, 0, 0.9)
 	nameText:SetShadowOffset(1, -1)
 	nameText:SetTextColor(1, 1, 1, 1)
+
+	self:UpdateState(frame, settings)
 end
 
-function Name:UpdateState(frame)
+function Name:UpdateState(frame, settings)
 	local unit = frame.unit
 	if not unit then
 		return

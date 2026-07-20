@@ -42,5 +42,9 @@ function Background:Ensure(frame, settings)
 end
 
 function Background:UpdateSettings(frame, settings)
+	self:UpdateState(frame, settings)
+end
+
+function Background:UpdateState(frame, settings)
 	self:UpdateColor(frame, settings)
 end

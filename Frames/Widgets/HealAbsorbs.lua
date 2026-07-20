@@ -75,10 +75,10 @@ function HealAbsorbs:UpdateSettings(frame, settings)
 		color.a or 0.5
 	)
 
-	self:UpdateState(frame)
+	self:UpdateState(frame, settings)
 end
 
-function HealAbsorbs:UpdateState(frame)
+function HealAbsorbs:UpdateState(frame, settings)
 	if not frame.healAbsorbBar.enabled then
 		frame.healAbsorbBar:Hide()
 		return
