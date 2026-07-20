@@ -8,9 +8,11 @@ local Content = addon.Options.Sections.Content
 local content
 
 function Content:Ensure(parent)
-	if not content then
-		content = CreateFrame("Frame", nil, parent)
+	if content then
+		return content
 	end
+
+	content = CreateFrame("Frame", nil, parent)
 
 	return content
 end

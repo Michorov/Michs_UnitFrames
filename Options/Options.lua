@@ -111,10 +111,6 @@ function Options:Ensure()
 end
 
 function Options:UpdateLayout()
-	if not panel then
-		return
-	end
-
 	panel:SetSize(PP:ToUIScaled(800), PP:ToUIScaled(500))
 	PP:CenterElement(panel, UIParent, panelOffsetX, panelOffsetY)
 
