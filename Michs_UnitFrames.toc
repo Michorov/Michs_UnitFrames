@@ -13,6 +13,9 @@ Libs/MichsPixelPerfectLib-1.0/MichsPixelPerfectLib-1.0.lua
 PixelPerfect.lua
 Database.lua
 
+# Style
+Style/Colors.lua
+
 # Widgets
 Frames/Widgets/Background.lua
 Frames/Widgets/Health.lua
