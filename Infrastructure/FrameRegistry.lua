@@ -92,11 +92,10 @@ local function UpdateFrameLayout(unit)
 end
 
 local function UpdateBossLayout()
-	local settings = addon.Database:GetProfile().frames.bossContainer
-	local frameSettings = settings.frame
-	local frameWidth = PP:ToUIScaled(frameSettings.size.width)
-	local frameHeight = PP:ToUIScaled(frameSettings.size.height)
-	local spacing = PP:ToUIScaled(frameSettings.spacing)
+	local settings = addon.Database:GetProfile().frames.boss
+	local frameWidth = PP:ToUIScaled(settings.size.width)
+	local frameHeight = PP:ToUIScaled(settings.size.height)
+	local spacing = PP:ToUIScaled(settings.spacing)
 
 	bossContainer:SetSize(frameWidth, (frameHeight * 5) + (spacing * 4))
 	PP:CenterElement(
@@ -151,6 +150,18 @@ function FrameRegistry:UpdateVisibility()
 	end
 
 	UpdateVisibility()
+end
+
+function FrameRegistry:UpdateLayout(unit)
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	if unit == "boss" then
+		UpdateBossLayout()
+	elseif map[unit] then
+		UpdateFrameLayout(unit)
+	end
 end
 
 function FrameRegistry:Initialize()

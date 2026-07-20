@@ -21,6 +21,7 @@ Frames/Widgets/Border.lua
 
 # Options
 Options/Controls/Button.lua
+Options/Controls/Dropdown.lua
 Options/Pages/General.lua
 Options/Pages/Layout.lua
 Options/Pages/Bars.lua

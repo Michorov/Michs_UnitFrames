@@ -39,13 +39,11 @@ local DEFAULTS = {
 				size = { width = 99, height = 24 },
 				position = { anchor = "LEFT", x = -399, y = -220 },
 			},
-			bossContainer = {
+			boss = {
+				enabled = true,
+				size = { width = 200, height = 48 },
 				position = { anchor = "CENTER", x = 500, y = 106 },
-				frame = {
-					enabled = true,
-					size = { width = 200, height = 48 },
-					spacing = -1,
-				},
+				spacing = -1,
 			},
 		},
 	},
