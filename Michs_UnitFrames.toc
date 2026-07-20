@@ -23,6 +23,7 @@ Frames/Widgets/Border.lua
 Options/Controls/Button.lua
 Options/Controls/Checkbox.lua
 Options/Controls/Dropdown.lua
+Options/Controls/Slider.lua
 Options/Pages/General.lua
 Options/Pages/Layout.lua
 Options/Pages/Bars.lua

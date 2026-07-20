@@ -44,6 +44,26 @@ function Layout:Ensure(parent)
 		addon.FrameRegistry:UpdateVisibility()
 	end)
 
+	page.horizontalPositionSlider = addon.Options.Controls.Slider:Create(page.body, "Horizontal Position")
+	page.horizontalPositionSlider:SetMinMaxValues(-2000, 2000)
+	page.horizontalPositionSlider:SetStep(1)
+	page.horizontalPositionSlider:SetLayoutPoint("TOPLEFT", page.hideBlizzardFrameCheckbox, "BOTTOMLEFT", 0, -24)
+	page.horizontalPositionSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].position.x = value
+		addon.FrameRegistry:UpdateLayout(unit)
+	end)
+
+	page.verticalPositionSlider = addon.Options.Controls.Slider:Create(page.body, "Vertical Position")
+	page.verticalPositionSlider:SetMinMaxValues(-2000, 2000)
+	page.verticalPositionSlider:SetStep(1)
+	page.verticalPositionSlider:SetLayoutPoint("TOPLEFT", page.horizontalPositionSlider, "TOPRIGHT", 32, 0)
+	page.verticalPositionSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].position.y = value
+		addon.FrameRegistry:UpdateLayout(unit)
+	end)
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
@@ -56,6 +76,8 @@ function Layout:Ensure(parent)
 		self.enabledCheckbox:SetChecked(settings.enabled)
 		self.hideBlizzardFrameCheckbox:SetText(unit == "boss" and "Hide Blizzard Frames" or "Hide Blizzard Frame")
 		self.hideBlizzardFrameCheckbox:SetChecked(settings.hideBlizzardFrame)
+		self.horizontalPositionSlider:SetValueSilently(settings.position.x)
+		self.verticalPositionSlider:SetValueSilently(settings.position.y)
 	end
 
 	page:UpdateState(addon.Database:GetProfile(), addon.Options.Sections.Content:GetSelectedUnit())
