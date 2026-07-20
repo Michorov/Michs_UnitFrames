@@ -32,9 +32,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			target = {
@@ -60,9 +64,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			pet = {
@@ -88,9 +96,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			targettarget = {
@@ -116,9 +128,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			focus = {
@@ -144,9 +160,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			focustarget = {
@@ -172,9 +192,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 			boss = {
@@ -201,9 +225,13 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					anchor = "RIGHT",
+					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
+					anchor = "LEFT",
+					position = { x = 4, y = 0 },
 				},
 			},
 		},

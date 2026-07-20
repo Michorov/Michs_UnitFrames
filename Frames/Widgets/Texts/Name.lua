@@ -25,9 +25,17 @@ function Name:UpdateSettings(frame, settings)
 	local nameText = frame.nameText.text
 	local nameTextSettings = (settings and settings.nameText) or {}
 	frame.nameText.enabled = nameTextSettings.enabled ~= false
+	local anchor = nameTextSettings.anchor or "LEFT"
+	local position = nameTextSettings.position or {}
 
 	nameText:ClearAllPoints()
-	nameText:SetPoint("LEFT", frame.nameText, "LEFT", PP:ToUIScaled(4), PP:ToUIScaled(0))
+	nameText:SetPoint(
+		anchor,
+		frame.nameText,
+		anchor,
+		PP:ToUIScaled(position.x or 0),
+		PP:ToUIScaled(position.y or 0)
+	)
 
 	nameText:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
 	nameText:SetShadowColor(0, 0, 0, 0.9)

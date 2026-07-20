@@ -25,9 +25,17 @@ function Health:UpdateSettings(frame, settings)
 	local text = frame.healthText.text
 	local healthTextSettings = (settings and settings.healthText) or {}
 	frame.healthText.enabled = healthTextSettings.enabled ~= false
+	local anchor = healthTextSettings.anchor or "RIGHT"
+	local position = healthTextSettings.position or {}
 
 	text:ClearAllPoints()
-	text:SetPoint("RIGHT", frame.healthText, "RIGHT", PP:ToUIScaled(-4), 0)
+	text:SetPoint(
+		anchor,
+		frame.healthText,
+		anchor,
+		PP:ToUIScaled(position.x or 0),
+		PP:ToUIScaled(position.y or 0)
+	)
 	text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
