@@ -1,6 +1,8 @@
 local addonName, addon = ...
 
 local function InitializeAddon()
+	addon.Database:Initialize()
+
 	local flushCallback = addon.Updater:CreateFlushCallback()
 	addon.UpdateScheduler:SetFlushCallback(flushCallback)
 
