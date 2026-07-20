@@ -16,6 +16,7 @@ Frames/Widgets/Name.lua
 Frames/Widgets/Border.lua
 
 # Options
+Options/Controls/Button.lua
 Options/Sections/Header.lua
 Options/Sections/StatusBar.lua
 Options/Sections/SideMenu.lua

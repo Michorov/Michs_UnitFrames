@@ -19,6 +19,26 @@ function Header:Ensure(parent)
 	header.title:SetText("Mich's UnitFrames")
 	header.title:SetTextColor(0.96, 0.66, 0.31, 1)
 
+	header.closeButton = addon.Options.Controls.Button:Create(header, "X")
+	header.closeButton:SetLayoutSize(24, 24)
+	header.closeButton:SetBorderSize(0)
+	header.closeButton:SetFontSize(16)
+	header.closeButton:SetLayoutPoint("TOPRIGHT", header, "TOPRIGHT", -8, -8)
+	header.closeButton:SetBackdropColor(0, 0, 0, 0)
+	header.closeButton.text:SetTextColor(0.65, 0.65, 0.68, 1)
+
+	header.closeButton:SetOnClick(function()
+		addon.Options:Close()
+	end)
+
+	header.closeButton:SetScript("OnEnter", function(self)
+		self.text:SetTextColor(0.96, 0.66, 0.31, 1)
+	end)
+
+	header.closeButton:SetScript("OnLeave", function(self)
+		self.text:SetTextColor(0.65, 0.65, 0.68, 1)
+	end)
+
 	return header
 end
 
