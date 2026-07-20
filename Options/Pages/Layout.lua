@@ -28,12 +28,37 @@ function Layout:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("Layout")
 
+	page.enabledCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Enabled")
+	page.enabledCheckbox:SetLayoutPoint("TOPLEFT", page.body, "TOPLEFT", 0, 0)
+	page.enabledCheckbox:SetOnValueChanged(function(_, enabled)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].enabled = enabled
+		addon.FrameRegistry:UpdateVisibility()
+	end)
+
+	page.hideBlizzardFrameCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Hide Blizzard Frame")
+	page.hideBlizzardFrameCheckbox:SetLayoutPoint("TOPLEFT", page.enabledCheckbox, "BOTTOMLEFT", 0, -8)
+	page.hideBlizzardFrameCheckbox:SetOnValueChanged(function(_, hidden)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].hideBlizzardFrame = hidden
+		addon.FrameRegistry:UpdateVisibility()
+	end)
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
 	end
+
+	function page:UpdateState(profile, unit)
+		local settings = profile.frames[unit]
+		self.enabledCheckbox:SetChecked(settings.enabled)
+		self.hideBlizzardFrameCheckbox:SetText(unit == "boss" and "Hide Blizzard Frames" or "Hide Blizzard Frame")
+		self.hideBlizzardFrameCheckbox:SetChecked(settings.hideBlizzardFrame)
+	end
+
+	page:UpdateState(addon.Database:GetProfile(), addon.Options.Sections.Content:GetSelectedUnit())
 
 	return page
 end

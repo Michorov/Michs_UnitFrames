@@ -79,6 +79,11 @@ function Content:SetActivePage(pageKey)
 
 	content.unitDropdown:SetLayoutPoint("RIGHT", content.pages[activePage].header, "RIGHT", 0, 0)
 	content.unitDropdown:SetShown(activePage ~= "general" and activePage ~= "options")
+
+	local page = content.pages[activePage]
+	if page.UpdateState then
+		page:UpdateState(addon.Database:GetProfile(), selectedUnit)
+	end
 end
 
 function Content:GetSelectedUnit()
@@ -92,6 +97,11 @@ function Content:SetSelectedUnit(unit)
 
 			if content then
 				content.unitDropdown:SetValue(unit)
+
+				local page = content.pages[activePage]
+				if page.UpdateState then
+					page:UpdateState(addon.Database:GetProfile(), selectedUnit)
+				end
 			end
 
 			return selectedUnit

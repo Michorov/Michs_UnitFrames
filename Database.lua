@@ -11,36 +11,43 @@ local DEFAULTS = {
 		frames = {
 			player = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { anchor = "CENTER", x = -400, y = -300 },
 			},
 			target = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { anchor = "CENTER", x = 400, y = -300 },
 			},
 			pet = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 80, height = 24 },
 				position = { anchor = "TOPLEFT", x = -500, y = -326 },
 			},
 			targettarget = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 80, height = 24 },
 				position = { anchor = "TOPRIGHT", x = 500, y = -326 },
 			},
 			focus = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 99, height = 24 },
 				position = { anchor = "LEFT", x = -500, y = -220 },
 			},
 			focustarget = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 99, height = 24 },
 				position = { anchor = "LEFT", x = -399, y = -220 },
 			},
 			boss = {
 				enabled = true,
+				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { anchor = "CENTER", x = 500, y = 106 },
 				spacing = -1,

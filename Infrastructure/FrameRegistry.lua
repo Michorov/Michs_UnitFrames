@@ -7,6 +7,18 @@ local PP = addon.PixelPerfect
 local initialized = false
 local map = {}
 local bossContainer
+local hiddenBlizzardFrames
+local blizzardFrameParents = {}
+
+local blizzardFrameNames = {
+	player = "PlayerFrame",
+	target = "TargetFrame",
+	pet = "PetFrame",
+	targettarget = "TargetFrameToT",
+	focus = "FocusFrame",
+	focustarget = "FocusFrameToT",
+	boss = "BossTargetFrameContainer",
+}
 
 local function UpdateFrame(frame, stateCallback, settingsCallback)
 	if not InCombatLockdown() and type(settingsCallback) == "function" then
@@ -50,6 +62,23 @@ local function SetUnitWatch(frame, enabled)
 	end
 end
 
+local function SetBlizzardFrameHidden(unit, hidden)
+	local frame = _G[blizzardFrameNames[unit]]
+	if not frame then
+		return
+	end
+
+	if hidden then
+		if not blizzardFrameParents[frame] then
+			blizzardFrameParents[frame] = frame:GetParent()
+		end
+
+		frame:SetParent(hiddenBlizzardFrames)
+	elseif frame:GetParent() == hiddenBlizzardFrames then
+		frame:SetParent(blizzardFrameParents[frame] or UIParent)
+	end
+end
+
 local function UpdateVisibility()
 	local frameSettings = addon.Database:GetProfile().frames
 
@@ -61,10 +90,16 @@ local function UpdateVisibility()
 	SetUnitWatch(map.focustarget, frameSettings.focustarget.enabled)
 
 	for bossIndex = 1, 5 do
-		local frame = map["boss" .. bossIndex]
-		UnregisterUnitWatch(frame)
-		frame:Show()
+		SetUnitWatch(map["boss" .. bossIndex], frameSettings.boss.enabled)
 	end
+
+	SetBlizzardFrameHidden("player", frameSettings.player.hideBlizzardFrame)
+	SetBlizzardFrameHidden("target", frameSettings.target.hideBlizzardFrame)
+	SetBlizzardFrameHidden("pet", frameSettings.pet.hideBlizzardFrame)
+	SetBlizzardFrameHidden("targettarget", frameSettings.targettarget.hideBlizzardFrame)
+	SetBlizzardFrameHidden("focus", frameSettings.focus.hideBlizzardFrame)
+	SetBlizzardFrameHidden("focustarget", frameSettings.focustarget.hideBlizzardFrame)
+	SetBlizzardFrameHidden("boss", frameSettings.boss.hideBlizzardFrame)
 end
 
 local function UpdateFrameLayout(unit)
@@ -177,6 +212,8 @@ function FrameRegistry:Initialize()
 	CreateUnitFrame("focustarget", "MUF_FocusTargetFrame")
 
 	bossContainer = CreateFrame("Frame", "MUF_BossContainer", UIParent)
+	hiddenBlizzardFrames = CreateFrame("Frame", "MUF_HiddenBlizzardFrames", UIParent)
+	hiddenBlizzardFrames:Hide()
 
 	for bossIndex = 1, 5 do
 		local unit = "boss" .. bossIndex
