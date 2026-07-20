@@ -33,7 +33,7 @@ function Layout:Ensure(parent)
 	page.enabledCheckbox:SetOnValueChanged(function(_, enabled)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].enabled = enabled
-		addon.FrameRegistry:UpdateVisibility(unit)
+		addon.UpdateScheduler:Notify("visibilityChanged", unit)
 	end)
 
 	page.hideBlizzardFrameCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Hide Blizzard Frame")
@@ -41,47 +41,61 @@ function Layout:Ensure(parent)
 	page.hideBlizzardFrameCheckbox:SetOnValueChanged(function(_, hidden)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].hideBlizzardFrame = hidden
-		addon.FrameRegistry:UpdateVisibility(unit)
+		addon.UpdateScheduler:Notify("visibilityChanged", unit)
 	end)
 
 	page.horizontalPositionSlider = addon.Options.Controls.Slider:Create(page.body, "Horizontal Position")
+	page.horizontalPositionSlider:SetLayoutWidth(174)
 	page.horizontalPositionSlider:SetMinMaxValues(-2000, 2000)
 	page.horizontalPositionSlider:SetStep(1)
 	page.horizontalPositionSlider:SetLayoutPoint("TOPLEFT", page.hideBlizzardFrameCheckbox, "BOTTOMLEFT", 0, -24)
 	page.horizontalPositionSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].position.x = value
-		addon.FrameRegistry:UpdateLayout(unit)
+		addon.UpdateScheduler:Notify("layoutChanged", unit)
 	end)
 
 	page.verticalPositionSlider = addon.Options.Controls.Slider:Create(page.body, "Vertical Position")
+	page.verticalPositionSlider:SetLayoutWidth(174)
 	page.verticalPositionSlider:SetMinMaxValues(-2000, 2000)
 	page.verticalPositionSlider:SetStep(1)
-	page.verticalPositionSlider:SetLayoutPoint("TOPLEFT", page.horizontalPositionSlider, "TOPRIGHT", 32, 0)
+	page.verticalPositionSlider:SetLayoutPoint("TOPLEFT", page.horizontalPositionSlider, "TOPRIGHT", 24, 0)
 	page.verticalPositionSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].position.y = value
-		addon.FrameRegistry:UpdateLayout(unit)
+		addon.UpdateScheduler:Notify("layoutChanged", unit)
+	end)
+
+	page.spacingSlider = addon.Options.Controls.Slider:Create(page.body, "Spacing")
+	page.spacingSlider:SetLayoutWidth(174)
+	page.spacingSlider:SetMinMaxValues(-10, 100)
+	page.spacingSlider:SetStep(1)
+	page.spacingSlider:SetLayoutPoint("TOPLEFT", page.verticalPositionSlider, "TOPRIGHT", 24, 0)
+	page.spacingSlider:SetOnValueChanged(function(_, value)
+		addon.Database:GetProfile().frames.boss.spacing = value
+		addon.UpdateScheduler:Notify("layoutChanged", "boss")
 	end)
 
 	page.frameWidthSlider = addon.Options.Controls.Slider:Create(page.body, "Frame Width")
+	page.frameWidthSlider:SetLayoutWidth(174)
 	page.frameWidthSlider:SetMinMaxValues(10, 500)
 	page.frameWidthSlider:SetStep(1)
 	page.frameWidthSlider:SetLayoutPoint("TOPLEFT", page.horizontalPositionSlider, "BOTTOMLEFT", 0, -24)
 	page.frameWidthSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].size.width = value
-		addon.FrameRegistry:UpdateLayout(unit)
+		addon.UpdateScheduler:Notify("layoutChanged", unit)
 	end)
 
 	page.frameHeightSlider = addon.Options.Controls.Slider:Create(page.body, "Frame Height")
+	page.frameHeightSlider:SetLayoutWidth(174)
 	page.frameHeightSlider:SetMinMaxValues(10, 500)
 	page.frameHeightSlider:SetStep(1)
-	page.frameHeightSlider:SetLayoutPoint("TOPLEFT", page.frameWidthSlider, "TOPRIGHT", 32, 0)
+	page.frameHeightSlider:SetLayoutPoint("TOPLEFT", page.frameWidthSlider, "TOPRIGHT", 24, 0)
 	page.frameHeightSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].size.height = value
-		addon.FrameRegistry:UpdateLayout(unit)
+		addon.UpdateScheduler:Notify("layoutChanged", unit)
 	end)
 
 	function page:UpdateLayout()
@@ -98,6 +112,12 @@ function Layout:Ensure(parent)
 		self.hideBlizzardFrameCheckbox:SetChecked(settings.hideBlizzardFrame)
 		self.horizontalPositionSlider:SetValueSilently(settings.position.x)
 		self.verticalPositionSlider:SetValueSilently(settings.position.y)
+		self.spacingSlider:SetShown(unit == "boss")
+
+		if unit == "boss" then
+			self.spacingSlider:SetValueSilently(settings.spacing)
+		end
+
 		self.frameWidthSlider:SetValueSilently(settings.size.width)
 		self.frameHeightSlider:SetValueSilently(settings.size.height)
 	end

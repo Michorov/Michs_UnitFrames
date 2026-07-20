@@ -114,19 +114,7 @@ local function UpdateFrameLayout(unit)
 	local position = settings.position
 
 	frame:SetSize(PP:ToUIScaled(settings.size.width), PP:ToUIScaled(settings.size.height))
-
-	if position.anchor == "CENTER" then
-		PP:CenterElement(frame, UIParent, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
-	else
-		frame:ClearAllPoints()
-		frame:SetPoint(
-			position.anchor,
-			UIParent,
-			"CENTER",
-			PP:ToUIScaled(position.x),
-			PP:ToUIScaled(position.y)
-		)
-	end
+	PP:CenterElement(frame, UIParent, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
 
 	addon.Frames.Widgets.Name:UpdateSettings(frame)
 	addon.Frames.Widgets.Border:UpdateSettings(frame)

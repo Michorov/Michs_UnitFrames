@@ -46,6 +46,14 @@ local function Flush(updateReasons)
 	end
 
 	for unit, unitReasons in pairs(updateReasons.units or {}) do
+		if unitReasons.visibilityChanged then
+			addon.FrameRegistry:UpdateVisibility(unit)
+		end
+
+		if unitReasons.layoutChanged then
+			addon.FrameRegistry:UpdateLayout(unit)
+		end
+
 		local stateUpdater = BuildStateUpdater(unitReasons)
 		local settingsUpdater = BuildSettingsUpdater(unitReasons)
 
