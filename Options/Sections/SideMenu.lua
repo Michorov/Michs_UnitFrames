@@ -8,12 +8,54 @@ local SideMenu = addon.Options.Sections.SideMenu
 local PP = addon.PixelPerfect
 local sideMenu
 
+local function CreateSideMenuButton(parent, text)
+	local button = addon.Options.Controls.Button:Create(parent, text)
+	button:SetLayoutSize(138, 32)
+	button:SetBorderSize(0)
+	button:SetFontSize(16)
+	button:SetTextAlignment("LEFT", 10)
+	button:SetBackdropColor(0, 0, 0, 0)
+
+	button.hoverTexture = button:CreateTexture(nil, "BACKGROUND")
+	button.hoverTexture:SetColorTexture(1, 1, 1, 0.03)
+	button.hoverTexture:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+	button.hoverTexture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+	button.hoverTexture:Hide()
+
+	button:SetScript("OnEnter", function(self)
+		self.hoverTexture:Show()
+	end)
+
+	button:SetScript("OnLeave", function(self)
+		self.hoverTexture:Hide()
+	end)
+
+	return button
+end
+
 function SideMenu:Ensure(parent)
 	if sideMenu then
 		return sideMenu
 	end
 
 	sideMenu = CreateFrame("Frame", nil, parent)
+
+	local generalButton = CreateSideMenuButton(sideMenu, "General")
+	local layoutButton = CreateSideMenuButton(sideMenu, "Layout")
+	local barsButton = CreateSideMenuButton(sideMenu, "Bars")
+	local textsButton = CreateSideMenuButton(sideMenu, "Texts")
+	local aurasButton = CreateSideMenuButton(sideMenu, "Auras")
+	local indicatorsButton = CreateSideMenuButton(sideMenu, "Indicators")
+	local optionsButton = CreateSideMenuButton(sideMenu, "Options")
+
+	generalButton:SetLayoutPoint("TOPLEFT", sideMenu, "TOPLEFT", 8, -8)
+	layoutButton:SetLayoutPoint("TOPLEFT", generalButton, "BOTTOMLEFT", 0, -4)
+	barsButton:SetLayoutPoint("TOPLEFT", layoutButton, "BOTTOMLEFT", 0, -4)
+	textsButton:SetLayoutPoint("TOPLEFT", barsButton, "BOTTOMLEFT", 0, -4)
+	aurasButton:SetLayoutPoint("TOPLEFT", textsButton, "BOTTOMLEFT", 0, -4)
+	indicatorsButton:SetLayoutPoint("TOPLEFT", aurasButton, "BOTTOMLEFT", 0, -4)
+	optionsButton:SetLayoutPoint("BOTTOMLEFT", sideMenu, "BOTTOMLEFT", 8, 8)
+
 	sideMenu.rightBorder = sideMenu:CreateTexture(nil, "OVERLAY")
 	sideMenu.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
 

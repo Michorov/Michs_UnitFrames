@@ -16,6 +16,8 @@ function Button:Create(parent, text)
 		height = 24,
 		borderThickness = 1,
 		fontSize = 14,
+		textAlignment = "CENTER",
+		textInset = 0,
 		point = nil,
 		relativeTo = parent,
 		relativePoint = nil,
@@ -97,6 +99,12 @@ function Button:Create(parent, text)
 		self:UpdateLayout()
 	end
 
+	function button:SetTextAlignment(alignment, inset)
+		self.layout.textAlignment = alignment
+		self.layout.textInset = inset or 0
+		self:UpdateLayout()
+	end
+
 	function button:SetLayoutPoint(point, relativeTo, relativePoint, offsetX, offsetY)
 		self.layout.point = point
 		self.layout.relativeTo = relativeTo or self.layout.parent
@@ -109,6 +117,16 @@ function Button:Create(parent, text)
 	function button:UpdateLayout()
 		self:SetSize(PP:ToUIScaled(self.layout.width), PP:ToUIScaled(self.layout.height))
 		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self.text:SetJustifyH(self.layout.textAlignment)
+		self.text:ClearAllPoints()
+
+		if self.layout.textAlignment == "LEFT" then
+			self.text:SetPoint("LEFT", self, "LEFT", PP:ToUIScaled(self.layout.textInset), 0)
+		elseif self.layout.textAlignment == "RIGHT" then
+			self.text:SetPoint("RIGHT", self, "RIGHT", PP:ToUIScaled(-self.layout.textInset), 0)
+		else
+			self.text:SetPoint("CENTER", self, "CENTER", 0, 0)
+		end
 
 		if self.layout.borderThickness == 0 then
 			self.borderTop:Hide()

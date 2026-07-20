@@ -14,6 +14,7 @@ function Header:Ensure(parent)
 	end
 
 	header = CreateFrame("Frame", nil, parent)
+
 	header.title = header:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	header.title:SetJustifyH("LEFT")
 	header.title:SetText("Mich's UnitFrames")
