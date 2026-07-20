@@ -6,6 +6,7 @@ local Options = addon.Options
 local PP = addon.PixelPerfect
 local initialized = false
 local panel
+local deferredOpen = false
 local panelOffsetX = 0
 local panelOffsetY = 0
 
@@ -133,7 +134,18 @@ function Options:IsOpen()
 	return panel and panel:IsShown() or false
 end
 
+function Options:ShouldOpenAfterCombat()
+	return deferredOpen
+end
+
 function Options:Open()
+	if InCombatLockdown() then
+		deferredOpen = true
+		print("|cffff9900Mich's UnitFrames:|r Options will open after combat.")
+		return
+	end
+
+	deferredOpen = false
 	self:Ensure()
 	panel:Show()
 end

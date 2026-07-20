@@ -22,6 +22,8 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_TARGET")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
+	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+	eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 	eventFrame:SetScript("OnEvent", function(self, event, ...)
 		if EventHandler[event] then
@@ -33,6 +35,18 @@ function EventHandler:Initialize()
 end
 
 function EventHandler:PLAYER_ENTERING_WORLD() end
+
+function EventHandler:PLAYER_REGEN_DISABLED()
+	if addon.Options:IsOpen() then
+		addon.Options:Close()
+	end
+end
+
+function EventHandler:PLAYER_REGEN_ENABLED()
+	if addon.Options:ShouldOpenAfterCombat() then
+		addon.Options:Open()
+	end
+end
 
 function EventHandler:PLAYER_TARGET_CHANGED()
 	NotifyUnitState("target")
