@@ -30,6 +30,9 @@ local DEFAULTS = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
+				healthText = {
+					enabled = true,
+				},
 			},
 			target = {
 				enabled = true,
@@ -51,6 +54,9 @@ local DEFAULTS = {
 				healAbsorbs = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
+				},
+				healthText = {
+					enabled = true,
 				},
 			},
 			pet = {
@@ -74,6 +80,9 @@ local DEFAULTS = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
+				healthText = {
+					enabled = true,
+				},
 			},
 			targettarget = {
 				enabled = true,
@@ -95,6 +104,9 @@ local DEFAULTS = {
 				healAbsorbs = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
+				},
+				healthText = {
+					enabled = true,
 				},
 			},
 			focus = {
@@ -118,6 +130,9 @@ local DEFAULTS = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
+				healthText = {
+					enabled = true,
+				},
 			},
 			focustarget = {
 				enabled = true,
@@ -139,6 +154,9 @@ local DEFAULTS = {
 				healAbsorbs = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
+				},
+				healthText = {
+					enabled = true,
 				},
 			},
 			boss = {
@@ -162,6 +180,9 @@ local DEFAULTS = {
 				healAbsorbs = {
 					enabled = true,
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
+				},
+				healthText = {
+					enabled = true,
 				},
 			},
 		},

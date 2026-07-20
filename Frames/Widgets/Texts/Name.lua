@@ -2,9 +2,10 @@ local _, addon = ...
 
 addon.Frames = addon.Frames or {}
 addon.Frames.Widgets = addon.Frames.Widgets or {}
-addon.Frames.Widgets.Name = addon.Frames.Widgets.Name or {}
+addon.Frames.Widgets.Texts = addon.Frames.Widgets.Texts or {}
+addon.Frames.Widgets.Texts.Name = addon.Frames.Widgets.Texts.Name or {}
 
-local Name = addon.Frames.Widgets.Name
+local Name = addon.Frames.Widgets.Texts.Name
 local PP = addon.PixelPerfect
 
 function Name:Ensure(frame, settings)

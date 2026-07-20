@@ -18,11 +18,12 @@ Style/Colors.lua
 
 # Widgets
 Frames/Widgets/Background.lua
-Frames/Widgets/Health.lua
-Frames/Widgets/Absorbs.lua
-Frames/Widgets/HealAbsorbs.lua
-Frames/Widgets/Name.lua
 Frames/Widgets/Border.lua
+Frames/Widgets/Bars/Health.lua
+Frames/Widgets/Bars/Absorbs.lua
+Frames/Widgets/Bars/HealAbsorbs.lua
+Frames/Widgets/Texts/Name.lua
+Frames/Widgets/Texts/Health.lua
 
 # Options
 Options/Controls/Button.lua
@@ -37,6 +38,7 @@ Options/Pages/Bars/Background.lua
 Options/Pages/Bars/Absorbs.lua
 Options/Pages/Bars/HealAbsorbs.lua
 Options/Pages/Bars.lua
+Options/Pages/Texts/Health.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras.lua
 Options/Pages/Indicators.lua

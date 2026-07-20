@@ -65,10 +65,11 @@ local function CreateUnitFrame(unit, frameName, parent)
 	end)
 
 	addon.Frames.Widgets.Background:Ensure(frame, settings)
-	addon.Frames.Widgets.Health:Ensure(frame, settings)
-	addon.Frames.Widgets.Absorbs:Ensure(frame, settings)
-	addon.Frames.Widgets.HealAbsorbs:Ensure(frame, settings)
-	addon.Frames.Widgets.Name:Ensure(frame, settings)
+	addon.Frames.Widgets.Bars.Health:Ensure(frame, settings)
+	addon.Frames.Widgets.Bars.Absorbs:Ensure(frame, settings)
+	addon.Frames.Widgets.Bars.HealAbsorbs:Ensure(frame, settings)
+	addon.Frames.Widgets.Texts.Name:Ensure(frame, settings)
+	addon.Frames.Widgets.Texts.Health:Ensure(frame, settings)
 	addon.Frames.Widgets.Border:Ensure(frame)
 
 	map[unit] = frame
@@ -138,7 +139,8 @@ local function UpdateFrameLayout(unit)
 	frame:SetSize(PP:ToUIScaled(settings.size.width), PP:ToUIScaled(settings.size.height))
 	PP:CenterElement(frame, UIParent, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
 
-	addon.Frames.Widgets.Name:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Border:UpdateSettings(frame)
 end
 
@@ -168,7 +170,8 @@ local function UpdateBossLayout()
 			frame:SetPoint("TOPLEFT", bossContainer, "TOPLEFT", 0, 0)
 		end
 
-		addon.Frames.Widgets.Name:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
 		previousBossFrame = frame
 	end

@@ -2,9 +2,10 @@ local _, addon = ...
 
 addon.Frames = addon.Frames or {}
 addon.Frames.Widgets = addon.Frames.Widgets or {}
-addon.Frames.Widgets.Absorbs = addon.Frames.Widgets.Absorbs or {}
+addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
+addon.Frames.Widgets.Bars.Absorbs = addon.Frames.Widgets.Bars.Absorbs or {}
 
-local Absorbs = addon.Frames.Widgets.Absorbs
+local Absorbs = addon.Frames.Widgets.Bars.Absorbs
 
 function Absorbs:Ensure(frame, settings)
 	if not frame.absorbBar then

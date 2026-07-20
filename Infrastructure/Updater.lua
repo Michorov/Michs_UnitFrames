@@ -6,11 +6,12 @@ addon.Updater = Updater
 local initialized = false
 
 local function UpdateUnitState(frame, settings)
-	addon.Frames.Widgets.Health:UpdateState(frame, settings)
+	addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
 	addon.Frames.Widgets.Background:UpdateState(frame, settings)
-	addon.Frames.Widgets.Absorbs:UpdateState(frame, settings)
-	addon.Frames.Widgets.HealAbsorbs:UpdateState(frame, settings)
-	addon.Frames.Widgets.Name:UpdateState(frame, settings)
+	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame, settings)
+	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
+	addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
+	addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
 end
 
 local function BuildSettingsUpdater(updateReasons, settings)
@@ -20,17 +21,20 @@ local function BuildSettingsUpdater(updateReasons, settings)
 		end
 
 		if updateReasons.healthSettingsChanged then
-			addon.Frames.Widgets.Health:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, settings)
 		end
 
 		if updateReasons.absorbsSettingsChanged then
-			addon.Frames.Widgets.Absorbs:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, settings)
 		end
 
 		if updateReasons.healAbsorbsSettingsChanged then
-			addon.Frames.Widgets.HealAbsorbs:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, settings)
 		end
 
+		if updateReasons.healthTextSettingsChanged then
+			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+		end
 	end
 end
 
@@ -42,15 +46,19 @@ local function BuildStateUpdater(updateReasons, settings)
 		end
 
 		if updateReasons.healthStateChanged or updateReasons.unitColorStateChanged then
-			addon.Frames.Widgets.Health:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
+		end
+
+		if updateReasons.healthStateChanged then
+			addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
 		end
 
 		if updateReasons.absorbsStateChanged then
-			addon.Frames.Widgets.Absorbs:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame, settings)
 		end
 
 		if updateReasons.healAbsorbsStateChanged then
-			addon.Frames.Widgets.HealAbsorbs:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
 		end
 
 		if updateReasons.unitColorStateChanged then
@@ -58,7 +66,7 @@ local function BuildStateUpdater(updateReasons, settings)
 		end
 
 		if updateReasons.nameStateChanged then
-			addon.Frames.Widgets.Name:UpdateState(frame, settings)
+			addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
 		end
 	end
 end

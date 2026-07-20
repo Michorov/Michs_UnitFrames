@@ -2,9 +2,10 @@ local _, addon = ...
 
 addon.Frames = addon.Frames or {}
 addon.Frames.Widgets = addon.Frames.Widgets or {}
-addon.Frames.Widgets.HealAbsorbs = addon.Frames.Widgets.HealAbsorbs or {}
+addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
+addon.Frames.Widgets.Bars.HealAbsorbs = addon.Frames.Widgets.Bars.HealAbsorbs or {}
 
-local HealAbsorbs = addon.Frames.Widgets.HealAbsorbs
+local HealAbsorbs = addon.Frames.Widgets.Bars.HealAbsorbs
 
 local function GetHealAbsorbs(frame)
 	local unit = frame.unit

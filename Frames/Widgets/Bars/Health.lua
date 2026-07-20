@@ -2,9 +2,10 @@ local _, addon = ...
 
 addon.Frames = addon.Frames or {}
 addon.Frames.Widgets = addon.Frames.Widgets or {}
-addon.Frames.Widgets.Health = addon.Frames.Widgets.Health or {}
+addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
+addon.Frames.Widgets.Bars.Health = addon.Frames.Widgets.Bars.Health or {}
 
-local Health = addon.Frames.Widgets.Health
+local Health = addon.Frames.Widgets.Bars.Health
 
 function Health:Ensure(frame, settings)
 	if not frame.healthBar then
