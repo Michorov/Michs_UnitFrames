@@ -37,7 +37,7 @@ function Name:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.y or 0)
 	)
 
-	nameText:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
+	addon.Style.Fonts:SetFont(nameText, nameTextSettings.font, PP:ScaleFont(12), "")
 	nameText:SetShadowColor(0, 0, 0, 0.9)
 	nameText:SetShadowOffset(1, -1)
 	nameText:SetTextColor(1, 1, 1, 1)

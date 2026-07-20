@@ -36,7 +36,7 @@ function Health:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.x or 0),
 		PP:ToUIScaled(position.y or 0)
 	)
-	text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
+	addon.Style.Fonts:SetFont(text, healthTextSettings.font, PP:ScaleFont(12), "")
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
 	text:SetTextColor(1, 1, 1, 1)

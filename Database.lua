@@ -4,6 +4,7 @@ local Database = {}
 addon.Database = Database
 
 local AceDB = LibStub("AceDB-3.0")
+local defaultFont = LibStub("LibSharedMedia-3.0"):GetDefault("font")
 local initialized = false
 
 local DEFAULTS = {
@@ -33,11 +34,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -65,11 +68,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -97,11 +102,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -129,11 +136,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -161,11 +170,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -193,11 +204,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},
@@ -226,11 +239,13 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 					anchor = "RIGHT",
+					font = defaultFont,
 					position = { x = -4, y = 0 },
 				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
+					font = defaultFont,
 					position = { x = 4, y = 0 },
 				},
 			},

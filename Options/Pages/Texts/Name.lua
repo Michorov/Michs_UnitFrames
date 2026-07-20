@@ -46,6 +46,16 @@ function Name:Ensure(parent)
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
 	end)
 
+	subpage.fontDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font")
+	subpage.fontDropdown:SetLayoutWidth(174)
+	subpage.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
+	subpage.fontDropdown:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
+	subpage.fontDropdown:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].nameText.font = value
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+	end)
+
 	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
 	subpage.offsetXSlider:SetLayoutWidth(174)
 	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
@@ -72,6 +82,8 @@ function Name:Ensure(parent)
 		local settings = profile.frames[unit].nameText
 		self.enabledCheckbox:SetChecked(settings.enabled)
 		self.anchorDropdown:SetValue(settings.anchor)
+		self.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
+		self.fontDropdown:SetValue(addon.Style.Fonts:GetName(settings.font))
 		self.offsetXSlider:SetValueSilently(settings.position.x)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 	end
