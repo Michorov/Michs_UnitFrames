@@ -28,16 +28,25 @@ function Absorbs:Ensure(frame, settings)
 end
 
 function Absorbs:UpdateSettings(frame, settings)
-	local color = (settings and settings.absorbs and settings.absorbs.color) or {}
+	local absorbSettings = (settings and settings.absorbs) or {}
+	local color = absorbSettings.color or {}
+	frame.absorbBar.enabled = absorbSettings.enabled ~= false
 	frame.absorbBar:SetStatusBarColor(
 		color.r or 0.2,
 		color.g or 0.8,
 		color.b or 1,
 		color.a or 0.5
 	)
+
+	self:UpdateState(frame)
 end
 
 function Absorbs:UpdateState(frame)
+	if not frame.absorbBar.enabled then
+		frame.absorbBar:Hide()
+		return
+	end
+
 	if not frame.unit or not UnitExists(frame.unit) then
 		frame.absorbBar:Hide()
 		return

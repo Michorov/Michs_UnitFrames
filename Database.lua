@@ -23,7 +23,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			target = {
@@ -40,7 +45,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			pet = {
@@ -57,7 +67,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			targettarget = {
@@ -74,7 +89,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			focus = {
@@ -91,7 +111,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			focustarget = {
@@ -108,7 +133,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 			boss = {
@@ -126,7 +156,12 @@ local DEFAULTS = {
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				absorbs = {
+					enabled = true,
 					color = { r = 0.2, g = 0.8, b = 1, a = 0.5 },
+				},
+				healAbsorbs = {
+					enabled = true,
+					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 			},
 		},

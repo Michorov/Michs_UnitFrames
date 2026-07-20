@@ -18,6 +18,7 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
 	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+	eventFrame:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
 	eventFrame:RegisterEvent("UNIT_FACTION")
 	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -65,15 +66,21 @@ end
 function EventHandler:UNIT_HEALTH(event, unit)
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
+	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_MAXHEALTH(event, unit)
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
+	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_ABSORB_AMOUNT_CHANGED(event, unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
+end
+
+function EventHandler:UNIT_HEAL_ABSORB_AMOUNT_CHANGED(event, unit)
+	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_FACTION(event, unit)

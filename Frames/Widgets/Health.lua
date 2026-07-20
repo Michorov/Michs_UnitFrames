@@ -12,6 +12,7 @@ function Health:Ensure(frame, settings)
 		healthBar:SetAllPoints(frame)
 		healthBar:SetMinMaxValues(0, 1)
 		healthBar:SetValue(0)
+		healthBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 		frame.healthBar = healthBar
 	end
 
@@ -19,8 +20,6 @@ function Health:Ensure(frame, settings)
 end
 
 function Health:UpdateSettings(frame, settings)
-	local healthSettings = (settings and settings.health) or {}
-	frame.healthBar:SetStatusBarTexture(healthSettings.texture or "Interface\\Buttons\\WHITE8x8")
 	self:UpdateColor(frame, settings)
 end
 

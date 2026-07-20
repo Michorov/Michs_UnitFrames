@@ -20,6 +20,7 @@ Style/Colors.lua
 Frames/Widgets/Background.lua
 Frames/Widgets/Health.lua
 Frames/Widgets/Absorbs.lua
+Frames/Widgets/HealAbsorbs.lua
 Frames/Widgets/Name.lua
 Frames/Widgets/Border.lua
 
@@ -34,6 +35,7 @@ Options/Pages/Layout.lua
 Options/Pages/Bars/Health.lua
 Options/Pages/Bars/Background.lua
 Options/Pages/Bars/Absorbs.lua
+Options/Pages/Bars/HealAbsorbs.lua
 Options/Pages/Bars.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras.lua
