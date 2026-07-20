@@ -91,27 +91,21 @@ local function SetBlizzardFrameHidden(unit, hidden)
 	end
 end
 
-local function UpdateVisibility()
-	local frameSettings = addon.Database:GetProfile().frames
+local function UpdateFrameVisibility(unit)
+	local settings = addon.Database:GetProfile().frames[unit]
 
-	SetUnitWatch(map.player, frameSettings.player.enabled)
-	SetUnitWatch(map.target, frameSettings.target.enabled)
-	SetUnitWatch(map.pet, frameSettings.pet.enabled)
-	SetUnitWatch(map.targettarget, frameSettings.targettarget.enabled)
-	SetUnitWatch(map.focus, frameSettings.focus.enabled)
-	SetUnitWatch(map.focustarget, frameSettings.focustarget.enabled)
+	SetUnitWatch(map[unit], settings.enabled)
+	SetBlizzardFrameHidden(unit, settings.hideBlizzardFrame)
+end
+
+local function UpdateBossVisibility()
+	local settings = addon.Database:GetProfile().frames.boss
 
 	for bossIndex = 1, 5 do
-		SetUnitWatch(map["boss" .. bossIndex], frameSettings.boss.enabled)
+		SetUnitWatch(map["boss" .. bossIndex], settings.enabled)
 	end
 
-	SetBlizzardFrameHidden("player", frameSettings.player.hideBlizzardFrame)
-	SetBlizzardFrameHidden("target", frameSettings.target.hideBlizzardFrame)
-	SetBlizzardFrameHidden("pet", frameSettings.pet.hideBlizzardFrame)
-	SetBlizzardFrameHidden("targettarget", frameSettings.targettarget.hideBlizzardFrame)
-	SetBlizzardFrameHidden("focus", frameSettings.focus.hideBlizzardFrame)
-	SetBlizzardFrameHidden("focustarget", frameSettings.focustarget.hideBlizzardFrame)
-	SetBlizzardFrameHidden("boss", frameSettings.boss.hideBlizzardFrame)
+	SetBlizzardFrameHidden("boss", settings.hideBlizzardFrame)
 end
 
 local function UpdateFrameLayout(unit)
@@ -191,12 +185,16 @@ function FrameRegistry:UpdateAllUnits(stateCallback, settingsCallback)
 	end
 end
 
-function FrameRegistry:UpdateVisibility()
+function FrameRegistry:UpdateVisibility(unit)
 	if not initialized then
 		error("FrameRegistry is not initialized", 2)
 	end
 
-	UpdateVisibility()
+	if unit == "boss" then
+		UpdateBossVisibility()
+	elseif map[unit] then
+		UpdateFrameVisibility(unit)
+	end
 end
 
 function FrameRegistry:UpdateLayout(unit)
@@ -234,7 +232,13 @@ function FrameRegistry:Initialize()
 		CreateUnitFrame(unit, "MUF_Boss" .. bossIndex .. "Frame", bossContainer)
 	end
 
-	UpdateVisibility()
+	UpdateFrameVisibility("player")
+	UpdateFrameVisibility("target")
+	UpdateFrameVisibility("pet")
+	UpdateFrameVisibility("targettarget")
+	UpdateFrameVisibility("focus")
+	UpdateFrameVisibility("focustarget")
+	UpdateBossVisibility()
 
 	PP:RegisterForUpdate(function()
 		UpdateFrameLayout("player")

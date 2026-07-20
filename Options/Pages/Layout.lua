@@ -33,7 +33,7 @@ function Layout:Ensure(parent)
 	page.enabledCheckbox:SetOnValueChanged(function(_, enabled)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].enabled = enabled
-		addon.FrameRegistry:UpdateVisibility()
+		addon.FrameRegistry:UpdateVisibility(unit)
 	end)
 
 	page.hideBlizzardFrameCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Hide Blizzard Frame")
@@ -41,7 +41,7 @@ function Layout:Ensure(parent)
 	page.hideBlizzardFrameCheckbox:SetOnValueChanged(function(_, hidden)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].hideBlizzardFrame = hidden
-		addon.FrameRegistry:UpdateVisibility()
+		addon.FrameRegistry:UpdateVisibility(unit)
 	end)
 
 	page.horizontalPositionSlider = addon.Options.Controls.Slider:Create(page.body, "Horizontal Position")
