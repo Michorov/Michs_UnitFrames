@@ -35,6 +35,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 		if updateReasons.healthTextSettingsChanged then
 			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 		end
+
+		if updateReasons.nameTextSettingsChanged then
+			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
+		end
 	end
 end
 

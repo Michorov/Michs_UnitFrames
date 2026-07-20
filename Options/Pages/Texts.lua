@@ -7,9 +7,10 @@ addon.Options.Pages.Texts = addon.Options.Pages.Texts or {}
 local Texts = addon.Options.Pages.Texts
 local PP = addon.PixelPerfect
 local page
-local activeSubpage = "health"
+local activeSubpage = "name"
 
 local subpageOptions = {
+	{ value = "name", text = "Name" },
 	{ value = "health", text = "Health" },
 }
 
@@ -45,6 +46,7 @@ function Texts:Ensure(parent)
 
 	page.subpages = {
 		health = addon.Options.Pages.Texts.Health:Ensure(page.body),
+		name = addon.Options.Pages.Texts.Name:Ensure(page.body),
 	}
 
 	for subpageKey, subpage in pairs(page.subpages) do

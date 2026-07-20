@@ -33,6 +33,9 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 				},
+				nameText = {
+					enabled = true,
+				},
 			},
 			target = {
 				enabled = true,
@@ -56,6 +59,9 @@ local DEFAULTS = {
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 				healthText = {
+					enabled = true,
+				},
+				nameText = {
 					enabled = true,
 				},
 			},
@@ -83,6 +89,9 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 				},
+				nameText = {
+					enabled = true,
+				},
 			},
 			targettarget = {
 				enabled = true,
@@ -106,6 +115,9 @@ local DEFAULTS = {
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 				healthText = {
+					enabled = true,
+				},
+				nameText = {
 					enabled = true,
 				},
 			},
@@ -133,6 +145,9 @@ local DEFAULTS = {
 				healthText = {
 					enabled = true,
 				},
+				nameText = {
+					enabled = true,
+				},
 			},
 			focustarget = {
 				enabled = true,
@@ -156,6 +171,9 @@ local DEFAULTS = {
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 				healthText = {
+					enabled = true,
+				},
+				nameText = {
 					enabled = true,
 				},
 			},
@@ -182,6 +200,9 @@ local DEFAULTS = {
 					color = { r = 1, g = 0, b = 0, a = 0.5 },
 				},
 				healthText = {
+					enabled = true,
+				},
+				nameText = {
 					enabled = true,
 				},
 			},

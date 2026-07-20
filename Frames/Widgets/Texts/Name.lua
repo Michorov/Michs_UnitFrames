@@ -23,6 +23,8 @@ end
 
 function Name:UpdateSettings(frame, settings)
 	local nameText = frame.nameText.text
+	local nameTextSettings = (settings and settings.nameText) or {}
+	frame.nameText.enabled = nameTextSettings.enabled ~= false
 
 	nameText:ClearAllPoints()
 	nameText:SetPoint("LEFT", frame.nameText, "LEFT", PP:ToUIScaled(4), PP:ToUIScaled(0))
@@ -37,9 +39,11 @@ end
 
 function Name:UpdateState(frame, settings)
 	local unit = frame.unit
-	if not unit then
+	if not frame.nameText.enabled or not unit or not UnitExists(unit) then
+		frame.nameText:Hide()
 		return
 	end
 
 	frame.nameText.text:SetText(UnitName(unit) or "")
+	frame.nameText:Show()
 end
