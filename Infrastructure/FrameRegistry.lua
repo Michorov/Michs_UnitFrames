@@ -42,6 +42,26 @@ local function CreateUnitFrame(unit, frameName, parent)
 	frame:SetAttribute("*type2", "togglemenu")
 	frame:RegisterForClicks("AnyUp")
 
+	frame:HookScript("OnEnter", function(self)
+		if not self.unit then
+			return
+		end
+
+		local unit = self.unit
+		C_Timer.After(0, function()
+			if not self:IsMouseOver() or not UnitExists(unit) then
+				return
+			end
+
+			GameTooltip_SetDefaultAnchor(GameTooltip, self)
+			GameTooltip:SetUnit(unit)
+		end)
+	end)
+
+	frame:HookScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+
 	addon.Frames.Widgets.Background:Ensure(frame)
 	addon.Frames.Widgets.Health:Ensure(frame)
 	addon.Frames.Widgets.Health:UpdateState(frame)
