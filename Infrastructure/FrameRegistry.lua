@@ -9,6 +9,7 @@ local map = {}
 local bossContainer
 local hiddenBlizzardFrames
 local blizzardFrameStates = {}
+local hookedBlizzardFrames = {}
 
 local blizzardFrameNames = {
 	player = "PlayerFrame",
@@ -94,8 +95,29 @@ local function SetBlizzardFrameHidden(unit, hidden)
 		return
 	end
 
+	if not hookedBlizzardFrames[frame] then
+		hooksecurefunc(frame, "SetParent", function(self)
+			local settings = addon.Database:GetProfile().frames[unit]
+			if not settings.hideBlizzardFrame or self:GetParent() == hiddenBlizzardFrames then
+				return
+			end
+
+			if InCombatLockdown() and self:IsProtected() then
+				return
+			end
+
+			self:SetParent(hiddenBlizzardFrames)
+		end)
+
+		hookedBlizzardFrames[frame] = true
+	end
+
 	if hidden then
 		if frame:GetParent() ~= hiddenBlizzardFrames then
+			if InCombatLockdown() and frame:IsProtected() then
+				return
+			end
+
 			blizzardFrameStates[frame] = {
 				parent = frame:GetParent(),
 				strata = frame:GetFrameStrata(),
@@ -105,6 +127,10 @@ local function SetBlizzardFrameHidden(unit, hidden)
 			frame:SetParent(hiddenBlizzardFrames)
 		end
 	elseif frame:GetParent() == hiddenBlizzardFrames then
+		if InCombatLockdown() and frame:IsProtected() then
+			return
+		end
+
 		local state = blizzardFrameStates[frame]
 		frame:SetParent((state and state.parent) or UIParent)
 
@@ -223,6 +249,17 @@ function FrameRegistry:UpdateLayout(unit)
 		UpdateBossLayout()
 	elseif map[unit] then
 		UpdateFrameLayout(unit)
+	end
+end
+
+function FrameRegistry:UpdateBlizzardFrameVisibility()
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	for unit in pairs(blizzardFrameNames) do
+		local settings = addon.Database:GetProfile().frames[unit]
+		SetBlizzardFrameHidden(unit, settings.hideBlizzardFrame)
 	end
 end
 

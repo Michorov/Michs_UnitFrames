@@ -55,6 +55,7 @@ function EventHandler:Initialize()
 end
 
 function EventHandler:PLAYER_ENTERING_WORLD()
+	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
 	addon.UpdateScheduler:Notify("unitChanged", "player")
 	addon.UpdateScheduler:Notify("unitChanged", "target")
 	addon.UpdateScheduler:Notify("unitChanged", "targettarget")
@@ -71,6 +72,8 @@ function EventHandler:PLAYER_REGEN_DISABLED()
 end
 
 function EventHandler:PLAYER_REGEN_ENABLED()
+	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
+
 	if addon.Options:ShouldOpenAfterCombat() then
 		addon.Options:Open()
 	end
@@ -87,6 +90,7 @@ function EventHandler:PLAYER_FOCUS_CHANGED()
 end
 
 function EventHandler:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
 	addon.UpdateScheduler:Notify("unitChanged", "boss")
 end
 
