@@ -59,12 +59,75 @@ local function SetArrowColor(control, color)
 	control.arrow.rightStroke:SetColorTexture(color[1], color[2], color[3], color[4])
 end
 
+local function ScrollList(control, delta)
+	if not control.list.scrollBar:IsShown() then
+		return
+	end
+
+	local step = PP:ToUIScaled(control.layout.listRowHeight + control.layout.listRowSpacing)
+	local value = control.list.scrollBar:GetValue() - (delta * step)
+	control.list.scrollBar:SetValue(math.max(0, math.min(control.list.scrollRange, value)))
+end
+
+local function StopScrollBarDrag(control)
+	control.list.scrollHitArea:SetScript("OnUpdate", nil)
+	control.list.scrollDragOffset = nil
+end
+
+local function UpdateScrollBarDrag(control)
+	if not IsMouseButtonDown("LeftButton") then
+		StopScrollBarDrag(control)
+		return
+	end
+
+	local scrollBar = control.list.scrollBar
+	local scrollRange = control.list.scrollRange
+	local thumbHeight = scrollBar.thumb:GetHeight()
+	local thumbTravel = scrollBar:GetHeight() - thumbHeight
+	if scrollRange <= 0 or thumbTravel <= 0 then
+		return
+	end
+
+	local _, cursorY = GetCursorPosition()
+	cursorY = cursorY / scrollBar:GetEffectiveScale()
+
+	local thumbTop = cursorY + control.list.scrollDragOffset
+	local topOffset = math.max(0, math.min(thumbTravel, scrollBar:GetTop() - thumbTop))
+	scrollBar:SetValue((topOffset / thumbTravel) * scrollRange)
+end
+
+local function StartScrollBarDrag(control)
+	local scrollBar = control.list.scrollBar
+	local scrollRange = control.list.scrollRange
+	local thumbHeight = scrollBar.thumb:GetHeight()
+	local thumbTravel = scrollBar:GetHeight() - thumbHeight
+	if scrollRange <= 0 or thumbTravel <= 0 then
+		return
+	end
+
+	local _, cursorY = GetCursorPosition()
+	cursorY = cursorY / scrollBar:GetEffectiveScale()
+
+	local thumbTop = scrollBar:GetTop() - ((scrollBar:GetValue() / scrollRange) * thumbTravel)
+	local thumbBottom = thumbTop - thumbHeight
+	if cursorY <= thumbTop and cursorY >= thumbBottom then
+		control.list.scrollDragOffset = thumbTop - cursorY
+	else
+		control.list.scrollDragOffset = thumbHeight / 2
+	end
+
+	control.list.scrollHitArea:SetScript("OnUpdate", function()
+		UpdateScrollBarDrag(control)
+	end)
+	UpdateScrollBarDrag(control)
+end
+
 local function EnsureListRows(control)
 	for index, option in ipairs(control.options) do
 		local button = control.list.buttons[index]
 
 		if not button then
-			button = CreateFrame("Button", nil, control.list, "BackdropTemplate")
+			button = CreateFrame("Button", nil, control.list.scrollChild, "BackdropTemplate")
 			button:SetBackdrop({
 				bgFile = "Interface\\Buttons\\WHITE8x8",
 			})
@@ -88,6 +151,11 @@ local function EnsureListRows(control)
 				self.hoverTexture:Hide()
 			end)
 
+			button:EnableMouseWheel(true)
+			button:SetScript("OnMouseWheel", function(_, delta)
+				ScrollList(control, delta)
+			end)
+
 			button:SetScript("OnClick", function(self)
 				control:SetValue(self.value)
 				HideOpenDropdown()
@@ -100,7 +168,7 @@ local function EnsureListRows(control)
 			control.list.buttons[index] = button
 		end
 
-		button:SetFrameLevel(control.list:GetFrameLevel() + 1)
+		button:SetFrameLevel(control.list.scrollFrame:GetFrameLevel() + 1)
 		button.value = option.value
 		button.text:SetText(option.text or "")
 		ApplyOptionTextStyle(control, button.text, option, false)
@@ -121,9 +189,20 @@ local function UpdateListLayout(control)
 	local rowSpacing = PP:ToUIScaled(control.layout.listRowSpacing)
 	local listPadding = PP:ToUIScaled(control.layout.listPadding)
 	local optionCount = #control.options
-	local listHeight = (optionCount * rowHeight)
+	local visibleCount = math.min(optionCount, control.layout.maxVisibleRows)
+	local contentHeight = (optionCount * rowHeight)
 		+ (math.max(0, optionCount - 1) * rowSpacing)
+	local visibleHeight = (visibleCount * rowHeight)
+		+ (math.max(0, visibleCount - 1) * rowSpacing)
+	local listHeight = visibleHeight
 		+ (listPadding * 2)
+	local isScrollable = optionCount > control.layout.maxVisibleRows
+	local scrollBarWidth = PP:ToUIScaled(control.layout.scrollBarWidth)
+	local scrollBarSpacing = PP:ToUIScaled(control.layout.scrollBarSpacing)
+	local contentWidth = control:GetWidth() - (listPadding * 2)
+	if isScrollable then
+		contentWidth = contentWidth - scrollBarWidth - scrollBarSpacing
+	end
 
 	control.list:ClearAllPoints()
 	control.list:SetPoint("TOPLEFT", control.field, "BOTTOMLEFT", 0, -borderThickness)
@@ -134,6 +213,11 @@ local function UpdateListLayout(control)
 	control.list.bottomBorder:SetHeight(borderThickness)
 	control.list.leftBorder:SetWidth(borderThickness)
 	control.list.rightBorder:SetWidth(borderThickness)
+
+	control.list.scrollFrame:ClearAllPoints()
+	control.list.scrollFrame:SetPoint("TOPLEFT", control.list, "TOPLEFT", listPadding, -listPadding)
+	control.list.scrollFrame:SetSize(contentWidth, visibleHeight)
+	control.list.scrollChild:SetSize(contentWidth, math.max(contentHeight, PP:ToUIScaled(1)))
 
 	EnsureListRows(control)
 
@@ -147,12 +231,50 @@ local function UpdateListLayout(control)
 				button:SetPoint("TOPLEFT", previousButton, "BOTTOMLEFT", 0, -rowSpacing)
 				button:SetPoint("TOPRIGHT", previousButton, "BOTTOMRIGHT", 0, -rowSpacing)
 			else
-				button:SetPoint("TOPLEFT", control.list, "TOPLEFT", listPadding, -listPadding)
-				button:SetPoint("TOPRIGHT", control.list, "TOPRIGHT", -listPadding, -listPadding)
+				button:SetPoint("TOPLEFT", control.list.scrollChild, "TOPLEFT", 0, 0)
+				button:SetPoint("TOPRIGHT", control.list.scrollChild, "TOPRIGHT", 0, 0)
 			end
 
 			previousButton = button
 		end
+	end
+
+	control.list.scrollRange = math.max(0, contentHeight - visibleHeight)
+	if isScrollable then
+		local scrollTrackWidth = PP:ToUIScaled(control.layout.scrollTrackWidth)
+		local scrollThumbWidth = PP:ToUIScaled(control.layout.scrollThumbWidth)
+		local scrollThumbHeight = math.max(
+			PP:ToUIScaled(control.layout.scrollThumbMinHeight),
+			visibleHeight * (visibleHeight / contentHeight)
+		)
+
+		control.list.scrollBar:ClearAllPoints()
+		control.list.scrollBar:SetPoint("TOPRIGHT", control.list, "TOPRIGHT", -listPadding, -listPadding)
+		control.list.scrollBar:SetSize(scrollBarWidth, visibleHeight)
+		control.list.scrollBar.track:SetWidth(scrollTrackWidth)
+		control.list.scrollBar.thumb:SetSize(scrollThumbWidth, scrollThumbHeight)
+		control.list.scrollBar:SetMinMaxValues(0, control.list.scrollRange)
+		control.list.scrollBar:SetValue(0)
+		control.list.scrollFrame:SetVerticalScroll(0)
+		control.list.scrollBar:Show()
+
+		control.list.scrollHitArea:ClearAllPoints()
+		control.list.scrollHitArea:SetPoint(
+			"TOPLEFT",
+			control.list.scrollFrame,
+			"TOPRIGHT",
+			0,
+			listPadding
+		)
+		control.list.scrollHitArea:SetPoint("BOTTOMRIGHT", control.list, "BOTTOMRIGHT", 0, 0)
+		control.list.scrollHitArea:Show()
+	else
+		StopScrollBarDrag(control)
+		control.list.scrollBar:Hide()
+		control.list.scrollHitArea:Hide()
+		control.list.scrollBar:SetMinMaxValues(0, 0)
+		control.list.scrollBar:SetValue(0)
+		control.list.scrollFrame:SetVerticalScroll(0)
 	end
 end
 
@@ -190,6 +312,12 @@ function Dropdown:Create(parent, labelText)
 		listRowHeight = 24,
 		listRowSpacing = 2,
 		listPadding = 4,
+		maxVisibleRows = 10,
+		scrollBarWidth = 8,
+		scrollBarSpacing = 4,
+		scrollTrackWidth = 2,
+		scrollThumbWidth = 6,
+		scrollThumbMinHeight = 16,
 		point = nil,
 		relativeTo = parent,
 		relativePoint = nil,
@@ -257,6 +385,58 @@ function Dropdown:Create(parent, labelText)
 	control.list:SetBackdropColor(0.04, 0.05, 0.07, 1)
 	control.list:Hide()
 	control.list.buttons = {}
+	control.list.scrollRange = 0
+
+	control.list.scrollFrame = CreateFrame("ScrollFrame", nil, control.list)
+	control.list.scrollFrame:SetFrameLevel(control.list:GetFrameLevel() + 1)
+	control.list.scrollFrame:EnableMouseWheel(true)
+	control.list.scrollFrame:SetScript("OnMouseWheel", function(_, delta)
+		ScrollList(control, delta)
+	end)
+
+	control.list.scrollChild = CreateFrame("Frame", nil, control.list.scrollFrame)
+	control.list.scrollChild:SetPoint("TOPLEFT", control.list.scrollFrame, "TOPLEFT", 0, 0)
+	control.list.scrollFrame:SetScrollChild(control.list.scrollChild)
+
+	control.list.scrollBar = CreateFrame("Slider", nil, control.list)
+	control.list.scrollBar:EnableMouse(false)
+	control.list.scrollBar:SetOrientation("VERTICAL")
+	control.list.scrollBar:SetFrameLevel(control.list:GetFrameLevel() + 2)
+	control.list.scrollBar:SetScript("OnValueChanged", function(_, value)
+		control.list.scrollFrame:SetVerticalScroll(value)
+	end)
+
+	control.list.scrollBar.track = control.list.scrollBar:CreateTexture(nil, "ARTWORK")
+	control.list.scrollBar.track:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.scrollBar.track:SetPoint("TOP", control.list.scrollBar, "TOP", 0, 0)
+	control.list.scrollBar.track:SetPoint("BOTTOM", control.list.scrollBar, "BOTTOM", 0, 0)
+
+	control.list.scrollBar.thumb = control.list.scrollBar:CreateTexture(nil, "OVERLAY")
+	control.list.scrollBar.thumb:SetColorTexture(0.55, 0.57, 0.61, 1)
+	control.list.scrollBar:SetThumbTexture(control.list.scrollBar.thumb)
+
+	control.list.scrollHitArea = CreateFrame("Button", nil, control.list)
+	control.list.scrollHitArea:SetFrameLevel(control.list.scrollBar:GetFrameLevel() + 1)
+	control.list.scrollHitArea:EnableMouse(true)
+	control.list.scrollHitArea:EnableMouseWheel(true)
+	control.list.scrollHitArea:SetScript("OnMouseWheel", function(_, delta)
+		ScrollList(control, delta)
+	end)
+	control.list.scrollHitArea:SetScript("OnMouseDown", function(_, button)
+		if button == "LeftButton" then
+			StartScrollBarDrag(control)
+		end
+	end)
+	control.list.scrollHitArea:SetScript("OnMouseUp", function(_, button)
+		if button == "LeftButton" then
+			StopScrollBarDrag(control)
+		end
+	end)
+	control.list.scrollHitArea:Hide()
+
+	control.list:SetScript("OnHide", function()
+		StopScrollBarDrag(control)
+	end)
 
 	control.list.topBorder = control.list:CreateTexture(nil, "OVERLAY")
 	control.list.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
