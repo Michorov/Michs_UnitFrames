@@ -21,6 +21,7 @@ Style/Fonts.lua
 # Widgets
 Frames/Widgets/Background.lua
 Frames/Widgets/Border.lua
+Frames/Widgets/MouseoverHighlight.lua
 Frames/Widgets/Bars/Health.lua
 Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua

@@ -51,6 +51,11 @@ function Content:Ensure(parent)
 		page:SetShown(pageKey == activePage)
 	end
 
+	local page = content.pages[activePage]
+	if page.UpdateState then
+		page:UpdateState(addon.Database:GetProfile(), selectedUnit)
+	end
+
 	return content
 end
 

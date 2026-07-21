@@ -16,6 +16,13 @@ end
 
 local function BuildSettingsUpdater(updateReasons, settings)
 	return function(frame)
+		if updateReasons.mouseoverHighlightSettingsChanged then
+			addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
+				frame,
+				addon.Database:GetProfile().general
+			)
+		end
+
 		if updateReasons.backgroundSettingsChanged then
 			addon.Frames.Widgets.Background:UpdateSettings(frame, settings)
 		end

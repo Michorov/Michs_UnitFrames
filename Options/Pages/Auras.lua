@@ -28,9 +28,16 @@ function Auras:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("Auras")
 
+	page.body.notice = page.body:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	page.body.notice:SetPoint("TOPLEFT", page.body, "TOPLEFT", 0, 0)
+	page.body.notice:SetJustifyH("LEFT")
+	page.body.notice:SetTextColor(0.72, 0.74, 0.78, 1)
+	page.body.notice:SetText("Auras will be available with 12.1 patch")
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
+		self.body.notice:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
 	end

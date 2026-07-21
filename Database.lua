@@ -9,6 +9,9 @@ local initialized = false
 
 local DEFAULTS = {
 	profile = {
+		general = {
+			mouseoverHighlight = true,
+		},
 		frames = {
 			player = {
 				enabled = true,

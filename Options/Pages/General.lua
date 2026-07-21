@@ -28,11 +28,26 @@ function General:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("General")
 
+	page.body.mouseoverHighlightCheckbox = addon.Options.Controls.Checkbox:Create(
+		page.body,
+		"Mouseover Highlight"
+	)
+	page.body.mouseoverHighlightCheckbox:SetLayoutWidth(178)
+	page.body.mouseoverHighlightCheckbox:SetLayoutPoint("TOPLEFT", page.body, "TOPLEFT", 0, 0)
+	page.body.mouseoverHighlightCheckbox:SetOnValueChanged(function(_, enabled)
+		addon.Database:GetProfile().general.mouseoverHighlight = enabled
+		addon.UpdateScheduler:Notify("mouseoverHighlightSettingsChanged")
+	end)
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
+	end
+
+	function page:UpdateState(profile)
+		self.body.mouseoverHighlightCheckbox:SetChecked(profile.general.mouseoverHighlight)
 	end
 
 	return page
