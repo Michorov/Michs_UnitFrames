@@ -32,6 +32,16 @@ local colorModeOptions = {
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
 
+local healthFormatOptions = {
+	{ value = "abbreviated", text = "100k" },
+	{ value = "percent", text = "100%" },
+	{ value = "full", text = "100,000" },
+	{ value = "abbreviatedPercent", text = "100k | 100%" },
+	{ value = "percentAbbreviated", text = "100% | 100k" },
+	{ value = "fullPercent", text = "100,000 | 100%" },
+	{ value = "percentFull", text = "100% | 100,000" },
+}
+
 function Health:Ensure(parent)
 	if subpage then
 		return subpage
@@ -130,6 +140,16 @@ function Health:Ensure(parent)
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
+	subpage.healthFormatDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Health Format")
+	subpage.healthFormatDropdown:SetLayoutWidth(178)
+	subpage.healthFormatDropdown:SetOptions(healthFormatOptions)
+	subpage.healthFormatDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
+	subpage.healthFormatDropdown:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].healthText.format = value
+		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
+	end)
+
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].healthText
 		self.enabledCheckbox:SetChecked(settings.enabled)
@@ -142,6 +162,7 @@ function Health:Ensure(parent)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
+		self.healthFormatDropdown:SetValue(settings.format)
 	end
 
 	return subpage

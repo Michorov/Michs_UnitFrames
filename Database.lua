@@ -33,6 +33,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -77,6 +78,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -121,6 +123,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -165,6 +168,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -209,6 +213,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -253,6 +258,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",
@@ -298,6 +304,7 @@ local DEFAULTS = {
 				},
 				healthText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "RIGHT",
 					font = defaultFont,
 					outline = "",

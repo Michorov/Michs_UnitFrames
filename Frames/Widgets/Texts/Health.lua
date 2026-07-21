@@ -79,7 +79,33 @@ function Health:UpdateState(frame, settings)
 		return
 	end
 
-	frame.healthText.text:SetText(AbbreviateNumbers(UnitHealth(frame.unit)))
+	local health = UnitHealth(frame.unit)
+	local abbreviated = AbbreviateNumbers(health)
+	local full = BreakUpLargeNumbers(health)
+	local percent = string.format(
+		"%.0f%%",
+		UnitHealthPercent(frame.unit, false, CurveConstants.ScaleTo100)
+	)
+	local format = ((settings and settings.healthText) or {}).format or "abbreviated"
+	local text
+
+	if format == "percent" then
+		text = percent
+	elseif format == "full" then
+		text = full
+	elseif format == "abbreviatedPercent" then
+		text = abbreviated .. " | " .. percent
+	elseif format == "percentAbbreviated" then
+		text = percent .. " | " .. abbreviated
+	elseif format == "fullPercent" then
+		text = full .. " | " .. percent
+	elseif format == "percentFull" then
+		text = percent .. " | " .. full
+	else
+		text = abbreviated
+	end
+
+	frame.healthText.text:SetText(text)
 	UpdateColor(frame, settings)
 	frame.healthText:Show()
 end
