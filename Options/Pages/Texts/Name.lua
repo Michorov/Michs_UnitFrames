@@ -21,32 +21,17 @@ local anchorOptions = {
 	{ value = "CENTER", text = "Center" },
 }
 
+local outlineOptions = {
+	{ value = "", text = "None" },
+	{ value = "OUTLINE", text = "Outline" },
+	{ value = "THICKOUTLINE", text = "Thick Outline" },
+	{ value = "MONOCHROME", text = "Monochrome" },
+}
+
 local colorModeOptions = {
 	{ value = "static", text = "Static" },
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
-
-local function CreateSectionHeader(parent, text)
-	local header = CreateFrame("Frame", nil, parent)
-	header.label = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	header.label:SetTextColor(0.65, 0.65, 0.68, 1)
-	header.label:SetText(text)
-	header.line = header:CreateTexture(nil, "ARTWORK")
-	header.line:SetColorTexture(0.15, 0.17, 0.20, 1)
-	return header
-end
-
-local function UpdateSectionHeader(header)
-	header:SetWidth(PP:ToUIScaled(582))
-	header:SetHeight(PP:ToUIScaled(16))
-	header.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
-	header.label:ClearAllPoints()
-	header.label:SetPoint("LEFT", header, "LEFT", 0, 0)
-	header.line:ClearAllPoints()
-	header.line:SetPoint("LEFT", header.label, "RIGHT", PP:ToUIScaled(12), 0)
-	header.line:SetPoint("RIGHT", header, "RIGHT", 0, 0)
-	header.line:SetHeight(PP:ToUIScaled(1))
-end
 
 function Name:Ensure(parent)
 	if subpage then
@@ -54,9 +39,9 @@ function Name:Ensure(parent)
 	end
 
 	subpage = CreateFrame("Frame", nil, parent)
-	subpage.typographyHeader = CreateSectionHeader(subpage, "Typography")
-	subpage.positionHeader = CreateSectionHeader(subpage, "Layout")
-	subpage.colorHeader = CreateSectionHeader(subpage, "Style")
+	subpage.typographyHeader = addon.Options:CreateSectionHeader(subpage, "Typography")
+	subpage.positionHeader = addon.Options:CreateSectionHeader(subpage, "Layout")
+	subpage.colorHeader = addon.Options:CreateSectionHeader(subpage, "Style")
 
 	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
 	subpage.enabledCheckbox:SetLayoutWidth(178)
@@ -74,6 +59,27 @@ function Name:Ensure(parent)
 	subpage.fontDropdown:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].nameText.font = value
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+	end)
+
+	subpage.outlineDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font Style")
+	subpage.outlineDropdown:SetLayoutWidth(178)
+	subpage.outlineDropdown:SetOptions(outlineOptions)
+	subpage.outlineDropdown:SetLayoutPoint("TOPLEFT", subpage.fontDropdown, "TOPRIGHT", 24, 0)
+	subpage.outlineDropdown:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].nameText.outline = value
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+	end)
+
+	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Font Size")
+	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider:SetMinMaxValues(6, 32)
+	subpage.sizeSlider:SetStep(1)
+	subpage.sizeSlider:SetLayoutPoint("TOPLEFT", subpage.outlineDropdown, "TOPRIGHT", 24, 0)
+	subpage.sizeSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].nameText.size = value
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
 	end)
 
@@ -138,9 +144,9 @@ function Name:Ensure(parent)
 		self.colorHeader:ClearAllPoints()
 		self.colorHeader:SetPoint("TOPLEFT", self.anchorDropdown, "BOTTOMLEFT", 0, PP:ToUIScaled(-24))
 
-		UpdateSectionHeader(self.typographyHeader)
-		UpdateSectionHeader(self.positionHeader)
-		UpdateSectionHeader(self.colorHeader)
+		addon.Options:UpdateSectionHeader(self.typographyHeader)
+		addon.Options:UpdateSectionHeader(self.positionHeader)
+		addon.Options:UpdateSectionHeader(self.colorHeader)
 	end
 
 	function subpage:UpdateState(profile, unit)
@@ -149,6 +155,8 @@ function Name:Ensure(parent)
 		self.anchorDropdown:SetValue(settings.anchor)
 		self.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
 		self.fontDropdown:SetValue(addon.Style.Fonts:GetName(settings.font))
+		self.outlineDropdown:SetValue(settings.outline)
+		self.sizeSlider:SetValueSilently(settings.size)
 		self.offsetXSlider:SetValueSilently(settings.position.x)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")

@@ -61,7 +61,12 @@ function Health:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.x or 0),
 		PP:ToUIScaled(position.y or 0)
 	)
-	addon.Style.Fonts:SetFont(text, healthTextSettings.font, PP:ScaleFont(12), "")
+	addon.Style.Fonts:SetFont(
+		text,
+		healthTextSettings.font,
+		PP:ScaleFont(healthTextSettings.size or 12),
+		healthTextSettings.outline
+	)
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
 

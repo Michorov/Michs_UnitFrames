@@ -10,6 +10,27 @@ local deferredOpen = false
 local panelOffsetX = 0
 local panelOffsetY = 0
 
+function Options:CreateSectionHeader(parent, text)
+	local header = CreateFrame("Frame", nil, parent)
+	header.label = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	header.label:SetTextColor(0.72, 0.72, 0.75, 1)
+	header.label:SetText(text)
+	header.line = header:CreateTexture(nil, "ARTWORK")
+	header.line:SetColorTexture(0.15, 0.17, 0.20, 1)
+	return header
+end
+
+function Options:UpdateSectionHeader(header)
+	header:SetSize(PP:ToUIScaled(582), PP:ToUIScaled(16))
+	header.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
+	header.label:ClearAllPoints()
+	header.label:SetPoint("LEFT", header, "LEFT", 0, 0)
+	header.line:ClearAllPoints()
+	header.line:SetPoint("LEFT", header.label, "RIGHT", PP:ToUIScaled(12), 0)
+	header.line:SetPoint("RIGHT", header, "RIGHT", 0, 0)
+	header.line:SetHeight(PP:ToUIScaled(1))
+end
+
 function Options:Initialize()
 	if initialized then
 		error("Options already initialized", 2)
