@@ -40,7 +40,9 @@ end
 
 local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
 	local fontSize = PP:ScaleFont(control.layout.fontSize)
-	if not option or not option.font or not fontString:SetFont(option.font, fontSize, "") then
+	if option and option.font then
+		fontString:SetFont(option.font, fontSize, "")
+	else
 		fontString:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
 	end
 

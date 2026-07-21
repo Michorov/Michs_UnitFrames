@@ -7,6 +7,7 @@ addon.Frames.Widgets.Texts.Name = addon.Frames.Widgets.Texts.Name or {}
 
 local Name = addon.Frames.Widgets.Texts.Name
 local PP = addon.PixelPerfect
+local LSM = LibStub("LibSharedMedia-3.0")
 
 local function UpdateColor(frame, settings)
 	local nameTextSettings = (settings and settings.nameText) or {}
@@ -62,11 +63,10 @@ function Name:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.y or 0)
 	)
 
-	addon.Style.Fonts:SetFont(
-		nameText,
-		nameTextSettings.font,
+	nameText:SetFont(
+		LSM:Fetch("font", nameTextSettings.font),
 		PP:ScaleFont(nameTextSettings.size or 12),
-		nameTextSettings.outline
+		nameTextSettings.outline or ""
 	)
 	nameText:SetShadowColor(0, 0, 0, 0.9)
 	nameText:SetShadowOffset(1, -1)

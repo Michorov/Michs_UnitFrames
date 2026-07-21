@@ -12,9 +12,7 @@ local function InitializeAddon()
 
 	local LSM = LibStub("LibSharedMedia-3.0")
 	LSM.RegisterCallback(addon, "LibSharedMedia_Registered", function(_, mediaType, mediaName)
-		if mediaType == "font" then
-			addon.Style.Fonts:Invalidate(mediaName)
-		elseif mediaType ~= "statusbar" then
+		if mediaType ~= "font" and mediaType ~= "statusbar" then
 			return
 		end
 

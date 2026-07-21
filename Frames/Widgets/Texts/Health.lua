@@ -7,6 +7,7 @@ addon.Frames.Widgets.Texts.Health = addon.Frames.Widgets.Texts.Health or {}
 
 local Health = addon.Frames.Widgets.Texts.Health
 local PP = addon.PixelPerfect
+local LSM = LibStub("LibSharedMedia-3.0")
 
 local function UpdateColor(frame, settings)
 	local healthTextSettings = (settings and settings.healthText) or {}
@@ -61,11 +62,10 @@ function Health:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.x or 0),
 		PP:ToUIScaled(position.y or 0)
 	)
-	addon.Style.Fonts:SetFont(
-		text,
-		healthTextSettings.font,
+	text:SetFont(
+		LSM:Fetch("font", healthTextSettings.font),
 		PP:ScaleFont(healthTextSettings.size or 12),
-		healthTextSettings.outline
+		healthTextSettings.outline or ""
 	)
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
