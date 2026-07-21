@@ -13,6 +13,7 @@ function EventHandler:Initialize()
 
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+	eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
 	eventFrame:RegisterEvent("UNIT_PET")
 	eventFrame:RegisterEvent("UNIT_TARGET")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
@@ -51,6 +52,11 @@ function EventHandler:PLAYER_TARGET_CHANGED()
 	addon.UpdateScheduler:Notify("unitChanged", "targettarget")
 end
 
+function EventHandler:PLAYER_FOCUS_CHANGED()
+	addon.UpdateScheduler:Notify("unitChanged", "focus")
+	addon.UpdateScheduler:Notify("unitChanged", "focustarget")
+end
+
 function EventHandler:UNIT_PET(event, unit)
 	if unit == "player" then
 		addon.UpdateScheduler:Notify("unitChanged", "pet")
@@ -60,6 +66,8 @@ end
 function EventHandler:UNIT_TARGET(event, unit)
 	if unit == "target" then
 		addon.UpdateScheduler:Notify("unitChanged", "targettarget")
+	elseif unit == "focus" then
+		addon.UpdateScheduler:Notify("unitChanged", "focustarget")
 	end
 end
 
