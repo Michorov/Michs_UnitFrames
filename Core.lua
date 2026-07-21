@@ -12,17 +12,32 @@ local function InitializeAddon()
 
 	local LSM = LibStub("LibSharedMedia-3.0")
 	LSM.RegisterCallback(addon, "LibSharedMedia_Registered", function(_, mediaType, mediaName)
-		if mediaType ~= "statusbar" then
+		if mediaType == "font" then
+			addon.Style.Fonts:Invalidate(mediaName)
+			if not addon.Style.Fonts:IsUsable(mediaName) then
+				return
+			end
+		elseif mediaType ~= "statusbar" then
 			return
 		end
 
 		for unit, settings in pairs(addon.Database:GetProfile().frames) do
-			if settings.health.texture == mediaName then
-				addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
-			end
+			if mediaType == "font" then
+				if settings.nameText.font == mediaName then
+					addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+				end
 
-			if settings.background.texture == mediaName then
-				addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
+				if settings.healthText.font == mediaName then
+					addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
+				end
+			else
+				if settings.health.texture == mediaName then
+					addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+				end
+
+				if settings.background.texture == mediaName then
+					addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
+				end
 			end
 		end
 	end)

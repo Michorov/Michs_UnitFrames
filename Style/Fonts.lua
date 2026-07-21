@@ -27,19 +27,36 @@ function Fonts:IsUsable(fontName)
 	return isUsable
 end
 
-function Fonts:GetOptions()
+function Fonts:GetOptions(selectedFontName)
 	local options = {}
+	local selectedFontListed = false
 
 	for _, fontName in ipairs(LSM:List("font")) do
 		if self:IsUsable(fontName) then
 			options[#options + 1] = {
 				value = fontName,
 				text = fontName,
+				font = fontTable[fontName],
 			}
+
+			if fontName == selectedFontName then
+				selectedFontListed = true
+			end
 		end
 	end
 
+	if selectedFontName and not selectedFontListed then
+		options[#options + 1] = {
+			value = selectedFontName,
+			text = selectedFontName .. " (Unavailable)",
+		}
+	end
+
 	return options
+end
+
+function Fonts:Invalidate(fontName)
+	usableFonts[fontName] = nil
 end
 
 function Fonts:GetName(fontName)

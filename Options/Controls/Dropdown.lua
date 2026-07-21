@@ -29,7 +29,10 @@ local function GetOption(options, value)
 end
 
 local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
-	fontString:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(control.layout.fontSize), "")
+	local fontSize = PP:ScaleFont(control.layout.fontSize)
+	if not option or not option.font or not fontString:SetFont(option.font, fontSize, "") then
+		fontString:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
+	end
 
 	if option and option.textColor then
 		fontString:SetTextColor(
