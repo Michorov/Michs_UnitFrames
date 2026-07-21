@@ -78,6 +78,25 @@ function Health:Ensure(parent)
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
+	subpage.colorByClassOrReactionCheckbox =
+		addon.Options.Controls.Checkbox:Create(subpage, "Color by Class/Reaction")
+	subpage.colorByClassOrReactionCheckbox:SetLayoutWidth(174)
+	subpage.colorByClassOrReactionCheckbox:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "BOTTOMLEFT", 0, -16)
+	subpage.colorByClassOrReactionCheckbox:SetOnValueChanged(function(_, enabled)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].healthText.colorByClassOrReaction = enabled
+		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
+	end)
+
+	subpage.colorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Color")
+	subpage.colorPicker:SetLayoutWidth(174)
+	subpage.colorPicker:SetLayoutPoint("TOPLEFT", subpage.colorByClassOrReactionCheckbox, "TOPRIGHT", 24, 0)
+	subpage.colorPicker:SetOnValueChanged(function(_, r, g, b, a)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].healthText.color = { r = r, g = g, b = b, a = a }
+		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
+	end)
+
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].healthText
 		self.enabledCheckbox:SetChecked(settings.enabled)
@@ -86,6 +105,8 @@ function Health:Ensure(parent)
 		self.fontDropdown:SetValue(addon.Style.Fonts:GetName(settings.font))
 		self.offsetXSlider:SetValueSilently(settings.position.x)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
+		self.colorByClassOrReactionCheckbox:SetChecked(settings.colorByClassOrReaction)
+		self.colorPicker:SetColor(settings.color)
 	end
 
 	return subpage

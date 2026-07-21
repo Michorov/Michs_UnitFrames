@@ -67,6 +67,8 @@ local function BuildStateUpdater(updateReasons, settings)
 
 		if updateReasons.unitColorStateChanged then
 			addon.Frames.Widgets.Background:UpdateState(frame, settings)
+			addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
+			addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
 		end
 
 		if updateReasons.nameStateChanged then
