@@ -9,6 +9,23 @@ local function InitializeAddon()
 	addon.Options:Initialize()
 	addon.FrameRegistry:Initialize()
 	addon.EventHandler:Initialize()
+
+	local LSM = LibStub("LibSharedMedia-3.0")
+	LSM.RegisterCallback(addon, "LibSharedMedia_Registered", function(_, mediaType, mediaName)
+		if mediaType ~= "statusbar" then
+			return
+		end
+
+		for unit, settings in pairs(addon.Database:GetProfile().frames) do
+			if settings.health.texture == mediaName then
+				addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+			end
+
+			if settings.background.texture == mediaName then
+				addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
+			end
+		end
+	end)
 end
 
 local core = CreateFrame("Frame")

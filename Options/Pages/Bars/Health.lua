@@ -16,9 +16,12 @@ local colorModeOptions = {
 
 local textureNames = {
 	"Atrocity",
+	"Better Blizzard",
 	"Blizzard",
 	"Blizzard Raid Bar",
 	"Clean",
+	"Dragonflight",
+	"Skyline",
 	"Solid",
 }
 
@@ -76,26 +79,26 @@ function Health:Ensure(parent)
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].health
 		local textureOptions = GetTextureOptions()
-		local texture = settings.texture
-		local textureAvailable = false
+		local textureListed = false
 
 		for _, option in ipairs(textureOptions) do
-			if option.value == texture then
-				textureAvailable = true
+			if option.value == settings.texture then
+				textureListed = true
 				break
 			end
 		end
 
-		if not textureAvailable then
-			texture = "Solid"
-			settings.texture = texture
-			addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+		if not textureListed then
+			textureOptions[#textureOptions + 1] = {
+				value = settings.texture,
+				text = settings.texture .. (LSM:IsValid("statusbar", settings.texture) and "" or " (Unavailable)"),
+			}
 		end
 
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
 		self.textureDropdown:SetOptions(textureOptions)
-		self.textureDropdown:SetValue(texture)
+		self.textureDropdown:SetValue(settings.texture)
 	end
 
 	return subpage
