@@ -32,6 +32,11 @@ local colorModeOptions = {
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
 
+local nameFormatOptions = {
+	{ value = "full", text = "Full Name" },
+	{ value = "truncated", text = "Truncated" },
+}
+
 function Name:Ensure(parent)
 	if subpage then
 		return subpage
@@ -130,6 +135,27 @@ function Name:Ensure(parent)
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
 	end)
 
+	subpage.nameFormatDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Name Format")
+	subpage.nameFormatDropdown:SetLayoutWidth(178)
+	subpage.nameFormatDropdown:SetOptions(nameFormatOptions)
+	subpage.nameFormatDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
+	subpage.nameFormatDropdown:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].nameText.truncate = value == "truncated"
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+	end)
+
+	subpage.maxLengthSlider = addon.Options.Controls.Slider:Create(subpage, "Max Length")
+	subpage.maxLengthSlider:SetLayoutWidth(178)
+	subpage.maxLengthSlider:SetMinMaxValues(1, 32)
+	subpage.maxLengthSlider:SetStep(1)
+	subpage.maxLengthSlider:SetLayoutPoint("TOPLEFT", subpage.nameFormatDropdown, "TOPRIGHT", 24, 0)
+	subpage.maxLengthSlider:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].nameText.maxLength = value
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
+	end)
+
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].nameText
 		self.enabledCheckbox:SetChecked(settings.enabled)
@@ -142,6 +168,8 @@ function Name:Ensure(parent)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
+		self.nameFormatDropdown:SetValue(settings.truncate and "truncated" or "full")
+		self.maxLengthSlider:SetValueSilently(settings.maxLength)
 	end
 
 	return subpage
