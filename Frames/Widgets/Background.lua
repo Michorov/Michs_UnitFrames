@@ -5,6 +5,7 @@ addon.Frames.Widgets = addon.Frames.Widgets or {}
 addon.Frames.Widgets.Background = addon.Frames.Widgets.Background or {}
 
 local Background = addon.Frames.Widgets.Background
+local LSM = LibStub("LibSharedMedia-3.0")
 
 function Background:UpdateColor(frame, settings)
 	local backgroundSettings = (settings and settings.background) or {}
@@ -28,7 +29,7 @@ function Background:UpdateColor(frame, settings)
 		end
 	end
 
-	frame.background:SetColorTexture(r, g, b, a)
+	frame.background:SetVertexColor(r, g, b, a)
 end
 
 function Background:Ensure(frame, settings)
@@ -42,6 +43,13 @@ function Background:Ensure(frame, settings)
 end
 
 function Background:UpdateSettings(frame, settings)
+	local backgroundSettings = (settings and settings.background) or {}
+	local texture = backgroundSettings.texture or "Solid"
+	if not LSM:IsValid("statusbar", texture) then
+		texture = "Solid"
+	end
+
+	frame.background:SetTexture(LSM:Fetch("statusbar", texture))
 	self:UpdateState(frame, settings)
 end
 

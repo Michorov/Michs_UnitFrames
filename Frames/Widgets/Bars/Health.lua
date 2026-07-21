@@ -6,6 +6,7 @@ addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
 addon.Frames.Widgets.Bars.Health = addon.Frames.Widgets.Bars.Health or {}
 
 local Health = addon.Frames.Widgets.Bars.Health
+local LSM = LibStub("LibSharedMedia-3.0")
 
 function Health:Ensure(frame, settings)
 	if not frame.healthBar then
@@ -13,7 +14,6 @@ function Health:Ensure(frame, settings)
 		healthBar:SetAllPoints(frame)
 		healthBar:SetMinMaxValues(0, 1)
 		healthBar:SetValue(0)
-		healthBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 		frame.healthBar = healthBar
 	end
 
@@ -21,6 +21,13 @@ function Health:Ensure(frame, settings)
 end
 
 function Health:UpdateSettings(frame, settings)
+	local healthSettings = (settings and settings.health) or {}
+	local texture = healthSettings.texture or "Solid"
+	if not LSM:IsValid("statusbar", texture) then
+		texture = "Solid"
+	end
+
+	frame.healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
 	self:UpdateState(frame, settings)
 end
 

@@ -16,10 +16,12 @@ local DEFAULTS = {
 				size = { width = 200, height = 48 },
 				position = { x = -300, y = -250 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -61,10 +63,12 @@ local DEFAULTS = {
 				size = { width = 200, height = 48 },
 				position = { x = 300, y = -250 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -106,10 +110,12 @@ local DEFAULTS = {
 				size = { width = 120, height = 28 },
 				position = { x = -340, y = -290 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -151,10 +157,12 @@ local DEFAULTS = {
 				size = { width = 120, height = 28 },
 				position = { x = 340, y = -290 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -196,10 +204,12 @@ local DEFAULTS = {
 				size = { width = 100, height = 24 },
 				position = { x = -350, y = -180 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -241,10 +251,12 @@ local DEFAULTS = {
 				size = { width = 100, height = 24 },
 				position = { x = -250, y = -180 },
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
@@ -287,10 +299,12 @@ local DEFAULTS = {
 				position = { x = 500, y = 106 },
 				spacing = -1,
 				health = {
+					texture = "Solid",
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},
 				background = {
+					texture = "Solid",
 					colorByClassOrReaction = false,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
 				},

@@ -6,12 +6,36 @@ addon.Options.Pages.Bars = addon.Options.Pages.Bars or {}
 addon.Options.Pages.Bars.Health = addon.Options.Pages.Bars.Health or {}
 
 local Health = addon.Options.Pages.Bars.Health
+local LSM = LibStub("LibSharedMedia-3.0")
 local subpage
 
 local colorModeOptions = {
 	{ value = "static", text = "Static" },
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
+
+local textureNames = {
+	"Atrocity",
+	"Blizzard",
+	"Blizzard Raid Bar",
+	"Clean",
+	"Solid",
+}
+
+local function GetTextureOptions()
+	local options = {}
+
+	for _, textureName in ipairs(textureNames) do
+		if LSM:IsValid("statusbar", textureName) then
+			options[#options + 1] = {
+				value = textureName,
+				text = textureName,
+			}
+		end
+	end
+
+	return options
+end
 
 function Health:Ensure(parent)
 	if subpage then
@@ -39,10 +63,39 @@ function Health:Ensure(parent)
 		addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
 	end)
 
+	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
+	subpage.textureDropdown:SetLayoutWidth(178)
+	subpage.textureDropdown:SetOptions(GetTextureOptions())
+	subpage.textureDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
+	subpage.textureDropdown:SetOnValueChanged(function(_, value)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].health.texture = value
+		addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+	end)
+
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].health
+		local textureOptions = GetTextureOptions()
+		local texture = settings.texture
+		local textureAvailable = false
+
+		for _, option in ipairs(textureOptions) do
+			if option.value == texture then
+				textureAvailable = true
+				break
+			end
+		end
+
+		if not textureAvailable then
+			texture = "Solid"
+			settings.texture = texture
+			addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+		end
+
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
+		self.textureDropdown:SetOptions(textureOptions)
+		self.textureDropdown:SetValue(texture)
 	end
 
 	return subpage
