@@ -6,7 +6,6 @@ addon.Options.Pages.Texts = addon.Options.Pages.Texts or {}
 addon.Options.Pages.Texts.Name = addon.Options.Pages.Texts.Name or {}
 
 local Name = addon.Options.Pages.Texts.Name
-local PP = addon.PixelPerfect
 local subpage
 
 local anchorOptions = {
@@ -39,9 +38,6 @@ function Name:Ensure(parent)
 	end
 
 	subpage = CreateFrame("Frame", nil, parent)
-	subpage.typographyHeader = addon.Options:CreateSectionHeader(subpage, "Typography")
-	subpage.positionHeader = addon.Options:CreateSectionHeader(subpage, "Layout")
-	subpage.colorHeader = addon.Options:CreateSectionHeader(subpage, "Style")
 
 	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
 	subpage.enabledCheckbox:SetLayoutWidth(178)
@@ -55,7 +51,7 @@ function Name:Ensure(parent)
 	subpage.fontDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font")
 	subpage.fontDropdown:SetLayoutWidth(178)
 	subpage.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
-	subpage.fontDropdown:SetLayoutPoint("TOPLEFT", subpage.typographyHeader, "BOTTOMLEFT", 0, -8)
+	subpage.fontDropdown:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -24)
 	subpage.fontDropdown:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].nameText.font = value
@@ -86,7 +82,7 @@ function Name:Ensure(parent)
 	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
 	subpage.anchorDropdown:SetLayoutWidth(178)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
-	subpage.anchorDropdown:SetLayoutPoint("TOPLEFT", subpage.positionHeader, "BOTTOMLEFT", 0, -8)
+	subpage.anchorDropdown:SetLayoutPoint("TOPLEFT", subpage.fontDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].nameText.anchor = value
@@ -118,7 +114,7 @@ function Name:Ensure(parent)
 	subpage.colorModeDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Color Mode")
 	subpage.colorModeDropdown:SetLayoutWidth(178)
 	subpage.colorModeDropdown:SetOptions(colorModeOptions)
-	subpage.colorModeDropdown:SetLayoutPoint("TOPLEFT", subpage.colorHeader, "BOTTOMLEFT", 0, -8)
+	subpage.colorModeDropdown:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.colorModeDropdown:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].nameText.colorByClassOrReaction = value == "classOrReaction"
@@ -133,21 +129,6 @@ function Name:Ensure(parent)
 		addon.Database:GetProfile().frames[unit].nameText.color = { r = r, g = g, b = b, a = a }
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
 	end)
-
-	function subpage:UpdateLayout()
-		self.typographyHeader:ClearAllPoints()
-		self.typographyHeader:SetPoint("TOPLEFT", self.enabledCheckbox, "BOTTOMLEFT", 0, PP:ToUIScaled(-24))
-
-		self.positionHeader:ClearAllPoints()
-		self.positionHeader:SetPoint("TOPLEFT", self.fontDropdown, "BOTTOMLEFT", 0, PP:ToUIScaled(-24))
-
-		self.colorHeader:ClearAllPoints()
-		self.colorHeader:SetPoint("TOPLEFT", self.anchorDropdown, "BOTTOMLEFT", 0, PP:ToUIScaled(-24))
-
-		addon.Options:UpdateSectionHeader(self.typographyHeader)
-		addon.Options:UpdateSectionHeader(self.positionHeader)
-		addon.Options:UpdateSectionHeader(self.colorHeader)
-	end
 
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].nameText
