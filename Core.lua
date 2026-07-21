@@ -14,9 +14,6 @@ local function InitializeAddon()
 	LSM.RegisterCallback(addon, "LibSharedMedia_Registered", function(_, mediaType, mediaName)
 		if mediaType == "font" then
 			addon.Style.Fonts:Invalidate(mediaName)
-			if not addon.Style.Fonts:IsUsable(mediaName) then
-				return
-			end
 		elseif mediaType ~= "statusbar" then
 			return
 		end

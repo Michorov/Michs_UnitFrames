@@ -14,25 +14,22 @@ local colorModeOptions = {
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
 
-local textureNames = {
-	"Atrocity",
-	"Better Blizzard",
-	"Blizzard",
-	"Blizzard Raid Bar",
-	"Clean",
-	"Dragonflight",
-	"Skyline",
-	"Solid",
+local excludedTextureNames = {
+	play_icon = true,
+	stop_icon = true,
+	user_icon = true,
+	users_icon = true,
 }
 
 local function GetTextureOptions()
 	local options = {}
 
-	for _, textureName in ipairs(textureNames) do
-		if LSM:IsValid("statusbar", textureName) then
+	for _, textureName in ipairs(LSM:List("statusbar")) do
+		if not excludedTextureNames[textureName] and LSM:IsValid("statusbar", textureName) then
 			options[#options + 1] = {
 				value = textureName,
 				text = textureName,
+				texture = LSM:Fetch("statusbar", textureName),
 			}
 		end
 	end

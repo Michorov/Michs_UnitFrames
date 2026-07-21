@@ -28,10 +28,28 @@ local function GetOption(options, value)
 	end
 end
 
+local function ApplyOptionTexture(texture, option)
+	if option and option.texture then
+		texture:SetTexture(option.texture)
+		texture:Show()
+	else
+		texture:SetTexture(nil)
+		texture:Hide()
+	end
+end
+
 local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
 	local fontSize = PP:ScaleFont(control.layout.fontSize)
 	if not option or not option.font or not fontString:SetFont(option.font, fontSize, "") then
 		fontString:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
+	end
+
+	if option and option.texture then
+		fontString:SetShadowColor(0, 0, 0, 1)
+		fontString:SetShadowOffset(1, -1)
+	else
+		fontString:SetShadowColor(0, 0, 0, 0)
+		fontString:SetShadowOffset(0, 0)
 	end
 
 	if option and option.textColor then
@@ -54,6 +72,7 @@ local function UpdateSelectionText(control)
 	local isPlaceholder = not selectedText
 
 	control.selectionText:SetText(selectedText or control.placeholder or "")
+	ApplyOptionTexture(control.selectionTexture, selectedOption)
 	ApplyOptionTextStyle(control, control.selectionText, selectedOption, isPlaceholder)
 end
 
@@ -136,6 +155,11 @@ local function EnsureListRows(control)
 			})
 			button:SetBackdropColor(0, 0, 0, 0)
 
+			button.previewTexture = button:CreateTexture(nil, "ARTWORK", nil, -1)
+			button.previewTexture:SetAllPoints(button)
+			button.previewTexture:SetAlpha(0.4)
+			button.previewTexture:Hide()
+
 			button.hoverTexture = button:CreateTexture(nil, "ARTWORK")
 			button.hoverTexture:SetColorTexture(1, 1, 1, 0.03)
 			button.hoverTexture:SetAllPoints(button)
@@ -174,6 +198,7 @@ local function EnsureListRows(control)
 		button:SetFrameLevel(control.list.scrollFrame:GetFrameLevel() + 1)
 		button.value = option.value
 		button.text:SetText(option.text or "")
+		ApplyOptionTexture(button.previewTexture, option)
 		ApplyOptionTextStyle(control, button.text, option, false)
 		button.text:ClearAllPoints()
 		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUIScaled(control.layout.textInset), 0)
@@ -363,6 +388,11 @@ function Dropdown:Create(parent, labelText)
 	control.field.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
 	control.field.rightBorder:SetPoint("TOPRIGHT", control.field, "TOPRIGHT", 0, 0)
 	control.field.rightBorder:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
+
+	control.selectionTexture = control.field:CreateTexture(nil, "ARTWORK", nil, -1)
+	control.selectionTexture:SetAllPoints(control.field)
+	control.selectionTexture:SetAlpha(0.4)
+	control.selectionTexture:Hide()
 
 	control.selectionText = control.field:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	control.selectionText:SetJustifyH("LEFT")

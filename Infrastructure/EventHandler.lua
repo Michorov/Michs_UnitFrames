@@ -33,7 +33,15 @@ function EventHandler:Initialize()
 	initialized = true
 end
 
-function EventHandler:PLAYER_ENTERING_WORLD() end
+function EventHandler:PLAYER_ENTERING_WORLD()
+	addon.UpdateScheduler:Notify("unitChanged", "player")
+	addon.UpdateScheduler:Notify("unitChanged", "target")
+	addon.UpdateScheduler:Notify("unitChanged", "targettarget")
+	addon.UpdateScheduler:Notify("unitChanged", "pet")
+	addon.UpdateScheduler:Notify("unitChanged", "focus")
+	addon.UpdateScheduler:Notify("unitChanged", "focustarget")
+	addon.UpdateScheduler:Notify("unitChanged", "boss")
+end
 
 function EventHandler:PLAYER_REGEN_DISABLED()
 	if addon.Options:IsOpen() then
