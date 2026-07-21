@@ -6,6 +6,24 @@ addon.EventHandler = EventHandler
 local eventFrame = CreateFrame("Frame")
 local initialized = false
 
+local supportedUnits = {
+	player = true,
+	target = true,
+	targettarget = true,
+	pet = true,
+	focus = true,
+	focustarget = true,
+	boss1 = true,
+	boss2 = true,
+	boss3 = true,
+	boss4 = true,
+	boss5 = true,
+}
+
+local function IsSupportedUnit(unit)
+	return supportedUnits[unit] == true
+end
+
 function EventHandler:Initialize()
 	if initialized then
 		error("EventHandler already initialized", 2)
@@ -87,37 +105,59 @@ function EventHandler:UNIT_TARGET(event, unit)
 end
 
 function EventHandler:UNIT_TARGETABLE_CHANGED(event, unit)
-	if unit and unit:match("^boss%d+$") then
+	if IsSupportedUnit(unit) and unit:match("^boss") then
 		addon.UpdateScheduler:Notify("unitChanged", unit)
 	end
 end
 
 function EventHandler:UNIT_NAME_UPDATE(event, unit)
-	if unit then
-		addon.UpdateScheduler:Notify("nameStateChanged", unit)
+	if not IsSupportedUnit(unit) then
+		return
 	end
+
+	addon.UpdateScheduler:Notify("nameStateChanged", unit)
 end
 
 function EventHandler:UNIT_HEALTH(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_MAXHEALTH(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_ABSORB_AMOUNT_CHANGED(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_HEAL_ABSORB_AMOUNT_CHANGED(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_FACTION(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
 	addon.UpdateScheduler:Notify("unitColorStateChanged", unit)
 end

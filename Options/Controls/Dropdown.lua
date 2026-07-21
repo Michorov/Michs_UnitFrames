@@ -199,9 +199,9 @@ local function EnsureListRows(control)
 
 		button:SetFrameLevel(control.list.scrollFrame:GetFrameLevel() + 1)
 		button.value = option.value
-		button.text:SetText(option.text or "")
 		ApplyOptionTexture(button.previewTexture, option)
 		ApplyOptionTextStyle(control, button.text, option, false)
+		button.text:SetText(option.text or "")
 		button.text:ClearAllPoints()
 		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUIScaled(control.layout.textInset), 0)
 		button.text:SetPoint("RIGHT", button, "RIGHT", PP:ToUIScaled(-control.layout.textInset), 0)
@@ -318,6 +318,36 @@ local function ToggleDropdown(control)
 	control.list:SetFrameLevel(control:GetFrameLevel() + 50)
 	UpdateListLayout(control)
 	control.list:Show()
+
+	local hasFontOptions = false
+	local fontSize = PP:ScaleFont(control.layout.fontSize)
+	for index, option in ipairs(control.options) do
+		if option.font then
+			hasFontOptions = true
+			local rowText = control.list.buttons[index].text
+			rowText:SetText("")
+			rowText:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
+			rowText:SetText(option.text or "")
+		end
+	end
+
+	if hasFontOptions then
+		C_Timer.After(0, function()
+			if not control.list:IsShown() then
+				return
+			end
+
+			for index, option in ipairs(control.options) do
+				if option.font then
+					local rowText = control.list.buttons[index].text
+					rowText:SetText("")
+					ApplyOptionTextStyle(control, rowText, option, false)
+					rowText:SetText(option.text or "")
+				end
+			end
+		end)
+	end
+
 	control:SetArrowColor({ 0.96, 0.66, 0.31, 1 })
 	openDropdown = control
 end

@@ -81,16 +81,7 @@ function Name:UpdateState(frame, settings)
 		return
 	end
 
-	local name = UnitName(unit) or ""
-	local nameTextSettings = (settings and settings.nameText) or {}
-	if nameTextSettings.truncate then
-		local maxLength = nameTextSettings.maxLength or 12
-		if maxLength > 0 and #name > maxLength then
-			name = name:sub(1, maxLength):gsub("%s+$", "")
-		end
-	end
-
-	frame.nameText.text:SetText(name)
+	frame.nameText.text:SetText(UnitName(unit) or "")
 	UpdateColor(frame, settings)
 	frame.nameText:Show()
 end

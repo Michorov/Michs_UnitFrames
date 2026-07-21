@@ -49,8 +49,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = false,
-					maxLength = 12,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -96,8 +94,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = false,
-					maxLength = 12,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -143,8 +139,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = true,
-					maxLength = 8,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -190,8 +184,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = true,
-					maxLength = 8,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -237,8 +229,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = true,
-					maxLength = 8,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -284,8 +274,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = true,
-					maxLength = 8,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
@@ -332,8 +320,6 @@ local DEFAULTS = {
 				},
 				nameText = {
 					enabled = true,
-					truncate = false,
-					maxLength = 12,
 					anchor = "LEFT",
 					font = defaultFont,
 					outline = "",
