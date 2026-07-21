@@ -77,6 +77,10 @@ function Texts:Ensure(parent)
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
+
+		for _, subpage in pairs(self.subpages) do
+			subpage:UpdateLayout()
+		end
 	end
 
 	function page:UpdateState(profile, unit)

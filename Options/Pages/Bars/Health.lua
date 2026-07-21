@@ -17,7 +17,7 @@ function Health:Ensure(parent)
 
 	subpage.colorByClassOrReactionCheckbox =
 		addon.Options.Controls.Checkbox:Create(subpage, "Color by Class/Reaction")
-	subpage.colorByClassOrReactionCheckbox:SetLayoutWidth(174)
+	subpage.colorByClassOrReactionCheckbox:SetLayoutWidth(178)
 	subpage.colorByClassOrReactionCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.colorByClassOrReactionCheckbox:SetOnValueChanged(function(_, enabled)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
@@ -26,8 +26,8 @@ function Health:Ensure(parent)
 	end)
 
 	subpage.colorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Color")
-	subpage.colorPicker:SetLayoutWidth(174)
-	subpage.colorPicker:SetLayoutPoint("LEFT", subpage.colorByClassOrReactionCheckbox, "RIGHT", 30, 0)
+	subpage.colorPicker:SetLayoutWidth(178)
+	subpage.colorPicker:SetLayoutPoint("LEFT", subpage.colorByClassOrReactionCheckbox, "RIGHT", 24, 0)
 	subpage.colorPicker:SetOnValueChanged(function(_, r, g, b, a)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].health.color = { r = r, g = g, b = b, a = a }

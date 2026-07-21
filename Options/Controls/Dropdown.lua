@@ -77,6 +77,8 @@ local function EnsureListRows(control)
 
 			button.text = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 			button.text:SetJustifyH("LEFT")
+			button.text:SetWordWrap(false)
+			button.text:SetMaxLines(1)
 
 			button:SetScript("OnEnter", function(self)
 				self.hoverTexture:Show()
@@ -233,6 +235,8 @@ function Dropdown:Create(parent, labelText)
 
 	control.selectionText = control.field:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	control.selectionText:SetJustifyH("LEFT")
+	control.selectionText:SetWordWrap(false)
+	control.selectionText:SetMaxLines(1)
 	control.selectionText:SetText(control.placeholder)
 
 	control.arrow = CreateFrame("Frame", nil, control.field)

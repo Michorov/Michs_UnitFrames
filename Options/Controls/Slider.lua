@@ -82,11 +82,11 @@ function Slider:Create(parent, text)
 	control.layout = {
 		parent = parent,
 		width = 220,
+		fieldHeight = 24,
 		trackHeight = 4,
 		thumbSize = 12,
-		trackVerticalOffset = 4,
 		topRowHeight = 16,
-		labelSpacing = 6,
+		labelSpacing = 4,
 		borderThickness = 1,
 		fontSize = 12,
 		valueInputWidth = 40,
@@ -221,13 +221,14 @@ function Slider:Create(parent, text)
 		local width = PP:ToUIScaled(self.layout.width)
 		local topRowHeight = PP:ToUIScaled(self.layout.topRowHeight)
 		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
+		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
 		local thumbSize = PP:ToUIScaled(self.layout.thumbSize)
 		local trackHeight = PP:ToUIScaled(self.layout.trackHeight)
 		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
 		local sliderTopOffset = topRowHeight + labelSpacing
 
 		self.trackWidth = width
-		self:SetSize(width, topRowHeight + labelSpacing + thumbSize)
+		self:SetSize(width, topRowHeight + labelSpacing + fieldHeight)
 		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
 		self.valueInput:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
 
@@ -248,18 +249,10 @@ function Slider:Create(parent, text)
 
 		self.slider:ClearAllPoints()
 		self.slider:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -sliderTopOffset)
-		self.slider:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, -sliderTopOffset)
-		self.slider:SetHeight(thumbSize)
+		self.slider:SetSize(width, fieldHeight)
 
-		self.track:ClearAllPoints()
-		self.track:SetPoint(
-			"TOPLEFT",
-			self.slider,
-			"TOPLEFT",
-			0,
-			PP:ToUIScaled(-self.layout.trackVerticalOffset)
-		)
 		self.track:SetSize(width, trackHeight)
+		PP:CenterElement(self.track, self.slider, 0, 0)
 
 		self.trackTopBorder:SetHeight(borderThickness)
 		self.trackBottomBorder:SetHeight(borderThickness)

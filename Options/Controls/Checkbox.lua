@@ -27,7 +27,7 @@ function Checkbox:Create(parent, text)
 	checkbox.layout = {
 		parent = parent,
 		width = 220,
-		height = 16,
+		height = 24,
 		boxSize = 16,
 		borderThickness = 1,
 		fontSize = 12,
