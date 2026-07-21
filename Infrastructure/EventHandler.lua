@@ -14,8 +14,11 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	eventFrame:RegisterEvent("UNIT_PET")
 	eventFrame:RegisterEvent("UNIT_TARGET")
+	eventFrame:RegisterEvent("UNIT_TARGETABLE_CHANGED")
+	eventFrame:RegisterEvent("UNIT_NAME_UPDATE")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
 	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
@@ -65,6 +68,10 @@ function EventHandler:PLAYER_FOCUS_CHANGED()
 	addon.UpdateScheduler:Notify("unitChanged", "focustarget")
 end
 
+function EventHandler:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+	addon.UpdateScheduler:Notify("unitChanged", "boss")
+end
+
 function EventHandler:UNIT_PET(event, unit)
 	if unit == "player" then
 		addon.UpdateScheduler:Notify("unitChanged", "pet")
@@ -76,6 +83,18 @@ function EventHandler:UNIT_TARGET(event, unit)
 		addon.UpdateScheduler:Notify("unitChanged", "targettarget")
 	elseif unit == "focus" then
 		addon.UpdateScheduler:Notify("unitChanged", "focustarget")
+	end
+end
+
+function EventHandler:UNIT_TARGETABLE_CHANGED(event, unit)
+	if unit and unit:match("^boss%d+$") then
+		addon.UpdateScheduler:Notify("unitChanged", unit)
+	end
+end
+
+function EventHandler:UNIT_NAME_UPDATE(event, unit)
+	if unit then
+		addon.UpdateScheduler:Notify("nameStateChanged", unit)
 	end
 end
 
