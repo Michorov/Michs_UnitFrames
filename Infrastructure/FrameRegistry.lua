@@ -13,6 +13,7 @@ local hookedBlizzardFrames = {}
 
 local blizzardFrameNames = {
 	player = "PlayerFrame",
+	playerCastBar = "PlayerCastingBarFrame",
 	target = "TargetFrame",
 	pet = "PetFrame",
 	targettarget = "TargetFrameToT",
@@ -20,6 +21,16 @@ local blizzardFrameNames = {
 	focustarget = "FocusFrameToT",
 	boss = "BossTargetFrameContainer",
 }
+
+local function GetBlizzardFrameHiddenSetting(unit)
+	local frames = addon.Database:GetProfile().frames
+	if unit == "playerCastBar" then
+		local castSettings = frames.player.cast
+		return castSettings and castSettings.hideBlizzardCastBar == true
+	end
+
+	return frames[unit].hideBlizzardFrame
+end
 
 local function UpdateFrame(frame, stateCallback, settingsCallback)
 	if not InCombatLockdown() and type(settingsCallback) == "function" then
@@ -68,6 +79,7 @@ local function CreateUnitFrame(unit, frameName, parent)
 	addon.Frames.Widgets.Background:Ensure(frame, settings)
 	addon.Frames.Widgets.Bars.Health:Ensure(frame, settings)
 	addon.Frames.Widgets.Bars.Power:Ensure(frame, settings)
+	addon.Frames.Widgets.Bars.Cast:Ensure(frame, settings)
 	addon.Frames.Widgets.Bars.Absorbs:Ensure(frame, settings)
 	addon.Frames.Widgets.Bars.HealAbsorbs:Ensure(frame, settings)
 	addon.Frames.Widgets.MouseoverHighlight:Ensure(frame, addon.Database:GetProfile().general)
@@ -102,8 +114,8 @@ local function SetBlizzardFrameHidden(unit, hidden)
 
 	if not hookedBlizzardFrames[frame] then
 		hooksecurefunc(frame, "SetParent", function(self)
-			local settings = addon.Database:GetProfile().frames[unit]
-			if not settings.hideBlizzardFrame or self:GetParent() == hiddenBlizzardFrames then
+			if not GetBlizzardFrameHiddenSetting(unit)
+				or self:GetParent() == hiddenBlizzardFrames then
 				return
 			end
 
@@ -151,6 +163,10 @@ local function UpdateFrameVisibility(unit)
 
 	SetUnitWatch(map[unit], settings.enabled)
 	SetBlizzardFrameHidden(unit, settings.hideBlizzardFrame)
+
+	if unit == "player" then
+		SetBlizzardFrameHidden("playerCastBar", settings.cast.hideBlizzardCastBar)
+	end
 end
 
 local function UpdateBossVisibility()
@@ -175,6 +191,7 @@ local function UpdateFrameLayout(unit)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.Cast:UpdateLayout(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, settings)
@@ -211,6 +228,7 @@ local function UpdateBossLayout()
 		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Bars.Cast:UpdateLayout(frame)
 		addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
 		previousBossFrame = frame
@@ -271,8 +289,7 @@ function FrameRegistry:UpdateBlizzardFrameVisibility()
 	end
 
 	for unit in pairs(blizzardFrameNames) do
-		local settings = addon.Database:GetProfile().frames[unit]
-		SetBlizzardFrameHidden(unit, settings.hideBlizzardFrame)
+		SetBlizzardFrameHidden(unit, GetBlizzardFrameHiddenSetting(unit))
 	end
 end
 

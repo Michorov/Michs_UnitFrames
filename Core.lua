@@ -22,6 +22,15 @@ local function InitializeAddon()
 
 		for unit, settings in pairs(profile.frames) do
 			if mediaType == "font" then
+				local castSettings = settings.cast
+				if castSettings then
+					local castFont = castSettings.font
+					if castFont == mediaName
+						or ((castFont == nil or castFont == -1) and globalFontRegistered) then
+						addon.UpdateScheduler:Notify("castSettingsChanged", unit)
+					end
+				end
+
 				if settings.nameText.font == mediaName
 					or (settings.nameText.font == -1 and globalFontRegistered) then
 					addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
@@ -50,6 +59,12 @@ local function InitializeAddon()
 				if settings.power.texture == mediaName
 					or (settings.power.texture == -1 and globalTextureRegistered) then
 					addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
+				end
+
+				local castTexture = settings.cast and settings.cast.texture
+				if castTexture == mediaName
+					or ((castTexture == nil or castTexture == -1) and globalTextureRegistered) then
+					addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 				end
 			end
 		end

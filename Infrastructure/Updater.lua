@@ -8,6 +8,7 @@ local initialized = false
 local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
 	addon.Frames.Widgets.Bars.Power:UpdateState(frame, settings)
+	addon.Frames.Widgets.Bars.Cast:UpdateState(frame)
 	addon.Frames.Widgets.Background:UpdateState(frame, settings)
 	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame, settings)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
@@ -44,6 +45,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 
 		if updateReasons.powerSettingsChanged then
 			addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, frameSettings)
+		end
+
+		if updateReasons.castSettingsChanged then
+			addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.absorbsSettingsChanged then
@@ -116,6 +121,10 @@ local function BuildStateUpdater(updateReasons, settings)
 		if updateReasons.powerStateChanged then
 			addon.Frames.Widgets.Bars.Power:UpdateState(frame, settings)
 			addon.Frames.Widgets.Texts.Power:UpdateState(frame, settings)
+		end
+
+		if updateReasons.castStateChanged then
+			addon.Frames.Widgets.Bars.Cast:UpdateState(frame)
 		end
 
 		if updateReasons.combatStateChanged then

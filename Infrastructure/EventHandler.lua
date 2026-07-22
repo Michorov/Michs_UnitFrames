@@ -22,6 +22,18 @@ local supportedUnits = {
 	boss5 = true,
 }
 
+local supportedCastUnits = {
+	player = true,
+	pet = true,
+	target = true,
+	focus = true,
+	boss1 = true,
+	boss2 = true,
+	boss3 = true,
+	boss4 = true,
+	boss5 = true,
+}
+
 local function IsSupportedUnit(unit)
 	return supportedUnits[unit] == true
 end
@@ -46,6 +58,19 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_POWER_FREQUENT")
 	eventFrame:RegisterEvent("UNIT_MAXPOWER")
 	eventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_START")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+	eventFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
 	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
@@ -198,6 +223,27 @@ function EventHandler:UNIT_DISPLAYPOWER(event, unit)
 
 	addon.UpdateScheduler:Notify("powerStateChanged", unit)
 end
+
+function EventHandler:UNIT_SPELLCAST_START(event, unit)
+	if not supportedCastUnits[unit] then
+		return
+	end
+
+	addon.UpdateScheduler:Notify("castStateChanged", unit)
+end
+
+EventHandler.UNIT_SPELLCAST_STOP = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_FAILED = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_INTERRUPTED = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_DELAYED = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_CHANNEL_START = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_CHANNEL_UPDATE = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_CHANNEL_STOP = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_EMPOWER_START = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_EMPOWER_UPDATE = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_EMPOWER_STOP = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_INTERRUPTIBLE = EventHandler.UNIT_SPELLCAST_START
+EventHandler.UNIT_SPELLCAST_NOT_INTERRUPTIBLE = EventHandler.UNIT_SPELLCAST_START
 
 function EventHandler:UNIT_HEALTH(event, unit)
 	if not IsSupportedUnit(unit) then
