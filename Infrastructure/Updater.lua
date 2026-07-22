@@ -5,6 +5,11 @@ addon.Updater = Updater
 
 local initialized = false
 
+local function GetFrameSettings(frame)
+	local settingsUnit = frame.unit:match("^boss%d+$") and "boss" or frame.unit
+	return addon.Database:GetProfile().frames[settingsUnit]
+end
+
 local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
 	addon.Frames.Widgets.Bars.Power:UpdateState(frame, settings)
@@ -20,13 +25,28 @@ local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
 end
 
+local function UpdateUnitSettings(frame, settings)
+	addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
+		frame,
+		addon.Database:GetProfile().general
+	)
+	addon.Frames.Widgets.Background:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, settings)
+end
+
 local function BuildSettingsUpdater(updateReasons, settings)
 	return function(frame)
-		local frameSettings = settings
-		if not frameSettings then
-			local settingsUnit = frame.unit:match("^boss%d+$") and "boss" or frame.unit
-			frameSettings = addon.Database:GetProfile().frames[settingsUnit]
-		end
+		local frameSettings = settings or GetFrameSettings(frame)
 
 		if updateReasons.mouseoverHighlightSettingsChanged then
 			addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
@@ -171,10 +191,26 @@ local function Flush(updateReasons)
 	end
 
 	if hasGlobal then
-		local stateUpdater = BuildStateUpdater(globalReasons)
-		local settingsUpdater = BuildSettingsUpdater(globalReasons)
+		if globalReasons.profileChanged then
+			for unit in pairs(addon.Database:GetProfile().frames) do
+				addon.FrameRegistry:UpdateVisibility(unit)
+				addon.FrameRegistry:UpdateLayout(unit)
+			end
 
-		addon.FrameRegistry:UpdateAllUnits(stateUpdater, settingsUpdater)
+			addon.FrameRegistry:UpdateAllUnits(
+				function(frame)
+					UpdateUnitState(frame, GetFrameSettings(frame))
+				end,
+				function(frame)
+					UpdateUnitSettings(frame, GetFrameSettings(frame))
+				end
+			)
+		else
+			local stateUpdater = BuildStateUpdater(globalReasons)
+			local settingsUpdater = BuildSettingsUpdater(globalReasons)
+
+			addon.FrameRegistry:UpdateAllUnits(stateUpdater, settingsUpdater)
+		end
 	end
 end
 

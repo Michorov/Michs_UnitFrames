@@ -590,6 +590,19 @@ function Database:Initialize()
 	end
 
 	self.db = AceDB:New("Michs_UnitFramesDB", DEFAULTS, true)
+
+	local function OnProfileChanged()
+		addon.UpdateScheduler:Notify("profileChanged")
+
+		if addon.Options and addon.Options.RefreshProfile then
+			addon.Options:RefreshProfile()
+		end
+	end
+
+	self.db:RegisterCallback("OnProfileChanged", OnProfileChanged)
+	self.db:RegisterCallback("OnProfileCopied", OnProfileChanged)
+	self.db:RegisterCallback("OnProfileReset", OnProfileChanged)
+	self.db:RegisterCallback("OnProfileDeleted", OnProfileChanged)
 	initialized = true
 end
 
@@ -599,4 +612,42 @@ function Database:GetProfile()
 	end
 
 	return self.db.profile
+end
+
+function Database:GetCurrentProfileName()
+	return self.db:GetCurrentProfile()
+end
+
+function Database:GetProfileNames()
+	return self.db:GetProfiles({})
+end
+
+function Database:HasProfile(name)
+	if type(name) ~= "string" or name == "" then
+		return false
+	end
+
+	for _, profileName in ipairs(self.db:GetProfiles({})) do
+		if profileName == name then
+			return true
+		end
+	end
+
+	return false
+end
+
+function Database:SetProfile(name)
+	self.db:SetProfile(name)
+end
+
+function Database:ResetProfile()
+	self.db:ResetProfile()
+end
+
+function Database:CopyProfile(sourceName)
+	self.db:CopyProfile(sourceName)
+end
+
+function Database:DeleteProfile(name)
+	self.db:DeleteProfile(name, true)
 end

@@ -90,7 +90,7 @@ function Power:UpdateSettings(frame, settings)
 	self:UpdateState(frame, settings)
 end
 
-function Power:UpdateState(frame)
+function Power:UpdateState(frame, settings)
 	if not frame.powerBar.enabled or not frame.unit or not UnitExists(frame.unit) then
 		frame.powerBar:Hide()
 		return

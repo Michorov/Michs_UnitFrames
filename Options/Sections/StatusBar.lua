@@ -19,12 +19,26 @@ function StatusBar:Ensure(parent)
 	statusBar.text = statusBar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	statusBar.text:SetJustifyH("LEFT")
 	statusBar.text:SetTextColor(0.65, 0.65, 0.68, 1)
-	statusBar.text:SetText(("Version %s | Active Profile: |cff00ff00%s|r"):format(addonVersion, "Default"))
+	statusBar.text:SetText(
+		("Version %s | Active Profile: |cff00ff00%s|r"):format(
+			addonVersion,
+			addon.Database:GetCurrentProfileName()
+		)
+	)
 
 	statusBar.topBorder = statusBar:CreateTexture(nil, "OVERLAY")
 	statusBar.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
 
 	return statusBar
+end
+
+function StatusBar:UpdateState()
+	statusBar.text:SetText(
+		("Version %s | Active Profile: |cff00ff00%s|r"):format(
+			addonVersion,
+			addon.Database:GetCurrentProfileName()
+		)
+	)
 end
 
 function StatusBar:UpdateLayout()

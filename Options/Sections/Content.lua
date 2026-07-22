@@ -7,6 +7,7 @@ addon.Options.Sections.Content = addon.Options.Sections.Content or {}
 local Content = addon.Options.Sections.Content
 local PP = addon.PixelPerfect
 local content
+local pages
 local activePage = "general"
 local selectedUnit = "player"
 
@@ -26,14 +27,14 @@ function Content:Ensure(parent)
 	end
 
 	content = CreateFrame("Frame", nil, parent)
-	content.pages = {
+	pages = {
 		general = addon.Options.Pages.General:Ensure(content),
 		layout = addon.Options.Pages.Layout:Ensure(content),
 		bars = addon.Options.Pages.Bars:Ensure(content),
 		texts = addon.Options.Pages.Texts:Ensure(content),
 		auras = addon.Options.Pages.Auras:Ensure(content),
 		indicators = addon.Options.Pages.Indicators:Ensure(content),
-		options = addon.Options.Pages.Options:Ensure(content),
+		profiles = addon.Options.Pages.Profiles:Ensure(content),
 	}
 
 	content.unitDropdown = addon.Options.Controls.Dropdown:Create(content, "")
@@ -41,17 +42,17 @@ function Content:Ensure(parent)
 	content.unitDropdown:SetLabelVisible(false)
 	content.unitDropdown:SetOptions(unitOptions)
 	content.unitDropdown:SetValue(selectedUnit)
-	content.unitDropdown:SetLayoutPoint("RIGHT", content.pages[activePage].header, "RIGHT", 0, 0)
-	content.unitDropdown:SetShown(activePage ~= "general" and activePage ~= "options")
+	content.unitDropdown:SetLayoutPoint("RIGHT", pages[activePage].header, "RIGHT", 0, 0)
+	content.unitDropdown:SetShown(activePage ~= "general" and activePage ~= "profiles")
 	content.unitDropdown:SetOnValueChanged(function(_, value)
 		Content:SetSelectedUnit(value)
 	end)
 
-	for pageKey, page in pairs(content.pages) do
+	for pageKey, page in pairs(pages) do
 		page:SetShown(pageKey == activePage)
 	end
 
-	local page = content.pages[activePage]
+	local page = pages[activePage]
 	if page.UpdateState then
 		page:UpdateState(addon.Database:GetProfile(), selectedUnit)
 	end
@@ -62,7 +63,7 @@ end
 function Content:UpdateLayout()
 	local inset = PP:ToUIScaled(32)
 
-	for _, page in pairs(content.pages) do
+	for _, page in pairs(pages) do
 		page:ClearAllPoints()
 		page:SetPoint("TOPLEFT", content, "TOPLEFT", inset, -inset)
 		page:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -inset, inset)
@@ -71,21 +72,35 @@ function Content:UpdateLayout()
 end
 
 function Content:SetActivePage(pageKey)
-	if not content.pages[pageKey] then
+	if not pages[pageKey] then
 		return
 	end
 
 	activePage = pageKey
 	addon.Options.Controls.Dropdown:CloseOpenDropdown()
 
-	for key, page in pairs(content.pages) do
+	for key, page in pairs(pages) do
 		page:SetShown(key == activePage)
 	end
 
-	content.unitDropdown:SetLayoutPoint("RIGHT", content.pages[activePage].header, "RIGHT", 0, 0)
-	content.unitDropdown:SetShown(activePage ~= "general" and activePage ~= "options")
+	local pageHeader = pages[activePage].header
+	if pageHeader then
+		content.unitDropdown:SetLayoutPoint("RIGHT", pageHeader, "RIGHT", 0, 0)
+	end
+	content.unitDropdown:SetShown(activePage ~= "general" and activePage ~= "profiles")
 
-	local page = content.pages[activePage]
+	local page = pages[activePage]
+	if page.UpdateState then
+		page:UpdateState(addon.Database:GetProfile(), selectedUnit)
+	end
+end
+
+function Content:RefreshProfile()
+	if not content or not pages then
+		return
+	end
+
+	local page = pages[activePage]
 	if page.UpdateState then
 		page:UpdateState(addon.Database:GetProfile(), selectedUnit)
 	end
@@ -103,7 +118,7 @@ function Content:SetSelectedUnit(unit)
 			if content then
 				content.unitDropdown:SetValue(unit)
 
-				local page = content.pages[activePage]
+				local page = pages[activePage]
 				if page.UpdateState then
 					page:UpdateState(addon.Database:GetProfile(), selectedUnit)
 				end

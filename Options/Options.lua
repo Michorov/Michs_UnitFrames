@@ -131,6 +131,15 @@ function Options:UpdateLayout()
 	addon.Options.Sections.Content:UpdateLayout()
 end
 
+function Options:RefreshProfile()
+	if not panel then
+		return
+	end
+
+	addon.Options.Sections.Content:RefreshProfile()
+	addon.Options.Sections.StatusBar:UpdateState()
+end
+
 function Options:IsOpen()
 	return panel and panel:IsShown() or false
 end
@@ -148,6 +157,7 @@ function Options:Open()
 
 	deferredOpen = false
 	self:Ensure()
+	self:RefreshProfile()
 	panel:Show()
 end
 
