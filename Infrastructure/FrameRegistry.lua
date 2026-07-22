@@ -37,7 +37,7 @@ local function UpdateFrame(frame, stateCallback, settingsCallback)
 		settingsCallback(frame)
 	end
 
-	if type(stateCallback) == "function" then
+	if type(stateCallback) == "function" and frame.enabled ~= false then
 		stateCallback(frame)
 	end
 end
@@ -160,8 +160,10 @@ end
 
 local function UpdateFrameVisibility(unit)
 	local settings = addon.Database:GetProfile().frames[unit]
+	local frame = map[unit]
 
-	SetUnitWatch(map[unit], settings.enabled)
+	frame.enabled = settings.enabled ~= false
+	SetUnitWatch(frame, settings.enabled)
 	SetBlizzardFrameHidden(unit, settings.hideBlizzardFrame)
 
 	if unit == "player" then
@@ -171,9 +173,12 @@ end
 
 local function UpdateBossVisibility()
 	local settings = addon.Database:GetProfile().frames.boss
+	local enabled = settings.enabled ~= false
 
 	for bossIndex = 1, 5 do
-		SetUnitWatch(map["boss" .. bossIndex], settings.enabled)
+		local frame = map["boss" .. bossIndex]
+		frame.enabled = enabled
+		SetUnitWatch(frame, settings.enabled)
 	end
 
 	SetBlizzardFrameHidden("boss", settings.hideBlizzardFrame)
