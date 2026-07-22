@@ -31,6 +31,7 @@ Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua
 Frames/Widgets/Texts/Name.lua
 Frames/Widgets/Texts/Health.lua
+Frames/Widgets/Texts/Power.lua
 
 # Options
 Options/Controls/Button.lua

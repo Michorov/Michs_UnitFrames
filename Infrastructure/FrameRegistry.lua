@@ -75,6 +75,7 @@ local function CreateUnitFrame(unit, frameName, parent)
 	addon.Frames.Widgets.Indicators.GroupStatus:Ensure(frame, settings)
 	addon.Frames.Widgets.Texts.Name:Ensure(frame, settings)
 	addon.Frames.Widgets.Texts.Health:Ensure(frame, settings)
+	addon.Frames.Widgets.Texts.Power:Ensure(frame, settings)
 	addon.Frames.Widgets.Border:Ensure(frame)
 
 	map[unit] = frame
@@ -171,6 +172,7 @@ local function UpdateFrameLayout(unit)
 
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, settings)
@@ -205,6 +207,7 @@ local function UpdateBossLayout()
 
 		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
 		previousBossFrame = frame

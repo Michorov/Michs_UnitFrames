@@ -53,6 +53,7 @@ function General:Ensure(parent)
 		addon.Database:GetProfile().general.font = value
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged")
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged")
+		addon.UpdateScheduler:Notify("powerTextSettingsChanged")
 	end)
 
 	page.body.textureDropdown = addon.Options.Controls.Dropdown:Create(page.body, "Global Texture")

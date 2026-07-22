@@ -31,6 +31,11 @@ local function InitializeAddon()
 					or (settings.healthText.font == -1 and globalFontRegistered) then
 					addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 				end
+
+				if settings.powerText.font == mediaName
+					or (settings.powerText.font == -1 and globalFontRegistered) then
+					addon.UpdateScheduler:Notify("powerTextSettingsChanged", unit)
+				end
 			else
 				if settings.health.texture == mediaName
 					or (settings.health.texture == -1 and globalTextureRegistered) then

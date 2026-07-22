@@ -40,6 +40,14 @@ local DEFAULTS = {
 					size = 16,
 					position = { x = 1, y = 10 },
 				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 12,
+					position = { x = -2, y = 2 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -90,6 +98,14 @@ local DEFAULTS = {
 					anchor = "TOP",
 					size = 24,
 					position = { x = 0, y = 12 },
+				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 12,
+					position = { x = -2, y = 2 },
 				},
 				health = {
 					texture = -1,
@@ -142,6 +158,14 @@ local DEFAULTS = {
 					size = 16,
 					position = { x = 0, y = 8 },
 				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 8,
+					position = { x = -2, y = 2 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -192,6 +216,14 @@ local DEFAULTS = {
 					anchor = "TOP",
 					size = 16,
 					position = { x = 0, y = 8 },
+				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 8,
+					position = { x = -2, y = 2 },
 				},
 				health = {
 					texture = -1,
@@ -244,6 +276,14 @@ local DEFAULTS = {
 					size = 16,
 					position = { x = 0, y = 8 },
 				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 8,
+					position = { x = -2, y = 2 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -294,6 +334,14 @@ local DEFAULTS = {
 					anchor = "TOP",
 					size = 16,
 					position = { x = 0, y = 8 },
+				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 8,
+					position = { x = -2, y = 2 },
 				},
 				health = {
 					texture = -1,
@@ -346,6 +394,14 @@ local DEFAULTS = {
 					anchor = "TOP",
 					size = 24,
 					position = { x = 0, y = 12 },
+				},
+				powerText = {
+					enabled = true,
+					anchor = "BOTTOMRIGHT",
+					font = -1,
+					outline = "",
+					size = 12,
+					position = { x = -2, y = 2 },
 				},
 				health = {
 					texture = -1,

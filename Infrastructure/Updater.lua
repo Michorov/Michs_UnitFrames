@@ -12,6 +12,7 @@ local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
 	addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
 	addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
+	addon.Frames.Widgets.Texts.Power:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
@@ -54,6 +55,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 
 		if updateReasons.nameTextSettingsChanged then
 			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, frameSettings)
+		end
+
+		if updateReasons.powerTextSettingsChanged then
+			addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.combatIndicatorSettingsChanged then
@@ -101,6 +106,10 @@ local function BuildStateUpdater(updateReasons, settings)
 
 		if updateReasons.nameStateChanged then
 			addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
+		end
+
+		if updateReasons.powerStateChanged then
+			addon.Frames.Widgets.Texts.Power:UpdateState(frame)
 		end
 
 		if updateReasons.combatStateChanged then

@@ -43,6 +43,8 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_TARGET")
 	eventFrame:RegisterEvent("UNIT_TARGETABLE_CHANGED")
 	eventFrame:RegisterEvent("UNIT_NAME_UPDATE")
+	eventFrame:RegisterEvent("UNIT_POWER_UPDATE")
+	eventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
 	eventFrame:RegisterEvent("UNIT_HEALTH")
 	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
 	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
@@ -170,6 +172,22 @@ function EventHandler:UNIT_NAME_UPDATE(event, unit)
 	end
 
 	addon.UpdateScheduler:Notify("nameStateChanged", unit)
+end
+
+function EventHandler:UNIT_POWER_UPDATE(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
+	addon.UpdateScheduler:Notify("powerStateChanged", unit)
+end
+
+function EventHandler:UNIT_DISPLAYPOWER(event, unit)
+	if not IsSupportedUnit(unit) then
+		return
+	end
+
+	addon.UpdateScheduler:Notify("powerStateChanged", unit)
 end
 
 function EventHandler:UNIT_HEALTH(event, unit)
