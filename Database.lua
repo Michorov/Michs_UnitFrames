@@ -42,10 +42,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 12,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -101,10 +104,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 12,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -160,10 +166,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 8,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -219,10 +228,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 8,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -278,10 +290,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 8,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -337,10 +352,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 8,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {
@@ -397,10 +415,13 @@ local DEFAULTS = {
 				},
 				powerText = {
 					enabled = true,
+					format = "abbreviated",
 					anchor = "BOTTOMRIGHT",
 					font = -1,
 					outline = "",
 					size = 12,
+					colorByPowerType = true,
+					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 2 },
 				},
 				health = {

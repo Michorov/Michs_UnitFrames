@@ -9,17 +9,30 @@ local Power = addon.Frames.Widgets.Texts.Power
 local PP = addon.PixelPerfect
 local LSM = LibStub("LibSharedMedia-3.0")
 
-local function UpdateColor(frame)
-	local powerType, powerToken, r, g, b = UnitPowerType(frame.unit)
-	local color = PowerBarColor[powerToken] or PowerBarColor[powerType]
+local function UpdateColor(frame, settings)
+	local powerTextSettings = (settings and settings.powerText) or {}
+	local color = powerTextSettings.color or {}
+	local r = color.r or 1
+	local g = color.g or 1
+	local b = color.b or 1
+	local a = color.a or 1
 
-	if color then
-		r = color.r
-		g = color.g
-		b = color.b
+	if powerTextSettings.colorByPowerType ~= false then
+		local powerType, powerToken, typeR, typeG, typeB = UnitPowerType(frame.unit)
+		local powerColor = PowerBarColor[powerToken] or PowerBarColor[powerType]
+
+		if powerColor then
+			r = powerColor.r
+			g = powerColor.g
+			b = powerColor.b
+		else
+			r = typeR or r
+			g = typeG or g
+			b = typeB or b
+		end
 	end
 
-	frame.powerText.text:SetTextColor(r or 1, g or 1, b or 1, 1)
+	frame.powerText.text:SetTextColor(r, g, b, a)
 end
 
 function Power:Ensure(frame, settings)
@@ -63,16 +76,42 @@ function Power:UpdateSettings(frame, settings)
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
 
-	self:UpdateState(frame)
+	self:UpdateState(frame, settings)
 end
 
-function Power:UpdateState(frame)
+function Power:UpdateState(frame, settings)
 	if not frame.powerText.enabled or not frame.unit or not UnitExists(frame.unit) then
 		frame.powerText:Hide()
 		return
 	end
 
-	frame.powerText.text:SetText(UnitPower(frame.unit))
-	UpdateColor(frame)
+	local power = UnitPower(frame.unit)
+	local abbreviated = AbbreviateNumbers(power)
+	local full = BreakUpLargeNumbers(power)
+	local percent = string.format(
+		"%.0f%%",
+		UnitPowerPercent(frame.unit, nil, true, CurveConstants.ScaleTo100)
+	)
+	local format = ((settings and settings.powerText) or {}).format or "abbreviated"
+	local text
+
+	if format == "percent" then
+		text = percent
+	elseif format == "full" then
+		text = full
+	elseif format == "abbreviatedPercent" then
+		text = abbreviated .. " | " .. percent
+	elseif format == "percentAbbreviated" then
+		text = percent .. " | " .. abbreviated
+	elseif format == "fullPercent" then
+		text = full .. " | " .. percent
+	elseif format == "percentFull" then
+		text = percent .. " | " .. full
+	else
+		text = abbreviated
+	end
+
+	frame.powerText.text:SetText(text)
+	UpdateColor(frame, settings)
 	frame.powerText:Show()
 end
