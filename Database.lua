@@ -501,7 +501,7 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = 500, y = 106 },
-				spacing = -1,
+				spacing = 22,
 				power = {
 					enabled = true,
 					texture = -1,
