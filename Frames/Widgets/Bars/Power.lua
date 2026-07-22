@@ -117,3 +117,25 @@ function Power:UpdateState(frame)
 	UpdateColor(frame)
 	frame.powerBar:Show()
 end
+
+function Power:UpdateValue(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
+		frame.powerBar:Hide()
+		return
+	end
+
+	frame.powerBar:SetValue(UnitPower(frame.unit))
+end
+
+function Power:UpdateMaximum(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
+		frame.powerBar:Hide()
+		return
+	end
+
+	frame.powerBar:SetMinMaxValues(0, UnitPowerMax(frame.unit))
+end

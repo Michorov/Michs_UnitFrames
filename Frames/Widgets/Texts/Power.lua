@@ -122,3 +122,19 @@ function Power:UpdateState(frame)
 	UpdateColor(frame)
 	frame.powerText:Show()
 end
+
+function Power:UpdateValue(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
+		frame.powerText:Hide()
+		return
+	end
+
+	local formatter = formatters[cachedSettings.format] or formatters.abbreviated
+	frame.powerText.text:SetText(formatter(frame.unit))
+end
+
+function Power:UpdateMaximum(frame)
+	self:UpdateValue(frame)
+end

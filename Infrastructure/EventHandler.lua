@@ -225,15 +225,15 @@ function EventHandler:UNIT_NAME_UPDATE(event, unit)
 end
 
 function EventHandler:UNIT_POWER_FREQUENT(event, unit)
-	addon.UpdateScheduler:Notify("powerStateChanged", unit)
+	addon.UpdateScheduler:Notify("powerValueChanged", unit)
 end
 
 function EventHandler:UNIT_MAXPOWER(event, unit)
-	addon.UpdateScheduler:Notify("powerStateChanged", unit)
+	addon.UpdateScheduler:Notify("powerMaximumChanged", unit)
 end
 
 function EventHandler:UNIT_DISPLAYPOWER(event, unit)
-	addon.UpdateScheduler:Notify("powerStateChanged", unit)
+	addon.UpdateScheduler:Notify("powerTypeChanged", unit)
 end
 
 function EventHandler:UNIT_SPELLCAST_START(event, unit)

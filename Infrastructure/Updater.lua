@@ -125,9 +125,22 @@ local function BuildStateUpdater(updateReasons)
 			addon.Frames.Widgets.Texts.Name:UpdateState(frame)
 		end
 
-		if updateReasons.powerStateChanged then
+		if updateReasons.powerTypeChanged then
 			addon.Frames.Widgets.Bars.Power:UpdateState(frame)
 			addon.Frames.Widgets.Texts.Power:UpdateState(frame)
+		else
+			if updateReasons.powerMaximumChanged then
+				addon.Frames.Widgets.Bars.Power:UpdateMaximum(frame)
+				addon.Frames.Widgets.Texts.Power:UpdateMaximum(frame)
+			end
+
+			if updateReasons.powerValueChanged then
+				addon.Frames.Widgets.Bars.Power:UpdateValue(frame)
+
+				if not updateReasons.powerMaximumChanged then
+					addon.Frames.Widgets.Texts.Power:UpdateValue(frame)
+				end
+			end
 		end
 
 		if updateReasons.castStateChanged then
