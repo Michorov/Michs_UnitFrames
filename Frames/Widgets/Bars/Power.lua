@@ -13,8 +13,15 @@ local generalSettings
 
 local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
-	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].power or {}
-	generalSettings = profile.general
+	local settings = profile.frames[frame.settingsUnit].power or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = settings.enabled,
+		texture = settings.texture,
+		height = settings.height or 4,
+	}
+	generalSettings = {
+		texture = profile.general.texture,
+	}
 end
 
 local function UpdateColor(frame)
@@ -95,7 +102,7 @@ function Power:UpdateSettings(frame)
 	local border = frame.powerBar.border
 
 	frame.powerBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
-	frame.powerBar:SetHeight(PP:ToUIScaled(cachedSettings.height or 4))
+	frame.powerBar:SetHeight(PP:ToUIScaled(cachedSettings.height))
 	border.left:SetWidth(borderThickness)
 	border.right:SetWidth(borderThickness)
 	border.top:SetHeight(borderThickness)

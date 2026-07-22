@@ -39,18 +39,41 @@ local formatters = {
 
 local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
-	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].healthText or {}
-	generalSettings = profile.general
+	local settings = profile.frames[frame.settingsUnit].healthText or {}
+	local position = settings.position or {}
+	local color = settings.color or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = settings.enabled,
+		format = settings.format,
+		anchor = settings.anchor,
+		font = settings.font,
+		outline = settings.outline,
+		size = settings.size,
+		colorByClassOrReaction = settings.colorByClassOrReaction == true,
+		position = {
+			x = position.x,
+			y = position.y,
+		},
+		color = {
+			r = color.r or 1,
+			g = color.g or 1,
+			b = color.b or 1,
+			a = color.a or 1,
+		},
+	}
+	generalSettings = {
+		font = profile.general.font,
+	}
 end
 
 local function UpdateColor(frame)
 	local cachedSettings = settingsCache[frame.settingsUnit]
 
-	local color = cachedSettings.color or {}
-	local r = color.r or 1
-	local g = color.g or 1
-	local b = color.b or 1
-	local a = color.a or 1
+	local color = cachedSettings.color
+	local r = color.r
+	local g = color.g
+	local b = color.b
+	local a = color.a
 
 	if cachedSettings.colorByClassOrReaction then
 		if UnitIsPlayer(frame.unit) then
@@ -93,7 +116,7 @@ function Health:UpdateSettings(frame)
 
 	local text = frame.healthText.text
 	local anchor = cachedSettings.anchor
-	local position = cachedSettings.position or {}
+	local position = cachedSettings.position
 	local font = cachedSettings.font
 	if font == -1 then
 		font = generalSettings.font

@@ -11,7 +11,17 @@ local settingsCache = {}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
-	settingsCache[frame.settingsUnit] = settings.raidMarker or {}
+	local raidMarker = settings.raidMarker or {}
+	local position = raidMarker.position or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = raidMarker.enabled,
+		anchor = raidMarker.anchor,
+		size = raidMarker.size,
+		position = {
+			x = position.x,
+			y = position.y,
+		},
+	}
 end
 
 function RaidMarker:Ensure(frame)
@@ -40,7 +50,7 @@ function RaidMarker:UpdateSettings(frame)
 	end
 
 	local anchor = cachedSettings.anchor
-	local position = cachedSettings.position or {}
+	local position = cachedSettings.position
 	local size = PP:ToUIScaled(cachedSettings.size)
 	frame.raidMarker:SetSize(size, size)
 	frame.raidMarker:ClearAllPoints()

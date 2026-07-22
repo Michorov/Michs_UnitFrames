@@ -12,8 +12,21 @@ local generalSettings
 
 local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
-	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].health or {}
-	generalSettings = profile.general
+	local settings = profile.frames[frame.settingsUnit].health or {}
+	local color = settings.color or {}
+	settingsCache[frame.settingsUnit] = {
+		texture = settings.texture,
+		colorByClassOrReaction = settings.colorByClassOrReaction == true,
+		color = {
+			r = color.r or 0.12,
+			g = color.g or 0.12,
+			b = color.b or 0.12,
+			a = color.a or 1,
+		},
+	}
+	generalSettings = {
+		texture = profile.general.texture,
+	}
 end
 
 function Health:Ensure(frame)
@@ -48,11 +61,11 @@ end
 
 function Health:UpdateColor(frame)
 	local cachedSettings = settingsCache[frame.settingsUnit]
-	local color = cachedSettings.color or {}
-	local r = color.r or 0.12
-	local g = color.g or 0.12
-	local b = color.b or 0.12
-	local a = color.a or 1
+	local color = cachedSettings.color
+	local r = color.r
+	local g = color.g
+	local b = color.b
+	local a = color.a
 
 	if cachedSettings.colorByClassOrReaction then
 		if UnitIsPlayer(frame.unit) then

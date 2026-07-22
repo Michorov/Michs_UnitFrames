@@ -10,7 +10,17 @@ local settingsCache = {}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
-	settingsCache[frame.settingsUnit] = settings.absorbs or {}
+	local absorbs = settings.absorbs or {}
+	local color = absorbs.color or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = absorbs.enabled,
+		color = {
+			r = color.r or 0.2,
+			g = color.g or 0.8,
+			b = color.b or 1,
+			a = color.a or 0.5,
+		},
+	}
 end
 
 function Absorbs:Ensure(frame)
@@ -43,8 +53,8 @@ function Absorbs:UpdateSettings(frame)
 		return
 	end
 
-	local color = cachedSettings.color or {}
-	frame.absorbBar:SetStatusBarColor(color.r or 0.2, color.g or 0.8, color.b or 1, color.a or 0.5)
+	local color = cachedSettings.color
+	frame.absorbBar:SetStatusBarColor(color.r, color.g, color.b, color.a)
 
 	self:UpdateState(frame)
 end

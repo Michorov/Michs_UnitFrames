@@ -11,7 +11,19 @@ local settingsCache = {}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
-	settingsCache[frame.settingsUnit] = settings.groupStatus or {}
+	local groupStatus = settings.groupStatus or {}
+	local position = groupStatus.position or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = groupStatus.enabled,
+		showLeader = groupStatus.showLeader ~= false,
+		showAssistant = groupStatus.showAssistant ~= false,
+		anchor = groupStatus.anchor or "TOPLEFT",
+		size = groupStatus.size or 16,
+		position = {
+			x = position.x or 0,
+			y = position.y or 0,
+		},
+	}
 end
 
 function GroupStatus:Ensure(frame)
@@ -46,12 +58,12 @@ function GroupStatus:UpdateSettings(frame)
 		return
 	end
 
-	local anchor = cachedSettings.anchor or "TOPLEFT"
-	local position = cachedSettings.position or {}
-	local size = PP:ToUIScaled(cachedSettings.size or 16)
+	local anchor = cachedSettings.anchor
+	local position = cachedSettings.position
+	local size = PP:ToUIScaled(cachedSettings.size)
 	frame.groupStatus:SetSize(size, size)
 	frame.groupStatus:ClearAllPoints()
-	frame.groupStatus:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x or 0), PP:ToUIScaled(position.y or 0))
+	frame.groupStatus:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
 	self:UpdateState(frame)
 end
 
@@ -71,9 +83,9 @@ function GroupStatus:UpdateState(frame)
 	end
 
 	local texture
-	if UnitIsGroupLeader("player") and cachedSettings.showLeader ~= false then
+	if UnitIsGroupLeader("player") and cachedSettings.showLeader then
 		texture = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
-	elseif UnitIsGroupAssistant("player") and cachedSettings.showAssistant ~= false then
+	elseif UnitIsGroupAssistant("player") and cachedSettings.showAssistant then
 		texture = "Interface\\GroupFrame\\UI-Group-AssistantIcon"
 	end
 

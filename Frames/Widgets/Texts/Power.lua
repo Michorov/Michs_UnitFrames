@@ -39,20 +39,43 @@ local formatters = {
 
 local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
-	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].powerText or {}
-	generalSettings = profile.general
+	local settings = profile.frames[frame.settingsUnit].powerText or {}
+	local position = settings.position or {}
+	local color = settings.color or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = settings.enabled,
+		format = settings.format,
+		anchor = settings.anchor or "BOTTOMRIGHT",
+		font = settings.font,
+		outline = settings.outline or "",
+		size = settings.size or 12,
+		colorByPowerType = settings.colorByPowerType ~= false,
+		position = {
+			x = position.x or 0,
+			y = position.y or 0,
+		},
+		color = {
+			r = color.r or 1,
+			g = color.g or 1,
+			b = color.b or 1,
+			a = color.a or 1,
+		},
+	}
+	generalSettings = {
+		font = profile.general.font,
+	}
 end
 
 local function UpdateColor(frame)
 	local cachedSettings = settingsCache[frame.settingsUnit]
 
-	local color = cachedSettings.color or {}
-	local r = color.r or 1
-	local g = color.g or 1
-	local b = color.b or 1
-	local a = color.a or 1
+	local color = cachedSettings.color
+	local r = color.r
+	local g = color.g
+	local b = color.b
+	local a = color.a
 
-	if cachedSettings.colorByPowerType ~= false then
+	if cachedSettings.colorByPowerType then
 		local powerType, powerToken, typeR, typeG, typeB = UnitPowerType(frame.unit)
 		local powerColor = PowerBarColor[powerToken] or PowerBarColor[powerType]
 
@@ -93,16 +116,16 @@ function Power:UpdateSettings(frame)
 	end
 
 	local text = frame.powerText.text
-	local anchor = cachedSettings.anchor or "BOTTOMRIGHT"
-	local position = cachedSettings.position or {}
+	local anchor = cachedSettings.anchor
+	local position = cachedSettings.position
 	local font = cachedSettings.font
 	if font == -1 or not font then
 		font = generalSettings.font
 	end
 
 	text:ClearAllPoints()
-	text:SetPoint(anchor, frame.powerText, anchor, PP:ToUIScaled(position.x or 0), PP:ToUIScaled(position.y or 0))
-	text:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size or 12), cachedSettings.outline or "")
+	text:SetPoint(anchor, frame.powerText, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	text:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size), cachedSettings.outline)
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
 

@@ -10,7 +10,17 @@ local settingsCache = {}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
-	settingsCache[frame.settingsUnit] = settings.healAbsorbs or {}
+	local healAbsorbs = settings.healAbsorbs or {}
+	local color = healAbsorbs.color or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = healAbsorbs.enabled,
+		color = {
+			r = color.r or 1,
+			g = color.g or 0,
+			b = color.b or 0,
+			a = color.a or 0.5,
+		},
+	}
 end
 
 local function GetHealAbsorbs(frame)
@@ -82,9 +92,9 @@ function HealAbsorbs:UpdateSettings(frame)
 	end
 
 	local bar = frame.healAbsorbBar
-	local color = cachedSettings.color or {}
+	local color = cachedSettings.color
 
-	bar:SetStatusBarColor(color.r or 1, color.g or 0, color.b or 0, color.a or 0.5)
+	bar:SetStatusBarColor(color.r, color.g, color.b, color.a)
 
 	self:UpdateState(frame)
 end

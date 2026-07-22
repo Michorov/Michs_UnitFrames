@@ -11,7 +11,17 @@ local settingsCache = {}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
-	settingsCache[frame.settingsUnit] = settings.combatIndicator or {}
+	local combatIndicator = settings.combatIndicator or {}
+	local position = combatIndicator.position or {}
+	settingsCache[frame.settingsUnit] = {
+		enabled = combatIndicator.enabled,
+		anchor = combatIndicator.anchor or "CENTER",
+		size = combatIndicator.size or 16,
+		position = {
+			x = position.x or 0,
+			y = position.y or 0,
+		},
+	}
 end
 
 function Combat:Ensure(frame)
@@ -47,17 +57,17 @@ function Combat:UpdateSettings(frame)
 		return
 	end
 
-	local anchor = cachedSettings.anchor or "CENTER"
-	local position = cachedSettings.position or {}
-	local size = PP:ToUIScaled(cachedSettings.size or 16)
+	local anchor = cachedSettings.anchor
+	local position = cachedSettings.position
+	local size = PP:ToUIScaled(cachedSettings.size)
 	frame.combatIndicator:SetSize(size, size)
 	frame.combatIndicator:ClearAllPoints()
 	frame.combatIndicator:SetPoint(
 		anchor,
 		frame,
 		anchor,
-		PP:ToUIScaled(position.x or 0),
-		PP:ToUIScaled(position.y or 0)
+		PP:ToUIScaled(position.x),
+		PP:ToUIScaled(position.y)
 	)
 	self:UpdateState(frame)
 end

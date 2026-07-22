@@ -8,7 +8,10 @@ local MouseoverHighlight = addon.Frames.Widgets.MouseoverHighlight
 local settingsCache
 
 local function UpdateSettingsCache()
-	settingsCache = addon.Database:GetProfile().general
+	local settings = addon.Database:GetProfile().general
+	settingsCache = {
+		mouseoverHighlight = settings.mouseoverHighlight,
+	}
 end
 
 function MouseoverHighlight:Ensure(frame)

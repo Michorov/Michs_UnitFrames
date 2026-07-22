@@ -9,6 +9,7 @@ local Cast = addon.Frames.Widgets.Bars.Cast
 local PP = addon.PixelPerfect
 local LSM = LibStub("LibSharedMedia-3.0")
 local settingsCache = {}
+local colorCache = {}
 local generalSettings
 
 local supportedUnits = {
@@ -24,8 +25,41 @@ end
 
 local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
-	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].cast
-	generalSettings = profile.general
+	local settings = profile.frames[frame.settingsUnit].cast
+
+	settingsCache[frame.settingsUnit] = {
+		enabled = settings.enabled,
+		texture = settings.texture,
+		font = settings.font,
+		fontSize = settings.fontSize,
+		position = settings.position,
+		height = settings.height,
+		icon = {
+			position = settings.icon.position,
+		},
+		spellName = {
+			position = settings.spellName.position,
+		},
+		castTime = {
+			position = settings.castTime.position,
+		},
+	}
+	generalSettings = {
+		font = profile.general.font,
+		texture = profile.general.texture,
+	}
+
+	local colors = settings.colors
+	colorCache[frame.settingsUnit] = {
+		cast = CreateColor(colors.cast.r, colors.cast.g, colors.cast.b, colors.cast.a),
+		channel = CreateColor(colors.channel.r, colors.channel.g, colors.channel.b, colors.channel.a),
+		nonInterruptible = CreateColor(
+			colors.nonInterruptible.r,
+			colors.nonInterruptible.g,
+			colors.nonInterruptible.b,
+			colors.nonInterruptible.a
+		),
+	}
 end
 
 local function HideCastBar(castBar)
@@ -315,19 +349,13 @@ function Cast:UpdateState(frame)
 		return
 	end
 
-	local colors = cachedSettings.colors
-	local colorSettings = isChannel and colors.channel or colors.cast
-	local nonInterruptibleColor = colors.nonInterruptible
+	local colors = colorCache[frame.settingsUnit]
+	local color = isChannel and colors.channel or colors.cast
 	castBar:SetStatusBarColor(
 		C_CurveUtil.EvaluateColorFromBoolean(
 			notInterruptible,
-			CreateColor(
-				nonInterruptibleColor.r,
-				nonInterruptibleColor.g,
-				nonInterruptibleColor.b,
-				nonInterruptibleColor.a
-			),
-			CreateColor(colorSettings.r, colorSettings.g, colorSettings.b, colorSettings.a)
+			colors.nonInterruptible,
+			color
 		):GetRGBA()
 	)
 
