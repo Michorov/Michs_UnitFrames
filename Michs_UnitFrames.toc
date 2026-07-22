@@ -27,6 +27,7 @@ Frames/Widgets/Indicators/Combat.lua
 Frames/Widgets/Indicators/RaidMarker.lua
 Frames/Widgets/Indicators/GroupStatus.lua
 Frames/Widgets/Bars/Health.lua
+Frames/Widgets/Bars/Power.lua
 Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua
 Frames/Widgets/Texts/Name.lua
@@ -42,6 +43,7 @@ Options/Controls/ColorPicker.lua
 Options/Pages/General.lua
 Options/Pages/Layout.lua
 Options/Pages/Bars/Health.lua
+Options/Pages/Bars/Power.lua
 Options/Pages/Bars/Background.lua
 Options/Pages/Bars/Absorbs.lua
 Options/Pages/Bars/HealAbsorbs.lua

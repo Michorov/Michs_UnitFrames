@@ -11,6 +11,7 @@ local activeSubpage = "health"
 
 local subpageOptions = {
 	{ value = "health", text = "Health" },
+	{ value = "power", text = "Power" },
 	{ value = "background", text = "Background" },
 	{ value = "absorbs", text = "Absorbs" },
 	{ value = "healAbsorbs", text = "Heal Absorbs" },
@@ -48,6 +49,7 @@ function Bars:Ensure(parent)
 
 	page.subpages = {
 		health = addon.Options.Pages.Bars.Health:Ensure(page.body),
+		power = addon.Options.Pages.Bars.Power:Ensure(page.body),
 		background = addon.Options.Pages.Bars.Background:Ensure(page.body),
 		absorbs = addon.Options.Pages.Bars.Absorbs:Ensure(page.body),
 		healAbsorbs = addon.Options.Pages.Bars.HealAbsorbs:Ensure(page.body),

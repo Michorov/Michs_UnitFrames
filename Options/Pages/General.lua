@@ -64,6 +64,7 @@ function General:Ensure(parent)
 		addon.Database:GetProfile().general.texture = value
 		addon.UpdateScheduler:Notify("healthSettingsChanged")
 		addon.UpdateScheduler:Notify("backgroundSettingsChanged")
+		addon.UpdateScheduler:Notify("powerSettingsChanged")
 	end)
 
 	function page:UpdateLayout()

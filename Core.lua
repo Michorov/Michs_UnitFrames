@@ -46,6 +46,11 @@ local function InitializeAddon()
 					or (settings.background.texture == -1 and globalTextureRegistered) then
 					addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
 				end
+
+				if settings.power.texture == mediaName
+					or (settings.power.texture == -1 and globalTextureRegistered) then
+					addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
+				end
 			end
 		end
 	end)
