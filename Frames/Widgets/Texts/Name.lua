@@ -53,6 +53,10 @@ function Name:UpdateSettings(frame, settings)
 	frame.nameText.enabled = nameTextSettings.enabled ~= false
 	local anchor = nameTextSettings.anchor or "LEFT"
 	local position = nameTextSettings.position or {}
+	local font = nameTextSettings.font
+	if font == -1 then
+		font = addon.Database:GetProfile().general.font
+	end
 
 	nameText:ClearAllPoints()
 	nameText:SetPoint(
@@ -64,7 +68,7 @@ function Name:UpdateSettings(frame, settings)
 	)
 
 	nameText:SetFont(
-		LSM:Fetch("font", nameTextSettings.font),
+		LSM:Fetch("font", font),
 		PP:ScaleFont(nameTextSettings.size or 12),
 		nameTextSettings.outline or ""
 	)

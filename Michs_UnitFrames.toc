@@ -17,6 +17,7 @@ Database.lua
 # Style
 Style/Colors.lua
 Style/Fonts.lua
+Style/Textures.lua
 
 # Widgets
 Frames/Widgets/Background.lua

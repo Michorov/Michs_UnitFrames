@@ -44,7 +44,12 @@ end
 
 function Background:UpdateSettings(frame, settings)
 	local backgroundSettings = (settings and settings.background) or {}
-	local texture = backgroundSettings.texture or "Solid"
+	local texture = backgroundSettings.texture
+	if texture == -1 then
+		texture = addon.Database:GetProfile().general.texture
+	end
+	texture = texture or "Solid"
+
 	if not LSM:IsValid("statusbar", texture) then
 		texture = "Solid"
 	end

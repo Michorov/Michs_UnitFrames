@@ -16,6 +16,12 @@ end
 
 local function BuildSettingsUpdater(updateReasons, settings)
 	return function(frame)
+		local frameSettings = settings
+		if not frameSettings then
+			local settingsUnit = frame.unit:match("^boss%d+$") and "boss" or frame.unit
+			frameSettings = addon.Database:GetProfile().frames[settingsUnit]
+		end
+
 		if updateReasons.mouseoverHighlightSettingsChanged then
 			addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
 				frame,
@@ -24,27 +30,27 @@ local function BuildSettingsUpdater(updateReasons, settings)
 		end
 
 		if updateReasons.backgroundSettingsChanged then
-			addon.Frames.Widgets.Background:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Background:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.healthSettingsChanged then
-			addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.absorbsSettingsChanged then
-			addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.healAbsorbsSettingsChanged then
-			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.healthTextSettingsChanged then
-			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, frameSettings)
 		end
 
 		if updateReasons.nameTextSettingsChanged then
-			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
+			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, frameSettings)
 		end
 	end
 end

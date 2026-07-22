@@ -6,36 +6,12 @@ addon.Options.Pages.Bars = addon.Options.Pages.Bars or {}
 addon.Options.Pages.Bars.Health = addon.Options.Pages.Bars.Health or {}
 
 local Health = addon.Options.Pages.Bars.Health
-local LSM = LibStub("LibSharedMedia-3.0")
 local subpage
 
 local colorModeOptions = {
 	{ value = "static", text = "Static" },
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
-
-local excludedTextureNames = {
-	play_icon = true,
-	stop_icon = true,
-	user_icon = true,
-	users_icon = true,
-}
-
-local function GetTextureOptions()
-	local options = {}
-
-	for _, textureName in ipairs(LSM:List("statusbar")) do
-		if not excludedTextureNames[textureName] and LSM:IsValid("statusbar", textureName) then
-			options[#options + 1] = {
-				value = textureName,
-				text = textureName,
-				texture = LSM:Fetch("statusbar", textureName),
-			}
-		end
-	end
-
-	return options
-end
 
 function Health:Ensure(parent)
 	if subpage then
@@ -65,7 +41,7 @@ function Health:Ensure(parent)
 
 	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
 	subpage.textureDropdown:SetLayoutWidth(178)
-	subpage.textureDropdown:SetOptions(GetTextureOptions())
+	subpage.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(nil, true))
 	subpage.textureDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.textureDropdown:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
@@ -75,26 +51,10 @@ function Health:Ensure(parent)
 
 	function subpage:UpdateState(profile, unit)
 		local settings = profile.frames[unit].health
-		local textureOptions = GetTextureOptions()
-		local textureListed = false
-
-		for _, option in ipairs(textureOptions) do
-			if option.value == settings.texture then
-				textureListed = true
-				break
-			end
-		end
-
-		if not textureListed then
-			textureOptions[#textureOptions + 1] = {
-				value = settings.texture,
-				text = settings.texture .. (LSM:IsValid("statusbar", settings.texture) and "" or " (Unavailable)"),
-			}
-		end
 
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
-		self.textureDropdown:SetOptions(textureOptions)
+		self.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(settings.texture, true))
 		self.textureDropdown:SetValue(settings.texture)
 	end
 

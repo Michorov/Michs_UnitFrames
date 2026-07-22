@@ -39,6 +39,32 @@ function General:Ensure(parent)
 		addon.UpdateScheduler:Notify("mouseoverHighlightSettingsChanged")
 	end)
 
+	page.body.fontDropdown = addon.Options.Controls.Dropdown:Create(page.body, "Global Font")
+	page.body.fontDropdown:SetLayoutWidth(178)
+	page.body.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
+	page.body.fontDropdown:SetLayoutPoint(
+		"TOPLEFT",
+		page.body.mouseoverHighlightCheckbox,
+		"BOTTOMLEFT",
+		0,
+		-24
+	)
+	page.body.fontDropdown:SetOnValueChanged(function(_, value)
+		addon.Database:GetProfile().general.font = value
+		addon.UpdateScheduler:Notify("nameTextSettingsChanged")
+		addon.UpdateScheduler:Notify("healthTextSettingsChanged")
+	end)
+
+	page.body.textureDropdown = addon.Options.Controls.Dropdown:Create(page.body, "Global Texture")
+	page.body.textureDropdown:SetLayoutWidth(178)
+	page.body.textureDropdown:SetOptions(addon.Style.Textures:GetOptions())
+	page.body.textureDropdown:SetLayoutPoint("TOPLEFT", page.body.fontDropdown, "TOPRIGHT", 24, 0)
+	page.body.textureDropdown:SetOnValueChanged(function(_, value)
+		addon.Database:GetProfile().general.texture = value
+		addon.UpdateScheduler:Notify("healthSettingsChanged")
+		addon.UpdateScheduler:Notify("backgroundSettingsChanged")
+	end)
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
@@ -47,6 +73,10 @@ function General:Ensure(parent)
 	end
 
 	function page:UpdateState(profile)
+		self.body.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions(profile.general.font))
+		self.body.fontDropdown:SetValue(profile.general.font)
+		self.body.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(profile.general.texture))
+		self.body.textureDropdown:SetValue(profile.general.texture)
 		self.body.mouseoverHighlightCheckbox:SetChecked(profile.general.mouseoverHighlight)
 	end
 

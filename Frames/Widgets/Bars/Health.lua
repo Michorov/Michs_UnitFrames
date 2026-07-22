@@ -22,7 +22,12 @@ end
 
 function Health:UpdateSettings(frame, settings)
 	local healthSettings = (settings and settings.health) or {}
-	local texture = healthSettings.texture or "Solid"
+	local texture = healthSettings.texture
+	if texture == -1 then
+		texture = addon.Database:GetProfile().general.texture
+	end
+	texture = texture or "Solid"
+
 	if not LSM:IsValid("statusbar", texture) then
 		texture = "Solid"
 	end

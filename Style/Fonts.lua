@@ -13,9 +13,16 @@ LSM:Register(
 	"Interface\\AddOns\\Michs_UnitFrames\\Media\\Fonts\\Philosopher-Bold.ttf"
 )
 
-function Fonts:GetOptions(selectedFontName)
+function Fonts:GetOptions(selectedFontName, includeGlobal)
 	local options = {}
 	local selectedFontListed = false
+
+	if includeGlobal then
+		options[#options + 1] = {
+			value = -1,
+			text = "Use Global Font",
+		}
+	end
 
 	for _, fontName in ipairs(LSM:List("font")) do
 		options[#options + 1] = {
@@ -29,7 +36,7 @@ function Fonts:GetOptions(selectedFontName)
 		end
 	end
 
-	if selectedFontName and not selectedFontListed then
+	if selectedFontName and selectedFontName ~= -1 and not selectedFontListed then
 		options[#options + 1] = {
 			value = selectedFontName,
 			text = selectedFontName .. " (Unavailable)",

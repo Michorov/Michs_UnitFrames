@@ -53,6 +53,10 @@ function Health:UpdateSettings(frame, settings)
 	frame.healthText.enabled = healthTextSettings.enabled ~= false
 	local anchor = healthTextSettings.anchor or "RIGHT"
 	local position = healthTextSettings.position or {}
+	local font = healthTextSettings.font
+	if font == -1 then
+		font = addon.Database:GetProfile().general.font
+	end
 
 	text:ClearAllPoints()
 	text:SetPoint(
@@ -63,7 +67,7 @@ function Health:UpdateSettings(frame, settings)
 		PP:ToUIScaled(position.y or 0)
 	)
 	text:SetFont(
-		LSM:Fetch("font", healthTextSettings.font),
+		LSM:Fetch("font", font),
 		PP:ScaleFont(healthTextSettings.size or 12),
 		healthTextSettings.outline or ""
 	)
