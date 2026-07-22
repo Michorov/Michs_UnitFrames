@@ -71,6 +71,7 @@ local function CreateUnitFrame(unit, frameName, parent)
 	addon.Frames.Widgets.Bars.HealAbsorbs:Ensure(frame, settings)
 	addon.Frames.Widgets.MouseoverHighlight:Ensure(frame, addon.Database:GetProfile().general)
 	addon.Frames.Widgets.Indicators.Combat:Ensure(frame, settings)
+	addon.Frames.Widgets.Indicators.RaidMarker:Ensure(frame, settings)
 	addon.Frames.Widgets.Texts.Name:Ensure(frame, settings)
 	addon.Frames.Widgets.Texts.Health:Ensure(frame, settings)
 	addon.Frames.Widgets.Border:Ensure(frame)
@@ -170,6 +171,7 @@ local function UpdateFrameLayout(unit)
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 	addon.Frames.Widgets.Border:UpdateSettings(frame)
 end
 
@@ -201,6 +203,7 @@ local function UpdateBossLayout()
 
 		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
 		previousBossFrame = frame
 	end

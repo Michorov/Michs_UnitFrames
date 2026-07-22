@@ -24,6 +24,7 @@ Frames/Widgets/Background.lua
 Frames/Widgets/Border.lua
 Frames/Widgets/MouseoverHighlight.lua
 Frames/Widgets/Indicators/Combat.lua
+Frames/Widgets/Indicators/RaidMarker.lua
 Frames/Widgets/Bars/Health.lua
 Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua
@@ -48,6 +49,7 @@ Options/Pages/Texts/Name.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras.lua
 Options/Pages/Indicators/Combat.lua
+Options/Pages/Indicators/RaidMarker.lua
 Options/Pages/Indicators.lua
 Options/Pages/Options.lua
 Options/Sections/Header.lua

@@ -10,6 +10,7 @@ local page
 local activeSubpage = "combat"
 
 local subpageOptions = {
+	{ value = "raidMarker", text = "Raid Marker" },
 	{ value = "combat", text = "Combat" },
 }
 
@@ -45,6 +46,7 @@ function Indicators:Ensure(parent)
 
 	page.subpages = {
 		combat = addon.Options.Pages.Indicators.Combat:Ensure(page.body),
+		raidMarker = addon.Options.Pages.Indicators.RaidMarker:Ensure(page.body),
 	}
 
 	for subpageKey, subpage in pairs(page.subpages) do
@@ -64,7 +66,10 @@ function Indicators:Ensure(parent)
 			subpage:SetShown(key == activeSubpage)
 		end
 
-		self.subpages[activeSubpage]:UpdateState(addon.Database:GetProfile())
+		self.subpages[activeSubpage]:UpdateState(
+			addon.Database:GetProfile(),
+			addon.Options.Sections.Content:GetSelectedUnit()
+		)
 	end
 
 	function page:UpdateLayout()
@@ -72,14 +77,20 @@ function Indicators:Ensure(parent)
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
+
+		for _, subpage in pairs(self.subpages) do
+			if subpage.UpdateLayout then
+				subpage:UpdateLayout()
+			end
+		end
 	end
 
-	function page:UpdateState(profile)
+	function page:UpdateState(profile, unit)
 		self.subpageDropdown:SetValue(activeSubpage)
-		self.subpages[activeSubpage]:UpdateState(profile)
+		self.subpages[activeSubpage]:UpdateState(profile, unit)
 	end
 
-	page:UpdateState(addon.Database:GetProfile())
+	page:UpdateState(addon.Database:GetProfile(), addon.Options.Sections.Content:GetSelectedUnit())
 
 	return page
 end

@@ -26,6 +26,12 @@ local DEFAULTS = {
 					size = 16,
 					position = { x = 0, y = 0 },
 				},
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 24,
+					position = { x = 0, y = 12 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -71,6 +77,12 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = 300, y = -250 },
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 24,
+					position = { x = 0, y = 12 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -116,6 +128,12 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 120, height = 28 },
 				position = { x = -340, y = -290 },
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -161,6 +179,12 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 120, height = 28 },
 				position = { x = 340, y = -290 },
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -206,6 +230,12 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
 				position = { x = -350, y = -180 },
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -251,6 +281,12 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
 				position = { x = -250, y = -180 },
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
@@ -297,6 +333,12 @@ local DEFAULTS = {
 				size = { width = 200, height = 48 },
 				position = { x = 500, y = 106 },
 				spacing = -1,
+				raidMarker = {
+					enabled = true,
+					anchor = "TOP",
+					size = 24,
+					position = { x = 0, y = 12 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,

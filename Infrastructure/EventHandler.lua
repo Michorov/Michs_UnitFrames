@@ -46,6 +46,7 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
 	eventFrame:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
 	eventFrame:RegisterEvent("UNIT_FACTION")
+	eventFrame:RegisterEvent("RAID_TARGET_UPDATE")
 	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
@@ -112,6 +113,10 @@ end
 
 function EventHandler:IsCombatActive()
 	return combatActive
+end
+
+function EventHandler:RAID_TARGET_UPDATE()
+	addon.UpdateScheduler:Notify("raidMarkerStateChanged")
 end
 
 function EventHandler:PLAYER_TARGET_CHANGED()

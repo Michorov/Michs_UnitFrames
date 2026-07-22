@@ -3,10 +3,9 @@ local _, addon = ...
 addon.Options = addon.Options or {}
 addon.Options.Pages = addon.Options.Pages or {}
 addon.Options.Pages.Indicators = addon.Options.Pages.Indicators or {}
-addon.Options.Pages.Indicators.Combat = addon.Options.Pages.Indicators.Combat or {}
+addon.Options.Pages.Indicators.RaidMarker = addon.Options.Pages.Indicators.RaidMarker or {}
 
-local Combat = addon.Options.Pages.Indicators.Combat
-local PP = addon.PixelPerfect
+local RaidMarker = addon.Options.Pages.Indicators.RaidMarker
 local subpage
 
 local anchorOptions = {
@@ -21,25 +20,20 @@ local anchorOptions = {
 	{ value = "CENTER", text = "Center" },
 }
 
-function Combat:Ensure(parent)
+function RaidMarker:Ensure(parent)
 	if subpage then
 		return subpage
 	end
 
 	subpage = CreateFrame("Frame", nil, parent)
-	subpage.unavailableText = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	subpage.unavailableText:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
-	subpage.unavailableText:SetJustifyH("LEFT")
-	subpage.unavailableText:SetTextColor(0.72, 0.74, 0.78, 1)
-	subpage.unavailableText:SetText("Combat indicator is not available for this frame")
-	subpage.unavailableText:Hide()
 
 	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
 	subpage.enabledCheckbox:SetLayoutWidth(178)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		addon.Database:GetProfile().frames.player.combatIndicator.enabled = enabled
-		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].raidMarker.enabled = enabled
+		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
 	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
@@ -53,8 +47,9 @@ function Combat:Ensure(parent)
 		-24
 	)
 	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
-		addon.Database:GetProfile().frames.player.combatIndicator.anchor = value
-		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].raidMarker.anchor = value
+		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
 	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
@@ -63,8 +58,9 @@ function Combat:Ensure(parent)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
 	subpage.offsetXSlider:SetOnValueChanged(function(_, value)
-		addon.Database:GetProfile().frames.player.combatIndicator.position.x = value
-		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].raidMarker.position.x = value
+		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
 	subpage.offsetYSlider = addon.Options.Controls.Slider:Create(subpage, "Offset Y")
@@ -73,8 +69,9 @@ function Combat:Ensure(parent)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "TOPRIGHT", 24, 0)
 	subpage.offsetYSlider:SetOnValueChanged(function(_, value)
-		addon.Database:GetProfile().frames.player.combatIndicator.position.y = value
-		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].raidMarker.position.y = value
+		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
 	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Size")
@@ -83,36 +80,19 @@ function Combat:Ensure(parent)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.sizeSlider:SetOnValueChanged(function(_, value)
-		addon.Database:GetProfile().frames.player.combatIndicator.size = value
-		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].raidMarker.size = value
+		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
-	function subpage:UpdateLayout()
-		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
-	end
-
 	function subpage:UpdateState(profile, unit)
-		local available = unit == "player"
-		self.enabledCheckbox:SetShown(available)
-		self.anchorDropdown:SetShown(available)
-		self.offsetXSlider:SetShown(available)
-		self.offsetYSlider:SetShown(available)
-		self.sizeSlider:SetShown(available)
-		self.unavailableText:SetShown(not available)
-
-		if not available then
-			return
-		end
-
-		local settings = profile.frames.player.combatIndicator
+		local settings = profile.frames[unit].raidMarker
 		self.enabledCheckbox:SetChecked(settings.enabled)
 		self.anchorDropdown:SetValue(settings.anchor)
 		self.offsetXSlider:SetValueSilently(settings.position.x)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 		self.sizeSlider:SetValueSilently(settings.size)
 	end
-
-	subpage:UpdateLayout()
 
 	return subpage
 end
