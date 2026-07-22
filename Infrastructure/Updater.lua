@@ -14,6 +14,7 @@ local function UpdateUnitState(frame, settings)
 	addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
 	addon.Frames.Widgets.Indicators.Combat:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateState(frame)
+	addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
 end
 
 local function BuildSettingsUpdater(updateReasons, settings)
@@ -62,6 +63,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 		if updateReasons.raidMarkerSettingsChanged then
 			addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, frameSettings)
 		end
+
+		if updateReasons.groupStatusSettingsChanged then
+			addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, frameSettings)
+		end
 	end
 end
 
@@ -104,6 +109,10 @@ local function BuildStateUpdater(updateReasons, settings)
 
 		if updateReasons.raidMarkerStateChanged then
 			addon.Frames.Widgets.Indicators.RaidMarker:UpdateState(frame)
+		end
+
+		if updateReasons.groupStatusStateChanged then
+			addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
 		end
 	end
 end

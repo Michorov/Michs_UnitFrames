@@ -36,6 +36,8 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("ENCOUNTER_END")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+	eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	eventFrame:RegisterEvent("UNIT_PET")
 	eventFrame:RegisterEvent("UNIT_TARGET")
@@ -117,6 +119,14 @@ end
 
 function EventHandler:RAID_TARGET_UPDATE()
 	addon.UpdateScheduler:Notify("raidMarkerStateChanged")
+end
+
+function EventHandler:GROUP_ROSTER_UPDATE()
+	addon.UpdateScheduler:Notify("groupStatusStateChanged", "player")
+end
+
+function EventHandler:PARTY_LEADER_CHANGED()
+	addon.UpdateScheduler:Notify("groupStatusStateChanged", "player")
 end
 
 function EventHandler:PLAYER_TARGET_CHANGED()

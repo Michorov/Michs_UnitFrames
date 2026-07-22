@@ -32,6 +32,14 @@ local DEFAULTS = {
 					size = 24,
 					position = { x = 0, y = 12 },
 				},
+				groupStatus = {
+					enabled = true,
+					showLeader = true,
+					showAssistant = true,
+					anchor = "TOPLEFT",
+					size = 16,
+					position = { x = 1, y = 10 },
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,
