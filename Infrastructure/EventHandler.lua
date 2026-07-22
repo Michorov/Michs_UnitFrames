@@ -5,6 +5,8 @@ addon.EventHandler = EventHandler
 
 local eventFrame = CreateFrame("Frame")
 local initialized = false
+local encounterActive = false
+local combatActive = false
 
 local supportedUnits = {
 	player = true,
@@ -30,6 +32,8 @@ function EventHandler:Initialize()
 	end
 
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventFrame:RegisterEvent("ENCOUNTER_START")
+	eventFrame:RegisterEvent("ENCOUNTER_END")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
 	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
@@ -55,6 +59,7 @@ function EventHandler:Initialize()
 end
 
 function EventHandler:PLAYER_ENTERING_WORLD()
+	combatActive = UnitAffectingCombat("player") == true
 	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
 	addon.UpdateScheduler:Notify("unitChanged", "player")
 	addon.UpdateScheduler:Notify("unitChanged", "target")
@@ -65,10 +70,29 @@ function EventHandler:PLAYER_ENTERING_WORLD()
 	addon.UpdateScheduler:Notify("unitChanged", "boss")
 end
 
+function EventHandler:ENCOUNTER_START()
+	encounterActive = true
+	combatActive = true
+	addon.UpdateScheduler:Notify("combatStateChanged", "player")
+end
+
+function EventHandler:ENCOUNTER_END()
+	encounterActive = false
+	combatActive = false
+	addon.UpdateScheduler:Notify("combatStateChanged", "player")
+end
+
 function EventHandler:PLAYER_REGEN_DISABLED()
 	if addon.Options:IsOpen() then
 		addon.Options:Close()
 	end
+
+	if encounterActive then
+		return
+	end
+
+	combatActive = true
+	addon.UpdateScheduler:Notify("combatStateChanged", "player")
 end
 
 function EventHandler:PLAYER_REGEN_ENABLED()
@@ -77,6 +101,17 @@ function EventHandler:PLAYER_REGEN_ENABLED()
 	if addon.Options:ShouldOpenAfterCombat() then
 		addon.Options:Open()
 	end
+
+	if encounterActive then
+		return
+	end
+
+	combatActive = false
+	addon.UpdateScheduler:Notify("combatStateChanged", "player")
+end
+
+function EventHandler:IsCombatActive()
+	return combatActive
 end
 
 function EventHandler:PLAYER_TARGET_CHANGED()
