@@ -21,6 +21,7 @@ function Textures:GetOptions(selectedTextureName, includeGlobal)
 		options[#options + 1] = {
 			value = -1,
 			text = "Use Global Texture",
+			textColor = { 0.50, 0.52, 0.56, 1 },
 		}
 	end
 

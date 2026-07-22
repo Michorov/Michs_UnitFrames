@@ -21,6 +21,7 @@ function Fonts:GetOptions(selectedFontName, includeGlobal)
 		options[#options + 1] = {
 			value = -1,
 			text = "Use Global Font",
+			textColor = { 0.50, 0.52, 0.56, 1 },
 		}
 	end
 
