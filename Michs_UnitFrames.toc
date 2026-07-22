@@ -2,7 +2,7 @@
 ## Title: Mich's UnitFrames
 ## Notes: Custom unit frames for player, target, pet, boss, and related units.
 ## Author: Mich
-## Version: 0.1.0
+## Version: 1.0.0
 ## SavedVariables: Michs_UnitFramesDB
 
 Libs/LibStub/LibStub.lua
