@@ -5,8 +5,13 @@ addon.Frames.Widgets = addon.Frames.Widgets or {}
 addon.Frames.Widgets.MouseoverHighlight = addon.Frames.Widgets.MouseoverHighlight or {}
 
 local MouseoverHighlight = addon.Frames.Widgets.MouseoverHighlight
+local settingsCache
 
-function MouseoverHighlight:Ensure(frame, settings)
+local function UpdateSettingsCache()
+	settingsCache = addon.Database:GetProfile().general
+end
+
+function MouseoverHighlight:Ensure(frame)
 	if not frame.mouseoverHighlight then
 		local highlight = CreateFrame("Frame", nil, frame)
 		highlight:SetAllPoints(frame)
@@ -29,16 +34,30 @@ function MouseoverHighlight:Ensure(frame, settings)
 		end)
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function MouseoverHighlight:UpdateSettings(frame, settings)
-	frame.mouseoverHighlight.enabled = settings and settings.mouseoverHighlight ~= false
+function MouseoverHighlight:UpdateSettings(frame)
+	UpdateSettingsCache()
+	local cachedSettings = settingsCache
+
+	if cachedSettings.mouseoverHighlight == false then
+		frame.mouseoverHighlight:Hide()
+		return
+	end
+
 	self:UpdateState(frame)
 end
 
 function MouseoverHighlight:UpdateState(frame)
-	if frame.mouseoverHighlight.enabled and frame:IsMouseOver() then
+	local cachedSettings = settingsCache
+
+	if cachedSettings.mouseoverHighlight == false then
+		frame.mouseoverHighlight:Hide()
+		return
+	end
+
+	if frame:IsMouseOver() then
 		frame.mouseoverHighlight:Show()
 	else
 		frame.mouseoverHighlight:Hide()

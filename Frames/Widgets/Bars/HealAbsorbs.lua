@@ -6,6 +6,12 @@ addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
 addon.Frames.Widgets.Bars.HealAbsorbs = addon.Frames.Widgets.Bars.HealAbsorbs or {}
 
 local HealAbsorbs = addon.Frames.Widgets.Bars.HealAbsorbs
+local settingsCache = {}
+
+local function UpdateSettingsCache(frame)
+	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
+	settingsCache[frame.settingsUnit] = settings.healAbsorbs or {}
+end
 
 local function GetHealAbsorbs(frame)
 	local unit = frame.unit
@@ -40,7 +46,7 @@ local function GetHealAbsorbs(frame)
 	return healAbsorbValue
 end
 
-function HealAbsorbs:Ensure(frame, settings)
+function HealAbsorbs:Ensure(frame)
 	if not frame.healAbsorbBar then
 		local healAbsorbBar = CreateFrame("StatusBar", nil, frame)
 		healAbsorbBar:SetFrameLevel(14)
@@ -61,26 +67,29 @@ function HealAbsorbs:Ensure(frame, settings)
 		frame.healAbsorbBar = healAbsorbBar
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function HealAbsorbs:UpdateSettings(frame, settings)
+function HealAbsorbs:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.healAbsorbBar:Hide()
+		return
+	end
+
 	local bar = frame.healAbsorbBar
-	local healAbsorbSettings = (settings and settings.healAbsorbs) or {}
-	local color = healAbsorbSettings.color or {}
-	bar.enabled = healAbsorbSettings.enabled ~= false
-	bar:SetStatusBarColor(
-		color.r or 1,
-		color.g or 0,
-		color.b or 0,
-		color.a or 0.5
-	)
+	local color = cachedSettings.color or {}
+	bar:SetStatusBarColor(color.r or 1, color.g or 0, color.b or 0, color.a or 0.5)
 
-	self:UpdateState(frame, settings)
+	self:UpdateState(frame)
 end
 
-function HealAbsorbs:UpdateState(frame, settings)
-	if not frame.healAbsorbBar.enabled then
+function HealAbsorbs:UpdateState(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
 		frame.healAbsorbBar:Hide()
 		return
 	end

@@ -7,8 +7,14 @@ addon.Frames.Widgets.Indicators.GroupStatus = addon.Frames.Widgets.Indicators.Gr
 
 local GroupStatus = addon.Frames.Widgets.Indicators.GroupStatus
 local PP = addon.PixelPerfect
+local settingsCache = {}
 
-function GroupStatus:Ensure(frame, settings)
+local function UpdateSettingsCache(frame)
+	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
+	settingsCache[frame.settingsUnit] = settings.groupStatus or {}
+end
+
+function GroupStatus:Ensure(frame)
 	if frame.unit ~= "player" then
 		return
 	end
@@ -24,45 +30,50 @@ function GroupStatus:Ensure(frame, settings)
 		frame.groupStatus = indicator
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function GroupStatus:UpdateSettings(frame, settings)
+function GroupStatus:UpdateSettings(frame)
 	if frame.unit ~= "player" or not frame.groupStatus then
 		return
 	end
 
-	local groupStatusSettings = (settings and settings.groupStatus) or {}
-	local anchor = groupStatusSettings.anchor or "TOPLEFT"
-	local position = groupStatusSettings.position or {}
-	local size = PP:ToUIScaled(groupStatusSettings.size or 16)
-	frame.groupStatus.enabled = groupStatusSettings.enabled ~= false
-	frame.groupStatus.showLeader = groupStatusSettings.showLeader ~= false
-	frame.groupStatus.showAssistant = groupStatusSettings.showAssistant ~= false
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.groupStatus:Hide()
+		return
+	end
+
+	local anchor = cachedSettings.anchor or "TOPLEFT"
+	local position = cachedSettings.position or {}
+	local size = PP:ToUIScaled(cachedSettings.size or 16)
 	frame.groupStatus:SetSize(size, size)
 	frame.groupStatus:ClearAllPoints()
-	frame.groupStatus:SetPoint(
-		anchor,
-		frame,
-		anchor,
-		PP:ToUIScaled(position.x or 0),
-		PP:ToUIScaled(position.y or 0)
-	)
+	frame.groupStatus:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x or 0), PP:ToUIScaled(position.y or 0))
 	self:UpdateState(frame)
 end
 
 function GroupStatus:UpdateState(frame)
-	if frame.unit ~= "player" or not frame.groupStatus or not frame.groupStatus.enabled then
+	if frame.unit ~= "player" or not frame.groupStatus then
 		if frame.groupStatus then
 			frame.groupStatus:Hide()
 		end
 		return
 	end
 
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.groupStatus:Hide()
+		return
+	end
+
 	local texture
-	if UnitIsGroupLeader("player") and frame.groupStatus.showLeader then
+	if UnitIsGroupLeader("player") and cachedSettings.showLeader ~= false then
 		texture = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
-	elseif UnitIsGroupAssistant("player") and frame.groupStatus.showAssistant then
+	elseif UnitIsGroupAssistant("player") and cachedSettings.showAssistant ~= false then
 		texture = "Interface\\GroupFrame\\UI-Group-AssistantIcon"
 	end
 

@@ -5,142 +5,129 @@ addon.Updater = Updater
 
 local initialized = false
 
-local function GetFrameSettings(frame)
-	local settingsUnit = frame.unit:match("^boss%d+$") and "boss" or frame.unit
-	return addon.Database:GetProfile().frames[settingsUnit]
-end
-
-local function UpdateUnitState(frame, settings)
-	addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
-	addon.Frames.Widgets.Bars.Power:UpdateState(frame, settings)
+local function UpdateUnitState(frame)
+	addon.Frames.Widgets.Bars.Health:UpdateState(frame)
+	addon.Frames.Widgets.Bars.Power:UpdateState(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateState(frame)
-	addon.Frames.Widgets.Background:UpdateState(frame, settings)
-	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame, settings)
-	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
-	addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
-	addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
-	addon.Frames.Widgets.Texts.Power:UpdateState(frame, settings)
+	addon.Frames.Widgets.Background:UpdateState(frame)
+	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame)
+	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame)
+	addon.Frames.Widgets.Texts.Name:UpdateState(frame)
+	addon.Frames.Widgets.Texts.Health:UpdateState(frame)
+	addon.Frames.Widgets.Texts.Power:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
 end
 
-local function UpdateUnitSettings(frame, settings)
-	addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
-		frame,
-		addon.Database:GetProfile().general
-	)
-	addon.Frames.Widgets.Background:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, settings)
+local function UpdateUnitSettings(frame)
+	addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(frame)
+	addon.Frames.Widgets.Background:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.Health:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame)
 end
 
-local function BuildSettingsUpdater(updateReasons, settings)
+local function BuildSettingsUpdater(updateReasons)
 	return function(frame)
-		local frameSettings = settings or GetFrameSettings(frame)
-
 		if updateReasons.mouseoverHighlightSettingsChanged then
-			addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(
-				frame,
-				addon.Database:GetProfile().general
-			)
+			addon.Frames.Widgets.MouseoverHighlight:UpdateSettings(frame)
 		end
 
 		if updateReasons.backgroundSettingsChanged then
-			addon.Frames.Widgets.Background:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Background:UpdateSettings(frame)
 		end
 
 		if updateReasons.healthSettingsChanged then
-			addon.Frames.Widgets.Bars.Health:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Bars.Health:UpdateSettings(frame)
 		end
 
 		if updateReasons.powerSettingsChanged then
-			addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
 		end
 
 		if updateReasons.castSettingsChanged then
-			addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame)
 		end
 
 		if updateReasons.absorbsSettingsChanged then
-			addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame)
 		end
 
 		if updateReasons.healAbsorbsSettingsChanged then
-			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame)
 		end
 
 		if updateReasons.healthTextSettingsChanged then
-			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
 		end
 
 		if updateReasons.nameTextSettingsChanged then
-			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
 		end
 
 		if updateReasons.powerTextSettingsChanged then
-			addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
 		end
 
 		if updateReasons.combatIndicatorSettingsChanged then
-			addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame)
 		end
 
 		if updateReasons.raidMarkerSettingsChanged then
-			addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
 		end
 
 		if updateReasons.groupStatusSettingsChanged then
-			addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, frameSettings)
+			addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame)
 		end
 	end
 end
 
-local function BuildStateUpdater(updateReasons, settings)
+local function BuildStateUpdater(updateReasons)
 	return function(frame)
 		if updateReasons.unitChanged then
-			UpdateUnitState(frame, settings)
+			UpdateUnitState(frame)
 			return
 		end
 
 		if updateReasons.healthStateChanged or updateReasons.unitColorStateChanged then
-			addon.Frames.Widgets.Bars.Health:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.Health:UpdateState(frame)
 		end
 
 		if updateReasons.healthStateChanged then
-			addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
+			addon.Frames.Widgets.Texts.Health:UpdateState(frame)
 		end
 
 		if updateReasons.absorbsStateChanged then
-			addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame)
 		end
 
 		if updateReasons.healAbsorbsStateChanged then
-			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame)
 		end
 
 		if updateReasons.unitColorStateChanged then
-			addon.Frames.Widgets.Background:UpdateState(frame, settings)
-			addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
-			addon.Frames.Widgets.Texts.Health:UpdateState(frame, settings)
+			addon.Frames.Widgets.Background:UpdateState(frame)
+			addon.Frames.Widgets.Texts.Name:UpdateState(frame)
+			addon.Frames.Widgets.Texts.Health:UpdateState(frame)
 		end
 
 		if updateReasons.nameStateChanged then
-			addon.Frames.Widgets.Texts.Name:UpdateState(frame, settings)
+			addon.Frames.Widgets.Texts.Name:UpdateState(frame)
 		end
 
 		if updateReasons.powerStateChanged then
-			addon.Frames.Widgets.Bars.Power:UpdateState(frame, settings)
-			addon.Frames.Widgets.Texts.Power:UpdateState(frame, settings)
+			addon.Frames.Widgets.Bars.Power:UpdateState(frame)
+			addon.Frames.Widgets.Texts.Power:UpdateState(frame)
 		end
 
 		if updateReasons.castStateChanged then
@@ -182,29 +169,17 @@ local function Flush(updateReasons)
 			addon.FrameRegistry:UpdateLayout(unit)
 		end
 
-		local settingsUnit = unit:match("^boss%d+$") and "boss" or unit
-		local settings = addon.Database:GetProfile().frames[settingsUnit]
-		local stateUpdater = BuildStateUpdater(unitReasons, settings)
-		local settingsUpdater = BuildSettingsUpdater(unitReasons, settings)
+		local stateUpdater = BuildStateUpdater(unitReasons)
+		local settingsUpdater = BuildSettingsUpdater(unitReasons)
 
 		addon.FrameRegistry:UpdateUnit(unit, stateUpdater, settingsUpdater)
 	end
 
 	if hasGlobal then
 		if globalReasons.profileChanged then
-			for unit in pairs(addon.Database:GetProfile().frames) do
-				addon.FrameRegistry:UpdateVisibility(unit)
-				addon.FrameRegistry:UpdateLayout(unit)
-			end
-
-			addon.FrameRegistry:UpdateAllUnits(
-				function(frame)
-					UpdateUnitState(frame, GetFrameSettings(frame))
-				end,
-				function(frame)
-					UpdateUnitSettings(frame, GetFrameSettings(frame))
-				end
-			)
+			addon.FrameRegistry:UpdateAllVisibility()
+			addon.FrameRegistry:UpdateAllLayouts()
+			addon.FrameRegistry:UpdateAllUnits(UpdateUnitState, UpdateUnitSettings)
 		else
 			local stateUpdater = BuildStateUpdater(globalReasons)
 			local settingsUpdater = BuildSettingsUpdater(globalReasons)

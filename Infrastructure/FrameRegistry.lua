@@ -45,11 +45,11 @@ end
 local function CreateUnitFrame(unit, frameName, parent)
 	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate")
 	local settingsUnit = unit:match("^boss%d+$") and "boss" or unit
-	local settings = addon.Database:GetProfile().frames[settingsUnit]
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetFrameLevel(10)
 
 	frame.unit = unit
+	frame.settingsUnit = settingsUnit
 	frame:SetAttribute("unit", unit)
 	frame:SetAttribute("toggleForVehicle", true)
 	frame:SetAttribute("*type1", "target")
@@ -76,19 +76,19 @@ local function CreateUnitFrame(unit, frameName, parent)
 		GameTooltip:Hide()
 	end)
 
-	addon.Frames.Widgets.Background:Ensure(frame, settings)
-	addon.Frames.Widgets.Bars.Health:Ensure(frame, settings)
-	addon.Frames.Widgets.Bars.Power:Ensure(frame, settings)
-	addon.Frames.Widgets.Bars.Cast:Ensure(frame, settings)
-	addon.Frames.Widgets.Bars.Absorbs:Ensure(frame, settings)
-	addon.Frames.Widgets.Bars.HealAbsorbs:Ensure(frame, settings)
-	addon.Frames.Widgets.MouseoverHighlight:Ensure(frame, addon.Database:GetProfile().general)
-	addon.Frames.Widgets.Indicators.Combat:Ensure(frame, settings)
-	addon.Frames.Widgets.Indicators.RaidMarker:Ensure(frame, settings)
-	addon.Frames.Widgets.Indicators.GroupStatus:Ensure(frame, settings)
-	addon.Frames.Widgets.Texts.Name:Ensure(frame, settings)
-	addon.Frames.Widgets.Texts.Health:Ensure(frame, settings)
-	addon.Frames.Widgets.Texts.Power:Ensure(frame, settings)
+	addon.Frames.Widgets.Background:Ensure(frame)
+	addon.Frames.Widgets.Bars.Health:Ensure(frame)
+	addon.Frames.Widgets.Bars.Power:Ensure(frame)
+	addon.Frames.Widgets.Bars.Cast:Ensure(frame)
+	addon.Frames.Widgets.Bars.Absorbs:Ensure(frame)
+	addon.Frames.Widgets.Bars.HealAbsorbs:Ensure(frame)
+	addon.Frames.Widgets.MouseoverHighlight:Ensure(frame)
+	addon.Frames.Widgets.Indicators.Combat:Ensure(frame)
+	addon.Frames.Widgets.Indicators.RaidMarker:Ensure(frame)
+	addon.Frames.Widgets.Indicators.GroupStatus:Ensure(frame)
+	addon.Frames.Widgets.Texts.Name:Ensure(frame)
+	addon.Frames.Widgets.Texts.Health:Ensure(frame)
+	addon.Frames.Widgets.Texts.Power:Ensure(frame)
 	addon.Frames.Widgets.Border:Ensure(frame)
 
 	map[unit] = frame
@@ -181,25 +181,27 @@ end
 
 local function UpdateFrameLayout(unit)
 	local frame = map[unit]
-	local settings = addon.Database:GetProfile().frames[unit]
+	local profile = addon.Database:GetProfile()
+	local settings = profile.frames[unit]
 	local position = settings.position
 
 	frame:SetSize(PP:ToUIScaled(settings.size.width), PP:ToUIScaled(settings.size.height))
 	PP:CenterElement(frame, UIParent, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
 
-	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
+	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateLayout(frame)
-	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
-	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame, settings)
+	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame)
 	addon.Frames.Widgets.Border:UpdateSettings(frame)
 end
 
 local function UpdateBossLayout()
-	local settings = addon.Database:GetProfile().frames.boss
+	local profile = addon.Database:GetProfile()
+	local settings = profile.frames.boss
 	local frameWidth = PP:ToUIScaled(settings.size.width)
 	local frameHeight = PP:ToUIScaled(settings.size.height)
 	local spacing = PP:ToUIScaled(settings.spacing)
@@ -224,12 +226,12 @@ local function UpdateBossLayout()
 			frame:SetPoint("TOPLEFT", bossContainer, "TOPLEFT", 0, 0)
 		end
 
-		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, settings)
-		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame, settings)
-		addon.Frames.Widgets.Texts.Power:UpdateSettings(frame, settings)
-		addon.Frames.Widgets.Bars.Power:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
+		addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
+		addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
 		addon.Frames.Widgets.Bars.Cast:UpdateLayout(frame)
-		addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame, settings)
+		addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
 		previousBossFrame = frame
 	end
@@ -271,6 +273,20 @@ function FrameRegistry:UpdateVisibility(unit)
 	end
 end
 
+function FrameRegistry:UpdateAllVisibility()
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	for unit in pairs(map) do
+		if not unit:match("^boss%d+$") then
+			UpdateFrameVisibility(unit)
+		end
+	end
+
+	UpdateBossVisibility()
+end
+
 function FrameRegistry:UpdateLayout(unit)
 	if not initialized then
 		error("FrameRegistry is not initialized", 2)
@@ -281,6 +297,20 @@ function FrameRegistry:UpdateLayout(unit)
 	elseif map[unit] then
 		UpdateFrameLayout(unit)
 	end
+end
+
+function FrameRegistry:UpdateAllLayouts()
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	for unit in pairs(map) do
+		if not unit:match("^boss%d+$") then
+			UpdateFrameLayout(unit)
+		end
+	end
+
+	UpdateBossLayout()
 end
 
 function FrameRegistry:UpdateBlizzardFrameVisibility()

@@ -6,16 +6,25 @@ addon.Frames.Widgets.Background = addon.Frames.Widgets.Background or {}
 
 local Background = addon.Frames.Widgets.Background
 local LSM = LibStub("LibSharedMedia-3.0")
+local settingsCache = {}
+local generalSettings
 
-function Background:UpdateColor(frame, settings)
-	local backgroundSettings = (settings and settings.background) or {}
-	local color = backgroundSettings.color or {}
+local function UpdateSettingsCache(frame)
+	local profile = addon.Database:GetProfile()
+	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].background or {}
+	generalSettings = profile.general
+end
+
+function Background:UpdateColor(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	local color = cachedSettings.color or {}
 	local r = color.r or 0.12
 	local g = color.g or 0.12
 	local b = color.b or 0.12
 	local a = color.a or 1
 
-	if backgroundSettings.colorByClassOrReaction then
+	if cachedSettings.colorByClassOrReaction then
 		if UnitIsPlayer(frame.unit) then
 			r, g, b = addon.Style.Colors:GetUnitClassBackgroundColor(frame.unit)
 		else
@@ -32,21 +41,23 @@ function Background:UpdateColor(frame, settings)
 	frame.background:SetVertexColor(r, g, b, a)
 end
 
-function Background:Ensure(frame, settings)
+function Background:Ensure(frame)
 	if not frame.background then
 		local background = frame:CreateTexture(nil, "BACKGROUND")
 		background:SetAllPoints(frame)
 		frame.background = background
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Background:UpdateSettings(frame, settings)
-	local backgroundSettings = (settings and settings.background) or {}
-	local texture = backgroundSettings.texture
+function Background:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	local texture = cachedSettings.texture
 	if texture == -1 then
-		texture = addon.Database:GetProfile().general.texture
+		texture = generalSettings.texture
 	end
 	texture = texture or "Solid"
 
@@ -55,9 +66,9 @@ function Background:UpdateSettings(frame, settings)
 	end
 
 	frame.background:SetTexture(LSM:Fetch("statusbar", texture))
-	self:UpdateState(frame, settings)
+	self:UpdateState(frame)
 end
 
-function Background:UpdateState(frame, settings)
-	self:UpdateColor(frame, settings)
+function Background:UpdateState(frame)
+	self:UpdateColor(frame)
 end

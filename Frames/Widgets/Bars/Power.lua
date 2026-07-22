@@ -8,6 +8,14 @@ addon.Frames.Widgets.Bars.Power = addon.Frames.Widgets.Bars.Power or {}
 local Power = addon.Frames.Widgets.Bars.Power
 local PP = addon.PixelPerfect
 local LSM = LibStub("LibSharedMedia-3.0")
+local settingsCache = {}
+local generalSettings
+
+local function UpdateSettingsCache(frame)
+	local profile = addon.Database:GetProfile()
+	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].power or {}
+	generalSettings = profile.general
+end
 
 local function UpdateColor(frame)
 	local powerType, powerToken, typeR, typeG, typeB = UnitPowerType(frame.unit)
@@ -20,7 +28,7 @@ local function UpdateColor(frame)
 	end
 end
 
-function Power:Ensure(frame, settings)
+function Power:Ensure(frame)
 	if not frame.powerBar then
 		local powerBar = CreateFrame("StatusBar", nil, frame)
 		powerBar:SetFrameLevel(20)
@@ -61,14 +69,21 @@ function Power:Ensure(frame, settings)
 		frame.powerBar = powerBar
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Power:UpdateSettings(frame, settings)
-	local powerSettings = (settings and settings.power) or {}
-	local texture = powerSettings.texture
+function Power:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.powerBar:Hide()
+		return
+	end
+
+	local texture = cachedSettings.texture
 	if texture == -1 then
-		texture = addon.Database:GetProfile().general.texture
+		texture = generalSettings.texture
 	end
 	texture = texture or "Solid"
 
@@ -79,19 +94,20 @@ function Power:UpdateSettings(frame, settings)
 	local borderThickness = PP:ToUIScaled(1)
 	local border = frame.powerBar.border
 
-	frame.powerBar.enabled = powerSettings.enabled ~= false
 	frame.powerBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
-	frame.powerBar:SetHeight(PP:ToUIScaled(powerSettings.height or 4))
+	frame.powerBar:SetHeight(PP:ToUIScaled(cachedSettings.height or 4))
 	border.left:SetWidth(borderThickness)
 	border.right:SetWidth(borderThickness)
 	border.top:SetHeight(borderThickness)
 	border.bottom:SetHeight(borderThickness)
 
-	self:UpdateState(frame, settings)
+	self:UpdateState(frame)
 end
 
-function Power:UpdateState(frame, settings)
-	if not frame.powerBar.enabled or not frame.unit or not UnitExists(frame.unit) then
+function Power:UpdateState(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
 		frame.powerBar:Hide()
 		return
 	end

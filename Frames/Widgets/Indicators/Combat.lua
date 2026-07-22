@@ -7,8 +7,14 @@ addon.Frames.Widgets.Indicators.Combat = addon.Frames.Widgets.Indicators.Combat 
 
 local Combat = addon.Frames.Widgets.Indicators.Combat
 local PP = addon.PixelPerfect
+local settingsCache = {}
 
-function Combat:Ensure(frame, settings)
+local function UpdateSettingsCache(frame)
+	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
+	settingsCache[frame.settingsUnit] = settings.combatIndicator or {}
+end
+
+function Combat:Ensure(frame)
 	if frame.unit ~= "player" then
 		return
 	end
@@ -25,19 +31,25 @@ function Combat:Ensure(frame, settings)
 		frame.combatIndicator = indicator
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Combat:UpdateSettings(frame, settings)
+function Combat:UpdateSettings(frame)
 	if frame.unit ~= "player" or not frame.combatIndicator then
 		return
 	end
 
-	local combatSettings = (settings and settings.combatIndicator) or {}
-	local anchor = combatSettings.anchor or "CENTER"
-	local position = combatSettings.position or {}
-	local size = PP:ToUIScaled(combatSettings.size or 16)
-	frame.combatIndicator.enabled = combatSettings.enabled ~= false
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.combatIndicator:Hide()
+		return
+	end
+
+	local anchor = cachedSettings.anchor or "CENTER"
+	local position = cachedSettings.position or {}
+	local size = PP:ToUIScaled(cachedSettings.size or 16)
 	frame.combatIndicator:SetSize(size, size)
 	frame.combatIndicator:ClearAllPoints()
 	frame.combatIndicator:SetPoint(
@@ -55,7 +67,12 @@ function Combat:UpdateState(frame)
 		return
 	end
 
-	frame.combatIndicator:SetShown(
-		frame.combatIndicator.enabled and addon.EventHandler:IsCombatActive()
-	)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.combatIndicator:Hide()
+		return
+	end
+
+	frame.combatIndicator:SetShown(addon.EventHandler:IsCombatActive())
 end

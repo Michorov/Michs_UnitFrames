@@ -8,16 +8,51 @@ addon.Frames.Widgets.Texts.Power = addon.Frames.Widgets.Texts.Power or {}
 local Power = addon.Frames.Widgets.Texts.Power
 local PP = addon.PixelPerfect
 local LSM = LibStub("LibSharedMedia-3.0")
+local settingsCache = {}
+local generalSettings
 
-local function UpdateColor(frame, settings)
-	local powerTextSettings = (settings and settings.powerText) or {}
-	local color = powerTextSettings.color or {}
+local function FormatPercent(unit)
+	return string.format("%.0f%%", UnitPowerPercent(unit, nil, true, CurveConstants.ScaleTo100))
+end
+
+local formatters = {
+	abbreviated = function(unit)
+		return AbbreviateNumbers(UnitPower(unit))
+	end,
+	percent = FormatPercent,
+	full = function(unit)
+		return BreakUpLargeNumbers(UnitPower(unit))
+	end,
+	abbreviatedPercent = function(unit)
+		return AbbreviateNumbers(UnitPower(unit)) .. " | " .. FormatPercent(unit)
+	end,
+	percentAbbreviated = function(unit)
+		return FormatPercent(unit) .. " | " .. AbbreviateNumbers(UnitPower(unit))
+	end,
+	fullPercent = function(unit)
+		return BreakUpLargeNumbers(UnitPower(unit)) .. " | " .. FormatPercent(unit)
+	end,
+	percentFull = function(unit)
+		return FormatPercent(unit) .. " | " .. BreakUpLargeNumbers(UnitPower(unit))
+	end,
+}
+
+local function UpdateSettingsCache(frame)
+	local profile = addon.Database:GetProfile()
+	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].powerText or {}
+	generalSettings = profile.general
+end
+
+local function UpdateColor(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	local color = cachedSettings.color or {}
 	local r = color.r or 1
 	local g = color.g or 1
 	local b = color.b or 1
 	local a = color.a or 1
 
-	if powerTextSettings.colorByPowerType ~= false then
+	if cachedSettings.colorByPowerType ~= false then
 		local powerType, powerToken, typeR, typeG, typeB = UnitPowerType(frame.unit)
 		local powerColor = PowerBarColor[powerToken] or PowerBarColor[powerType]
 
@@ -35,7 +70,7 @@ local function UpdateColor(frame, settings)
 	frame.powerText.text:SetTextColor(r, g, b, a)
 end
 
-function Power:Ensure(frame, settings)
+function Power:Ensure(frame)
 	if not frame.powerText then
 		local powerText = CreateFrame("Frame", nil, frame)
 		powerText:SetAllPoints(frame)
@@ -45,73 +80,45 @@ function Power:Ensure(frame, settings)
 		frame.powerText = powerText
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Power:UpdateSettings(frame, settings)
-	local text = frame.powerText.text
-	local powerTextSettings = (settings and settings.powerText) or {}
-	local anchor = powerTextSettings.anchor or "BOTTOMRIGHT"
-	local position = powerTextSettings.position or {}
-	local font = powerTextSettings.font
-	frame.powerText.enabled = powerTextSettings.enabled ~= false
+function Power:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
 
-	if font == -1 or not font then
-		font = addon.Database:GetProfile().general.font
-	end
-
-	text:ClearAllPoints()
-	text:SetPoint(
-		anchor,
-		frame.powerText,
-		anchor,
-		PP:ToUIScaled(position.x or 0),
-		PP:ToUIScaled(position.y or 0)
-	)
-	text:SetFont(
-		LSM:Fetch("font", font),
-		PP:ScaleFont(powerTextSettings.size or 12),
-		powerTextSettings.outline or ""
-	)
-	text:SetShadowColor(0, 0, 0, 0.9)
-	text:SetShadowOffset(1, -1)
-
-	self:UpdateState(frame, settings)
-end
-
-function Power:UpdateState(frame, settings)
-	if not frame.powerText.enabled or not frame.unit or not UnitExists(frame.unit) then
+	if cachedSettings.enabled == false then
 		frame.powerText:Hide()
 		return
 	end
 
-	local power = UnitPower(frame.unit)
-	local abbreviated = AbbreviateNumbers(power)
-	local full = BreakUpLargeNumbers(power)
-	local percent = string.format(
-		"%.0f%%",
-		UnitPowerPercent(frame.unit, nil, true, CurveConstants.ScaleTo100)
-	)
-	local format = ((settings and settings.powerText) or {}).format or "abbreviated"
-	local text
-
-	if format == "percent" then
-		text = percent
-	elseif format == "full" then
-		text = full
-	elseif format == "abbreviatedPercent" then
-		text = abbreviated .. " | " .. percent
-	elseif format == "percentAbbreviated" then
-		text = percent .. " | " .. abbreviated
-	elseif format == "fullPercent" then
-		text = full .. " | " .. percent
-	elseif format == "percentFull" then
-		text = percent .. " | " .. full
-	else
-		text = abbreviated
+	local text = frame.powerText.text
+	local anchor = cachedSettings.anchor or "BOTTOMRIGHT"
+	local position = cachedSettings.position or {}
+	local font = cachedSettings.font
+	if font == -1 or not font then
+		font = generalSettings.font
 	end
 
-	frame.powerText.text:SetText(text)
-	UpdateColor(frame, settings)
+	text:ClearAllPoints()
+	text:SetPoint(anchor, frame.powerText, anchor, PP:ToUIScaled(position.x or 0), PP:ToUIScaled(position.y or 0))
+	text:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size or 12), cachedSettings.outline or "")
+	text:SetShadowColor(0, 0, 0, 0.9)
+	text:SetShadowOffset(1, -1)
+
+	self:UpdateState(frame)
+end
+
+function Power:UpdateState(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
+		frame.powerText:Hide()
+		return
+	end
+
+	local formatter = formatters[cachedSettings.format] or formatters.abbreviated
+	frame.powerText.text:SetText(formatter(frame.unit))
+	UpdateColor(frame)
 	frame.powerText:Show()
 end

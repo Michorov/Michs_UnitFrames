@@ -8,16 +8,25 @@ addon.Frames.Widgets.Texts.Name = addon.Frames.Widgets.Texts.Name or {}
 local Name = addon.Frames.Widgets.Texts.Name
 local PP = addon.PixelPerfect
 local LSM = LibStub("LibSharedMedia-3.0")
+local settingsCache = {}
+local generalSettings
 
-local function UpdateColor(frame, settings)
-	local nameTextSettings = (settings and settings.nameText) or {}
-	local color = nameTextSettings.color or {}
+local function UpdateSettingsCache(frame)
+	local profile = addon.Database:GetProfile()
+	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].nameText or {}
+	generalSettings = profile.general
+end
+
+local function UpdateColor(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	local color = cachedSettings.color or {}
 	local r = color.r or 1
 	local g = color.g or 1
 	local b = color.b or 1
 	local a = color.a or 1
 
-	if nameTextSettings.colorByClassOrReaction then
+	if cachedSettings.colorByClassOrReaction then
 		if UnitIsPlayer(frame.unit) then
 			r, g, b, a = addon.Style.Colors:GetUnitClassTextColor(frame.unit, color)
 		else
@@ -34,7 +43,7 @@ local function UpdateColor(frame, settings)
 	frame.nameText.text:SetTextColor(r, g, b, a)
 end
 
-function Name:Ensure(frame, settings)
+function Name:Ensure(frame)
 	if not frame.nameText then
 		local nameFrame = CreateFrame("Frame", nil, frame)
 		nameFrame:SetAllPoints(frame)
@@ -44,48 +53,46 @@ function Name:Ensure(frame, settings)
 		frame.nameText = nameFrame
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Name:UpdateSettings(frame, settings)
+function Name:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.nameText:Hide()
+		return
+	end
+
 	local nameText = frame.nameText.text
-	local nameTextSettings = (settings and settings.nameText) or {}
-	frame.nameText.enabled = nameTextSettings.enabled ~= false
-	local anchor = nameTextSettings.anchor or "LEFT"
-	local position = nameTextSettings.position or {}
-	local font = nameTextSettings.font
+	local anchor = cachedSettings.anchor or "LEFT"
+	local position = cachedSettings.position or {}
+	local font = cachedSettings.font
 	if font == -1 then
-		font = addon.Database:GetProfile().general.font
+		font = generalSettings.font
 	end
 
 	nameText:ClearAllPoints()
-	nameText:SetPoint(
-		anchor,
-		frame.nameText,
-		anchor,
-		PP:ToUIScaled(position.x or 0),
-		PP:ToUIScaled(position.y or 0)
-	)
+	nameText:SetPoint(anchor, frame.nameText, anchor, PP:ToUIScaled(position.x or 0), PP:ToUIScaled(position.y or 0))
 
-	nameText:SetFont(
-		LSM:Fetch("font", font),
-		PP:ScaleFont(nameTextSettings.size or 12),
-		nameTextSettings.outline or ""
-	)
+	nameText:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size or 12), cachedSettings.outline or "")
 	nameText:SetShadowColor(0, 0, 0, 0.9)
 	nameText:SetShadowOffset(1, -1)
 
-	self:UpdateState(frame, settings)
+	self:UpdateState(frame)
 end
 
-function Name:UpdateState(frame, settings)
+function Name:UpdateState(frame)
 	local unit = frame.unit
-	if not frame.nameText.enabled or not unit or not UnitExists(unit) then
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not unit or not UnitExists(unit) then
 		frame.nameText:Hide()
 		return
 	end
 
 	frame.nameText.text:SetText(UnitName(unit) or "")
-	UpdateColor(frame, settings)
+	UpdateColor(frame)
 	frame.nameText:Show()
 end

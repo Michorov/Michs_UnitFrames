@@ -6,8 +6,14 @@ addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
 addon.Frames.Widgets.Bars.Absorbs = addon.Frames.Widgets.Bars.Absorbs or {}
 
 local Absorbs = addon.Frames.Widgets.Bars.Absorbs
+local settingsCache = {}
 
-function Absorbs:Ensure(frame, settings)
+local function UpdateSettingsCache(frame)
+	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
+	settingsCache[frame.settingsUnit] = settings.absorbs or {}
+end
+
+function Absorbs:Ensure(frame)
 	if not frame.absorbBar then
 		local absorbBar = CreateFrame("StatusBar", nil, frame)
 		absorbBar:SetFrameLevel(15)
@@ -25,25 +31,28 @@ function Absorbs:Ensure(frame, settings)
 		frame.absorbBar = absorbBar
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Absorbs:UpdateSettings(frame, settings)
-	local absorbSettings = (settings and settings.absorbs) or {}
-	local color = absorbSettings.color or {}
-	frame.absorbBar.enabled = absorbSettings.enabled ~= false
-	frame.absorbBar:SetStatusBarColor(
-		color.r or 0.2,
-		color.g or 0.8,
-		color.b or 1,
-		color.a or 0.5
-	)
+function Absorbs:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
 
-	self:UpdateState(frame, settings)
+	if cachedSettings.enabled == false then
+		frame.absorbBar:Hide()
+		return
+	end
+
+	local color = cachedSettings.color or {}
+	frame.absorbBar:SetStatusBarColor(color.r or 0.2, color.g or 0.8, color.b or 1, color.a or 0.5)
+
+	self:UpdateState(frame)
 end
 
-function Absorbs:UpdateState(frame, settings)
-	if not frame.absorbBar.enabled then
+function Absorbs:UpdateState(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
 		frame.absorbBar:Hide()
 		return
 	end

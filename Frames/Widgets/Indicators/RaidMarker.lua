@@ -7,8 +7,14 @@ addon.Frames.Widgets.Indicators.RaidMarker = addon.Frames.Widgets.Indicators.Rai
 
 local RaidMarker = addon.Frames.Widgets.Indicators.RaidMarker
 local PP = addon.PixelPerfect
+local settingsCache = {}
 
-function RaidMarker:Ensure(frame, settings)
+local function UpdateSettingsCache(frame)
+	local settings = addon.Database:GetProfile().frames[frame.settingsUnit]
+	settingsCache[frame.settingsUnit] = settings.raidMarker or {}
+end
+
+function RaidMarker:Ensure(frame)
 	if not frame.raidMarker then
 		local indicator = CreateFrame("Frame", nil, frame)
 		indicator:SetFrameLevel(35)
@@ -21,29 +27,31 @@ function RaidMarker:Ensure(frame, settings)
 		frame.raidMarker = indicator
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function RaidMarker:UpdateSettings(frame, settings)
-	local raidMarkerSettings = (settings and settings.raidMarker) or {}
-	local anchor = raidMarkerSettings.anchor or "TOP"
-	local position = raidMarkerSettings.position or {}
-	local size = PP:ToUIScaled(raidMarkerSettings.size or 16)
-	frame.raidMarker.enabled = raidMarkerSettings.enabled ~= false
+function RaidMarker:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false then
+		frame.raidMarker:Hide()
+		return
+	end
+
+	local anchor = cachedSettings.anchor
+	local position = cachedSettings.position or {}
+	local size = PP:ToUIScaled(cachedSettings.size)
 	frame.raidMarker:SetSize(size, size)
 	frame.raidMarker:ClearAllPoints()
-	frame.raidMarker:SetPoint(
-		anchor,
-		frame,
-		anchor,
-		PP:ToUIScaled(position.x or 0),
-		PP:ToUIScaled(position.y or 0)
-	)
+	frame.raidMarker:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
 	self:UpdateState(frame)
 end
 
 function RaidMarker:UpdateState(frame)
-	if not frame.raidMarker.enabled or not frame.unit or not UnitExists(frame.unit) then
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	if cachedSettings.enabled == false or not frame.unit or not UnitExists(frame.unit) then
 		frame.raidMarker:Hide()
 		return
 	end

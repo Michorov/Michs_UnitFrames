@@ -7,8 +7,16 @@ addon.Frames.Widgets.Bars.Health = addon.Frames.Widgets.Bars.Health or {}
 
 local Health = addon.Frames.Widgets.Bars.Health
 local LSM = LibStub("LibSharedMedia-3.0")
+local settingsCache = {}
+local generalSettings
 
-function Health:Ensure(frame, settings)
+local function UpdateSettingsCache(frame)
+	local profile = addon.Database:GetProfile()
+	settingsCache[frame.settingsUnit] = profile.frames[frame.settingsUnit].health or {}
+	generalSettings = profile.general
+end
+
+function Health:Ensure(frame)
 	if not frame.healthBar then
 		local healthBar = CreateFrame("StatusBar", nil, frame)
 		healthBar:SetAllPoints(frame)
@@ -17,14 +25,16 @@ function Health:Ensure(frame, settings)
 		frame.healthBar = healthBar
 	end
 
-	self:UpdateSettings(frame, settings)
+	self:UpdateSettings(frame)
 end
 
-function Health:UpdateSettings(frame, settings)
-	local healthSettings = (settings and settings.health) or {}
-	local texture = healthSettings.texture
+function Health:UpdateSettings(frame)
+	UpdateSettingsCache(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+
+	local texture = cachedSettings.texture
 	if texture == -1 then
-		texture = addon.Database:GetProfile().general.texture
+		texture = generalSettings.texture
 	end
 	texture = texture or "Solid"
 
@@ -33,18 +43,18 @@ function Health:UpdateSettings(frame, settings)
 	end
 
 	frame.healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
-	self:UpdateState(frame, settings)
+	self:UpdateState(frame)
 end
 
-function Health:UpdateColor(frame, settings)
-	local healthSettings = (settings and settings.health) or {}
-	local color = healthSettings.color or {}
+function Health:UpdateColor(frame)
+	local cachedSettings = settingsCache[frame.settingsUnit]
+	local color = cachedSettings.color or {}
 	local r = color.r or 0.12
 	local g = color.g or 0.12
 	local b = color.b or 0.12
 	local a = color.a or 1
 
-	if healthSettings.colorByClassOrReaction then
+	if cachedSettings.colorByClassOrReaction then
 		if UnitIsPlayer(frame.unit) then
 			r, g, b = addon.Style.Colors:GetUnitClassBackgroundColor(frame.unit)
 		else
@@ -61,7 +71,7 @@ function Health:UpdateColor(frame, settings)
 	frame.healthBar:SetStatusBarColor(r, g, b, a)
 end
 
-function Health:UpdateState(frame, settings)
+function Health:UpdateState(frame)
 	local unit = frame.unit
 	if not unit then
 		return
@@ -72,5 +82,5 @@ function Health:UpdateState(frame, settings)
 
 	frame.healthBar:SetMinMaxValues(0, maximumHealth)
 	frame.healthBar:SetValue(currentHealth)
-	self:UpdateColor(frame, settings)
+	self:UpdateColor(frame)
 end
