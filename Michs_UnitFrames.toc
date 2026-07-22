@@ -47,6 +47,7 @@ Options/Pages/Texts/Health.lua
 Options/Pages/Texts/Name.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras.lua
+Options/Pages/Indicators/Combat.lua
 Options/Pages/Indicators.lua
 Options/Pages/Options.lua
 Options/Sections/Header.lua

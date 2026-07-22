@@ -8,7 +8,7 @@ addon.Frames.Widgets.Indicators.Combat = addon.Frames.Widgets.Indicators.Combat 
 local Combat = addon.Frames.Widgets.Indicators.Combat
 local PP = addon.PixelPerfect
 
-function Combat:Ensure(frame)
+function Combat:Ensure(frame, settings)
 	if frame.unit ~= "player" then
 		return
 	end
@@ -25,14 +25,16 @@ function Combat:Ensure(frame)
 		frame.combatIndicator = indicator
 	end
 
-	self:UpdateSettings(frame)
+	self:UpdateSettings(frame, settings)
 end
 
-function Combat:UpdateSettings(frame)
+function Combat:UpdateSettings(frame, settings)
 	if frame.unit ~= "player" or not frame.combatIndicator then
 		return
 	end
 
+	local combatSettings = (settings and settings.combatIndicator) or {}
+	frame.combatIndicator.enabled = combatSettings.enabled ~= false
 	frame.combatIndicator:SetSize(PP:ToUIScaled(16), PP:ToUIScaled(16))
 	PP:CenterElement(frame.combatIndicator, frame, 0, 0)
 	self:UpdateState(frame)
@@ -43,5 +45,7 @@ function Combat:UpdateState(frame)
 		return
 	end
 
-	frame.combatIndicator:SetShown(addon.EventHandler:IsCombatActive())
+	frame.combatIndicator:SetShown(
+		frame.combatIndicator.enabled and addon.EventHandler:IsCombatActive()
+	)
 end

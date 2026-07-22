@@ -7,6 +7,11 @@ addon.Options.Pages.Indicators = addon.Options.Pages.Indicators or {}
 local Indicators = addon.Options.Pages.Indicators
 local PP = addon.PixelPerfect
 local page
+local activeSubpage = "combat"
+
+local subpageOptions = {
+	{ value = "combat", text = "Combat" },
+}
 
 function Indicators:Ensure(parent)
 	if page then
@@ -28,12 +33,53 @@ function Indicators:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("Indicators")
 
+	page.subpageDropdown = addon.Options.Controls.Dropdown:Create(page.header, "")
+	page.subpageDropdown:SetLayoutWidth(140)
+	page.subpageDropdown:SetLabelVisible(false)
+	page.subpageDropdown:SetOptions(subpageOptions)
+	page.subpageDropdown:SetValue(activeSubpage)
+	page.subpageDropdown:SetLayoutPoint("RIGHT", page.header, "RIGHT", -148, 0)
+	page.subpageDropdown:SetOnValueChanged(function(_, value)
+		page:SetActiveSubpage(value)
+	end)
+
+	page.subpages = {
+		combat = addon.Options.Pages.Indicators.Combat:Ensure(page.body),
+	}
+
+	for subpageKey, subpage in pairs(page.subpages) do
+		subpage:SetAllPoints(page.body)
+		subpage:SetShown(subpageKey == activeSubpage)
+	end
+
+	function page:SetActiveSubpage(subpageKey)
+		if not self.subpages[subpageKey] then
+			return
+		end
+
+		activeSubpage = subpageKey
+		self.subpageDropdown:SetValue(activeSubpage)
+
+		for key, subpage in pairs(self.subpages) do
+			subpage:SetShown(key == activeSubpage)
+		end
+
+		self.subpages[activeSubpage]:UpdateState(addon.Database:GetProfile())
+	end
+
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
 	end
+
+	function page:UpdateState(profile)
+		self.subpageDropdown:SetValue(activeSubpage)
+		self.subpages[activeSubpage]:UpdateState(profile)
+	end
+
+	page:UpdateState(addon.Database:GetProfile())
 
 	return page
 end

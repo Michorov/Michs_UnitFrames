@@ -20,6 +20,9 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = -300, y = -250 },
+				combatIndicator = {
+					enabled = true,
+				},
 				health = {
 					texture = -1,
 					colorByClassOrReaction = true,

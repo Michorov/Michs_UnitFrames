@@ -53,6 +53,10 @@ local function BuildSettingsUpdater(updateReasons, settings)
 		if updateReasons.nameTextSettingsChanged then
 			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame, frameSettings)
 		end
+
+		if updateReasons.combatIndicatorSettingsChanged then
+			addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame, frameSettings)
+		end
 	end
 end
 
