@@ -25,45 +25,52 @@ local function InitializeAddon()
 				local castSettings = settings.cast
 				if castSettings then
 					local castFont = castSettings.font
-					if castFont == mediaName
-						or ((castFont == nil or castFont == -1) and globalFontRegistered) then
+					if castFont == mediaName or ((castFont == nil or castFont == -1) and globalFontRegistered) then
 						addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 					end
 				end
 
-				if settings.nameText.font == mediaName
-					or (settings.nameText.font == -1 and globalFontRegistered) then
+				if settings.nameText.font == mediaName or (settings.nameText.font == -1 and globalFontRegistered) then
 					addon.UpdateScheduler:Notify("nameTextSettingsChanged", unit)
 				end
 
-				if settings.healthText.font == mediaName
-					or (settings.healthText.font == -1 and globalFontRegistered) then
+				if
+					settings.healthText.font == mediaName
+					or (settings.healthText.font == -1 and globalFontRegistered)
+				then
 					addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 				end
 
-				if settings.powerText.font == mediaName
-					or (settings.powerText.font == -1 and globalFontRegistered) then
+				if settings.powerText.font == mediaName or (settings.powerText.font == -1 and globalFontRegistered) then
 					addon.UpdateScheduler:Notify("powerTextSettingsChanged", unit)
 				end
 			else
-				if settings.health.texture == mediaName
-					or (settings.health.texture == -1 and globalTextureRegistered) then
+				if
+					settings.health.texture == mediaName
+					or (settings.health.texture == -1 and globalTextureRegistered)
+				then
 					addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
 				end
 
-				if settings.background.texture == mediaName
-					or (settings.background.texture == -1 and globalTextureRegistered) then
+				if
+					settings.background.texture == mediaName
+					or (settings.background.texture == -1 and globalTextureRegistered)
+				then
 					addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
 				end
 
-				if settings.power.texture == mediaName
-					or (settings.power.texture == -1 and globalTextureRegistered) then
+				if
+					settings.power.texture == mediaName
+					or (settings.power.texture == -1 and globalTextureRegistered)
+				then
 					addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
 				end
 
 				local castTexture = settings.cast and settings.cast.texture
-				if castTexture == mediaName
-					or ((castTexture == nil or castTexture == -1) and globalTextureRegistered) then
+				if
+					castTexture == mediaName
+					or ((castTexture == nil or castTexture == -1) and globalTextureRegistered)
+				then
 					addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 				end
 			end

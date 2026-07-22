@@ -4,6 +4,7 @@ local EventHandler = {}
 addon.EventHandler = EventHandler
 
 local eventFrame = CreateFrame("Frame")
+local unitEventFrames = {}
 local initialized = false
 local encounterActive = false
 local combatActive = false
@@ -34,8 +35,60 @@ local supportedCastUnits = {
 	boss5 = true,
 }
 
-local function IsSupportedUnit(unit)
-	return supportedUnits[unit] == true
+local unitEvents = {
+	"UNIT_NAME_UPDATE",
+	"UNIT_POWER_FREQUENT",
+	"UNIT_MAXPOWER",
+	"UNIT_DISPLAYPOWER",
+	"UNIT_HEALTH",
+	"UNIT_MAXHEALTH",
+	"UNIT_ABSORB_AMOUNT_CHANGED",
+	"UNIT_HEAL_ABSORB_AMOUNT_CHANGED",
+	"UNIT_FACTION",
+}
+
+local castEvents = {
+	"UNIT_SPELLCAST_START",
+	"UNIT_SPELLCAST_STOP",
+	"UNIT_SPELLCAST_FAILED",
+	"UNIT_SPELLCAST_INTERRUPTED",
+	"UNIT_SPELLCAST_DELAYED",
+	"UNIT_SPELLCAST_CHANNEL_START",
+	"UNIT_SPELLCAST_CHANNEL_UPDATE",
+	"UNIT_SPELLCAST_CHANNEL_STOP",
+	"UNIT_SPELLCAST_EMPOWER_START",
+	"UNIT_SPELLCAST_EMPOWER_UPDATE",
+	"UNIT_SPELLCAST_EMPOWER_STOP",
+	"UNIT_SPELLCAST_INTERRUPTIBLE",
+	"UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+}
+
+local function DispatchEvent(_, event, ...)
+	local handler = EventHandler[event]
+	if handler then
+		handler(EventHandler, event, ...)
+	end
+end
+
+local function CreateUnitEventFrame(unit)
+	local frame = CreateFrame("Frame")
+
+	for _, event in ipairs(unitEvents) do
+		frame:RegisterUnitEvent(event, unit)
+	end
+
+	if supportedCastUnits[unit] then
+		for _, event in ipairs(castEvents) do
+			frame:RegisterUnitEvent(event, unit)
+		end
+	end
+
+	if unit:match("^boss%d+$") then
+		frame:RegisterUnitEvent("UNIT_TARGETABLE_CHANGED", unit)
+	end
+
+	frame:SetScript("OnEvent", DispatchEvent)
+	unitEventFrames[unit] = frame
 end
 
 function EventHandler:Initialize()
@@ -51,40 +104,17 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-	eventFrame:RegisterEvent("UNIT_PET")
-	eventFrame:RegisterEvent("UNIT_TARGET")
-	eventFrame:RegisterEvent("UNIT_TARGETABLE_CHANGED")
-	eventFrame:RegisterEvent("UNIT_NAME_UPDATE")
-	eventFrame:RegisterEvent("UNIT_POWER_FREQUENT")
-	eventFrame:RegisterEvent("UNIT_MAXPOWER")
-	eventFrame:RegisterEvent("UNIT_DISPLAYPOWER")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_START")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-	eventFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-	eventFrame:RegisterEvent("UNIT_HEALTH")
-	eventFrame:RegisterEvent("UNIT_MAXHEALTH")
-	eventFrame:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
-	eventFrame:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-	eventFrame:RegisterEvent("UNIT_FACTION")
+	eventFrame:RegisterUnitEvent("UNIT_PET", "player")
+	eventFrame:RegisterUnitEvent("UNIT_TARGET", "target", "focus")
 	eventFrame:RegisterEvent("RAID_TARGET_UPDATE")
 	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-	eventFrame:SetScript("OnEvent", function(self, event, ...)
-		if EventHandler[event] then
-			EventHandler[event](EventHandler, event, ...)
-		end
-	end)
+	for unit in pairs(supportedUnits) do
+		CreateUnitEventFrame(unit)
+	end
+
+	eventFrame:SetScript("OnEvent", DispatchEvent)
 
 	initialized = true
 end
@@ -187,48 +217,26 @@ function EventHandler:UNIT_TARGET(event, unit)
 end
 
 function EventHandler:UNIT_TARGETABLE_CHANGED(event, unit)
-	if IsSupportedUnit(unit) and unit:match("^boss") then
-		addon.UpdateScheduler:Notify("unitChanged", unit)
-	end
+	addon.UpdateScheduler:Notify("unitChanged", unit)
 end
 
 function EventHandler:UNIT_NAME_UPDATE(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("nameStateChanged", unit)
 end
 
 function EventHandler:UNIT_POWER_FREQUENT(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("powerStateChanged", unit)
 end
 
 function EventHandler:UNIT_MAXPOWER(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("powerStateChanged", unit)
 end
 
 function EventHandler:UNIT_DISPLAYPOWER(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("powerStateChanged", unit)
 end
 
 function EventHandler:UNIT_SPELLCAST_START(event, unit)
-	if not supportedCastUnits[unit] then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("castStateChanged", unit)
 end
 
@@ -246,45 +254,25 @@ EventHandler.UNIT_SPELLCAST_INTERRUPTIBLE = EventHandler.UNIT_SPELLCAST_START
 EventHandler.UNIT_SPELLCAST_NOT_INTERRUPTIBLE = EventHandler.UNIT_SPELLCAST_START
 
 function EventHandler:UNIT_HEALTH(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_MAXHEALTH(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_ABSORB_AMOUNT_CHANGED(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_HEAL_ABSORB_AMOUNT_CHANGED(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
 function EventHandler:UNIT_FACTION(event, unit)
-	if not IsSupportedUnit(unit) then
-		return
-	end
-
 	addon.UpdateScheduler:Notify("unitColorStateChanged", unit)
 end
