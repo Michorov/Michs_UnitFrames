@@ -34,9 +34,19 @@ function Combat:UpdateSettings(frame, settings)
 	end
 
 	local combatSettings = (settings and settings.combatIndicator) or {}
+	local anchor = combatSettings.anchor or "CENTER"
+	local position = combatSettings.position or {}
+	local size = PP:ToUIScaled(combatSettings.size or 16)
 	frame.combatIndicator.enabled = combatSettings.enabled ~= false
-	frame.combatIndicator:SetSize(PP:ToUIScaled(16), PP:ToUIScaled(16))
-	PP:CenterElement(frame.combatIndicator, frame, 0, 0)
+	frame.combatIndicator:SetSize(size, size)
+	frame.combatIndicator:ClearAllPoints()
+	frame.combatIndicator:SetPoint(
+		anchor,
+		frame,
+		anchor,
+		PP:ToUIScaled(position.x or 0),
+		PP:ToUIScaled(position.y or 0)
+	)
 	self:UpdateState(frame)
 end
 

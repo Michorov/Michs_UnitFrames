@@ -22,6 +22,9 @@ local DEFAULTS = {
 				position = { x = -300, y = -250 },
 				combatIndicator = {
 					enabled = true,
+					anchor = "CENTER",
+					size = 16,
+					position = { x = 0, y = 0 },
 				},
 				health = {
 					texture = -1,
