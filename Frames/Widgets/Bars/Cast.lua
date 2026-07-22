@@ -30,6 +30,7 @@ end
 
 local function HideCastBar(castBar)
 	castBar.duration = nil
+	castBar.castTimeElapsed = 0
 	castBar.spellName:ClearText()
 	castBar.castTime:ClearText()
 	castBar:Hide()
@@ -48,9 +49,13 @@ function Cast:Ensure(frame)
 		castBar:SetStatusBarColor(1, 0.7, 0, 1)
 		castBar:SetMinMaxValues(0, 1)
 		castBar:SetValue(1)
-		castBar:SetScript("OnUpdate", function(self)
+		castBar:SetScript("OnUpdate", function(self, elapsed)
 			if self.duration and self.castTime:IsShown() then
-				self.castTime:SetFormattedText("%.1f", self.duration:GetRemainingDuration())
+				self.castTimeElapsed = (self.castTimeElapsed or 0) + elapsed
+				if self.castTimeElapsed >= 0.1 then
+					self.castTimeElapsed = self.castTimeElapsed - 0.1
+					self.castTime:SetFormattedText("%.1f", self.duration:GetRemainingDuration())
+				end
 			end
 		end)
 
@@ -331,6 +336,7 @@ function Cast:UpdateState(frame)
 
 	castBar:SetTimerDuration(duration, Enum.StatusBarInterpolation.Immediate, direction)
 	castBar.duration = duration
+	castBar.castTimeElapsed = 0
 	if spellNameEnabled then
 		castBar.spellName:SetText(name)
 	else
