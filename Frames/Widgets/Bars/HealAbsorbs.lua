@@ -60,9 +60,11 @@ function HealAbsorbs:Ensure(frame)
 		texture:SetVertTile(true)
 		healAbsorbBar:SetStatusBarTexture(texture)
 
-		local healthTexture = frame.healthBar:GetStatusBarTexture()
-		healAbsorbBar:SetPoint("TOPLEFT", healthTexture, "TOPLEFT", 0, 0)
-		healAbsorbBar:SetPoint("BOTTOMRIGHT", healthTexture, "BOTTOMRIGHT", 0, 0)
+		local healthTexture = frame.healthBar and frame.healthBar:GetStatusBarTexture()
+		if healthTexture then
+			healAbsorbBar:SetPoint("TOPLEFT", healthTexture, "TOPLEFT", 0, 0)
+			healAbsorbBar:SetPoint("BOTTOMRIGHT", healthTexture, "BOTTOMRIGHT", 0, 0)
+		end
 
 		frame.healAbsorbBar = healAbsorbBar
 	end
@@ -81,6 +83,7 @@ function HealAbsorbs:UpdateSettings(frame)
 
 	local bar = frame.healAbsorbBar
 	local color = cachedSettings.color or {}
+
 	bar:SetStatusBarColor(color.r or 1, color.g or 0, color.b or 0, color.a or 0.5)
 
 	self:UpdateState(frame)
@@ -100,7 +103,13 @@ function HealAbsorbs:UpdateState(frame)
 		return
 	end
 
-	frame.healAbsorbBar:SetMinMaxValues(0, UnitHealth(frame.unit))
+	local currentHealth = UnitHealth(frame.unit)
+	if currentHealth == nil then
+		frame.healAbsorbBar:Hide()
+		return
+	end
+
+	frame.healAbsorbBar:SetMinMaxValues(0, currentHealth)
 	frame.healAbsorbBar:SetValue(healAbsorbValue)
 	frame.healAbsorbBar:Show()
 end

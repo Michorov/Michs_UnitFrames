@@ -255,7 +255,6 @@ EventHandler.UNIT_SPELLCAST_NOT_INTERRUPTIBLE = EventHandler.UNIT_SPELLCAST_STAR
 
 function EventHandler:UNIT_HEALTH(event, unit)
 	addon.UpdateScheduler:Notify("healthStateChanged", unit)
-	addon.UpdateScheduler:Notify("absorbsStateChanged", unit)
 	addon.UpdateScheduler:Notify("healAbsorbsStateChanged", unit)
 end
 
