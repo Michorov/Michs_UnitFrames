@@ -37,11 +37,15 @@ function Background:UpdateColor(frame)
 	local b = color.b
 	local a = color.a
 
-	if cachedSettings.colorByClassOrReaction then
-		if UnitIsPlayer(frame.unit) then
-			r, g, b = addon.Style.Colors:GetUnitClassBackgroundColor(frame.unit)
+	local unit = frame.unit
+	if cachedSettings.colorByClassOrReaction and unit and UnitExists(unit) then
+		if UnitIsPlayer(unit) then
+			local classColor = C_ClassColor.GetClassColor(select(2, UnitClass(unit)))
+			if classColor then
+				r, g, b = classColor:GetRGB()
+			end
 		else
-			local reaction = UnitReaction(frame.unit, "player")
+			local reaction = UnitReaction(unit, "player")
 			local reactionColor = reaction and FACTION_BAR_COLORS[reaction]
 			if reactionColor then
 				r = reactionColor.r
