@@ -9,6 +9,35 @@ local Debuffs = addon.Options.Pages.Auras.Debuffs
 local PP = addon.PixelPerfect
 local subpage
 
+if addon.IsRestrictedAuraAPI then
+	function Debuffs:Ensure(parent)
+		if subpage then
+			return subpage
+		end
+
+		subpage = CreateFrame("Frame", nil, parent)
+		subpage.message = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+		subpage.message:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
+		subpage.message:SetJustifyH("LEFT")
+		subpage.message:SetTextColor(0.72, 0.74, 0.78, 1)
+		subpage.message:SetText("Auras for 12.1 will be available soon")
+
+		function subpage:UpdateLayout()
+			self.message:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
+		end
+
+		function subpage:UpdateState()
+			self.message:Show()
+		end
+
+		subpage:UpdateLayout()
+
+		return subpage
+	end
+
+	return
+end
+
 local defaults = {
 	enabled = false,
 	anchor = "TOPLEFT",
