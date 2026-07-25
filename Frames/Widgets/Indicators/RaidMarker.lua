@@ -27,7 +27,7 @@ end
 function RaidMarker:Ensure(frame)
 	if not frame.raidMarker then
 		local indicator = CreateFrame("Frame", nil, frame)
-		indicator:SetFrameLevel(35)
+		indicator:SetFrameLevel(50)
 		indicator:Hide()
 
 		indicator.texture = indicator:CreateTexture(nil, "OVERLAY")

@@ -33,7 +33,7 @@ function GroupStatus:Ensure(frame)
 
 	if not frame.groupStatus then
 		local indicator = CreateFrame("Frame", nil, frame)
-		indicator:SetFrameLevel(33)
+		indicator:SetFrameLevel(50)
 		indicator:Hide()
 
 		indicator.texture = indicator:CreateTexture(nil, "OVERLAY")

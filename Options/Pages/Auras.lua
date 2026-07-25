@@ -7,6 +7,12 @@ addon.Options.Pages.Auras = addon.Options.Pages.Auras or {}
 local Auras = addon.Options.Pages.Auras
 local PP = addon.PixelPerfect
 local page
+local activeSubpage = "buffs"
+
+local subpageOptions = {
+	{ value = "buffs", text = "Buffs" },
+	{ value = "debuffs", text = "Debuffs" },
+}
 
 function Auras:Ensure(parent)
 	if page then
@@ -28,19 +34,57 @@ function Auras:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("Auras")
 
-	page.body.notice = page.body:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	page.body.notice:SetPoint("TOPLEFT", page.body, "TOPLEFT", 0, 0)
-	page.body.notice:SetJustifyH("LEFT")
-	page.body.notice:SetTextColor(0.72, 0.74, 0.78, 1)
-	page.body.notice:SetText("Auras will be available with 12.1 patch")
+	page.subpageDropdown = addon.Options.Controls.Dropdown:Create(page.header, "")
+	page.subpageDropdown:SetLayoutWidth(140)
+	page.subpageDropdown:SetLabelVisible(false)
+	page.subpageDropdown:SetOptions(subpageOptions)
+	page.subpageDropdown:SetValue(activeSubpage)
+	page.subpageDropdown:SetLayoutPoint("RIGHT", page.header, "RIGHT", -148, 0)
+	page.subpageDropdown:SetOnValueChanged(function(_, value)
+		page:SetActiveSubpage(value)
+	end)
+
+	page.subpages = {
+		buffs = addon.Options.Pages.Auras.Buffs:Ensure(page.body),
+		debuffs = addon.Options.Pages.Auras.Debuffs:Ensure(page.body),
+	}
+
+	for subpageKey, subpage in pairs(page.subpages) do
+		subpage:SetAllPoints(page.body)
+		subpage:SetShown(subpageKey == activeSubpage)
+	end
+
+	function page:SetActiveSubpage(subpageKey)
+		if not self.subpages[subpageKey] then
+			return
+		end
+
+		activeSubpage = subpageKey
+		self.subpageDropdown:SetValue(activeSubpage)
+
+		for key, subpage in pairs(self.subpages) do
+			subpage:SetShown(key == activeSubpage)
+		end
+
+		self.subpages[activeSubpage]:UpdateState(
+			addon.Database:GetProfile(),
+			addon.Options.Sections.Content:GetSelectedUnit()
+		)
+	end
 
 	function page:UpdateLayout()
 		self.header:SetHeight(PP:ToUIScaled(32))
 		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
-		self.body.notice:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
 		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
 		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
 	end
+
+	function page:UpdateState(profile, unit)
+		self.subpageDropdown:SetValue(activeSubpage)
+		self.subpages[activeSubpage]:UpdateState(profile, unit)
+	end
+
+	page:UpdateState(addon.Database:GetProfile(), addon.Options.Sections.Content:GetSelectedUnit())
 
 	return page
 end

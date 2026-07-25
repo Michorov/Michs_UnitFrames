@@ -13,6 +13,7 @@ Libs/MichsPixelPerfectLib-1.0/MichsPixelPerfectLib-1.0.lua
 
 PixelPerfect.lua
 Database.lua
+AuraHandler.lua
 
 # Style
 Style/Fonts.lua
@@ -30,6 +31,8 @@ Frames/Widgets/Bars/Power.lua
 Frames/Widgets/Bars/Cast.lua
 Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua
+Frames/Widgets/Auras/Buffs.lua
+Frames/Widgets/Auras/Debuffs.lua
 Frames/Widgets/Texts/Name.lua
 Frames/Widgets/Texts/Health.lua
 Frames/Widgets/Texts/Power.lua
@@ -54,6 +57,8 @@ Options/Pages/Texts/Health.lua
 Options/Pages/Texts/Name.lua
 Options/Pages/Texts/Power.lua
 Options/Pages/Texts.lua
+Options/Pages/Auras/Buffs.lua
+Options/Pages/Auras/Debuffs.lua
 Options/Pages/Auras.lua
 Options/Pages/Indicators/Combat.lua
 Options/Pages/Indicators/RaidMarker.lua
