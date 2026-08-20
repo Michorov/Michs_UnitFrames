@@ -3,7 +3,7 @@
 ## Category: Mich's Toolkit
 ## Notes: Custom unit frames for player, target, pet, boss, and related units.
 ## Author: Mich
-## Version: 1.0.2
+## Version: 1.0.3
 ## SavedVariables: Michs_UnitFramesDB
 
 Libs/LibStub/LibStub.lua
