@@ -5,7 +5,6 @@ addon.Frames.Widgets = addon.Frames.Widgets or {}
 addon.Frames.Widgets.Background = addon.Frames.Widgets.Background or {}
 
 local Background = addon.Frames.Widgets.Background
-local LSM = LibStub("LibSharedMedia-3.0")
 local settingsCache = {}
 local generalSettings
 
@@ -76,13 +75,8 @@ function Background:UpdateSettings(frame)
 	if texture == -1 then
 		texture = generalSettings.texture
 	end
-	texture = texture or "Solid"
 
-	if not LSM:IsValid("statusbar", texture) then
-		texture = "Solid"
-	end
-
-	frame.background:SetTexture(LSM:Fetch("statusbar", texture))
+	frame.background:SetTexture(addon.Style.Textures:Fetch(texture))
 	self:UpdateState(frame)
 end
 

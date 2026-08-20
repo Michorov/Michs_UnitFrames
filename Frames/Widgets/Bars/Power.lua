@@ -7,7 +7,6 @@ addon.Frames.Widgets.Bars.Power = addon.Frames.Widgets.Bars.Power or {}
 
 local Power = addon.Frames.Widgets.Bars.Power
 local PP = addon.PixelPerfect
-local LSM = LibStub("LibSharedMedia-3.0")
 local settingsCache = {}
 local generalSettings
 
@@ -92,16 +91,11 @@ function Power:UpdateSettings(frame)
 	if texture == -1 then
 		texture = generalSettings.texture
 	end
-	texture = texture or "Solid"
-
-	if not LSM:IsValid("statusbar", texture) then
-		texture = "Solid"
-	end
 
 	local borderThickness = PP:ToUIScaled(1)
 	local border = frame.powerBar.border
 
-	frame.powerBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
+	frame.powerBar:SetStatusBarTexture(addon.Style.Textures:Fetch(texture))
 	frame.powerBar:SetHeight(PP:ToUIScaled(cachedSettings.height))
 	border.left:SetWidth(borderThickness)
 	border.right:SetWidth(borderThickness)

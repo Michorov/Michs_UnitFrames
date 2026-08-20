@@ -186,11 +186,7 @@ function Cast:UpdateSettings(frame)
 		texture = generalSettings.texture
 	end
 
-	if not LSM:IsValid("statusbar", texture) then
-		texture = "Solid"
-	end
-
-	frame.castBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
+	frame.castBar:SetStatusBarTexture(addon.Style.Textures:Fetch(texture))
 	self:UpdateLayout(frame)
 	self:UpdateState(frame)
 end

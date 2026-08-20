@@ -5,6 +5,13 @@ addon.Style.Textures = addon.Style.Textures or {}
 
 local Textures = addon.Style.Textures
 local LSM = LibStub("LibSharedMedia-3.0")
+local FALLBACK_TEXTURE = "M-SolidDarker"
+
+LSM:Register(
+	"statusbar",
+	"M-SolidDarker",
+	"Interface\\AddOns\\Michs_UnitFrames\\Media\\Textures\\M-SolidDarker"
+)
 
 local excludedTextureNames = {
 	play_icon = true,
@@ -47,4 +54,12 @@ function Textures:GetOptions(selectedTextureName, includeGlobal)
 	end
 
 	return options
+end
+
+function Textures:Fetch(textureName)
+	if not LSM:IsValid("statusbar", textureName) then
+		textureName = FALLBACK_TEXTURE
+	end
+
+	return LSM:Fetch("statusbar", textureName)
 end

@@ -6,7 +6,6 @@ addon.Frames.Widgets.Bars = addon.Frames.Widgets.Bars or {}
 addon.Frames.Widgets.Bars.Health = addon.Frames.Widgets.Bars.Health or {}
 
 local Health = addon.Frames.Widgets.Bars.Health
-local LSM = LibStub("LibSharedMedia-3.0")
 local settingsCache = {}
 local generalSettings
 
@@ -49,13 +48,8 @@ function Health:UpdateSettings(frame)
 	if texture == -1 then
 		texture = generalSettings.texture
 	end
-	texture = texture or "Solid"
 
-	if not LSM:IsValid("statusbar", texture) then
-		texture = "Solid"
-	end
-
-	frame.healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", texture))
+	frame.healthBar:SetStatusBarTexture(addon.Style.Textures:Fetch(texture))
 	self:UpdateState(frame)
 end
 
