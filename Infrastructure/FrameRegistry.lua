@@ -43,7 +43,7 @@ local function UpdateFrame(frame, stateCallback, settingsCallback)
 end
 
 local function CreateUnitFrame(unit, frameName, parent)
-	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate")
+	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate, PingableUnitFrameTemplate")
 	local settingsUnit = unit:match("^boss%d+$") and "boss" or unit
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetFrameLevel(10)
@@ -55,6 +55,15 @@ local function CreateUnitFrame(unit, frameName, parent)
 	frame:SetAttribute("*type1", "target")
 	frame:SetAttribute("*type2", "togglemenu")
 	frame:RegisterForClicks("AnyUp")
+
+	if unit == "player" then
+		function frame:GetTargetInfo()
+			return {
+				guid = UnitGUID("player"),
+				isPlayerResource = true,
+			}
+		end
+	end
 
 	frame:HookScript("OnEnter", function(self)
 		if not self.unit then
