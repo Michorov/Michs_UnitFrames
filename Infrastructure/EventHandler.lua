@@ -45,7 +45,6 @@ local unitEvents = {
 	"UNIT_ABSORB_AMOUNT_CHANGED",
 	"UNIT_HEAL_ABSORB_AMOUNT_CHANGED",
 	"UNIT_FACTION",
-	"UNIT_AURA",
 }
 
 local castEvents = {
@@ -223,16 +222,6 @@ end
 
 function EventHandler:UNIT_NAME_UPDATE(event, unit)
 	addon.UpdateScheduler:Notify("nameStateChanged", unit)
-end
-
-function EventHandler:UNIT_AURA(event, unit, updateInfo)
-	if addon.IsRestrictedAuraAPI then
-		return
-	end
-
-	addon.AuraHandler:UpdateAurasForUnit(unit, updateInfo)
-	addon.UpdateScheduler:Notify("buffsStateChanged", unit)
-	addon.UpdateScheduler:Notify("debuffsStateChanged", unit)
 end
 
 function EventHandler:UNIT_POWER_FREQUENT(event, unit)

@@ -102,6 +102,7 @@ local DEFAULTS = {
 					stacksFontSize = 12,
 					showCooldown = false,
 					cooldownFontSize = 10,
+					showTooltips = false,
 					position = { x = 0, y = 1 },
 				},
 				debuffs = {
@@ -115,6 +116,7 @@ local DEFAULTS = {
 					stacksFontSize = 12,
 					showCooldown = false,
 					cooldownFontSize = 10,
+					showTooltips = false,
 					position = { x = 0, y = 1 },
 				},
 				healthText = {
@@ -211,6 +213,7 @@ local DEFAULTS = {
 					stacksFontSize = 12,
 					showCooldown = false,
 					cooldownFontSize = 10,
+					showTooltips = false,
 					position = { x = 0, y = 1 },
 				},
 				debuffs = {
@@ -224,6 +227,7 @@ local DEFAULTS = {
 					stacksFontSize = 12,
 					showCooldown = false,
 					cooldownFontSize = 10,
+					showTooltips = false,
 					position = { x = 0, y = 1 },
 				},
 				healthText = {
@@ -621,6 +625,7 @@ local DEFAULTS = {
 					stacksFontSize = 12,
 					showCooldown = false,
 					cooldownFontSize = 10,
+					showTooltips = false,
 					position = { x = 0, y = 0 },
 				},
 				healthText = {

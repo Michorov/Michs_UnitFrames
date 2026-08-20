@@ -9,35 +9,6 @@ local Debuffs = addon.Options.Pages.Auras.Debuffs
 local PP = addon.PixelPerfect
 local subpage
 
-if addon.IsRestrictedAuraAPI then
-	function Debuffs:Ensure(parent)
-		if subpage then
-			return subpage
-		end
-
-		subpage = CreateFrame("Frame", nil, parent)
-		subpage.message = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-		subpage.message:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
-		subpage.message:SetJustifyH("LEFT")
-		subpage.message:SetTextColor(0.72, 0.74, 0.78, 1)
-		subpage.message:SetText("Auras for 12.1 will be available soon")
-
-		function subpage:UpdateLayout()
-			self.message:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
-		end
-
-		function subpage:UpdateState()
-			self.message:Show()
-		end
-
-		subpage:UpdateLayout()
-
-		return subpage
-	end
-
-	return
-end
-
 local defaults = {
 	enabled = false,
 	anchor = "TOPLEFT",
@@ -49,6 +20,7 @@ local defaults = {
 	stacksFontSize = 10,
 	showCooldown = false,
 	cooldownFontSize = 10,
+	showTooltips = false,
 	position = { x = 0, y = 1 },
 }
 
@@ -108,6 +80,15 @@ function Debuffs:Ensure(parent)
 		Notify(unit)
 	end)
 
+	subpage.showTooltipsCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Show Tooltips")
+	subpage.showTooltipsCheckbox:SetLayoutWidth(126)
+	subpage.showTooltipsCheckbox:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -4)
+	subpage.showTooltipsCheckbox:SetOnValueChanged(function(_, enabled)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		GetEditableSettings(unit).showTooltips = enabled == true
+		Notify(unit)
+	end)
+
 	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
 	subpage.anchorDropdown:SetLayoutWidth(126)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
@@ -121,7 +102,7 @@ function Debuffs:Ensure(parent)
 	subpage.maxIconsSlider:SetLayoutWidth(126)
 	subpage.maxIconsSlider:SetMinMaxValues(1, 20)
 	subpage.maxIconsSlider:SetStep(1)
-	subpage.maxIconsSlider:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -16)
+	subpage.maxIconsSlider:SetLayoutPoint("TOPLEFT", subpage.showTooltipsCheckbox, "BOTTOMLEFT", 0, -16)
 	subpage.maxIconsSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options.Sections.Content:GetSelectedUnit()
 		GetEditableSettings(unit).maxIcons = value
@@ -229,6 +210,7 @@ function Debuffs:Ensure(parent)
 
 	local controls = {
 		subpage.enabledCheckbox,
+		subpage.showTooltipsCheckbox,
 		subpage.anchorDropdown,
 		subpage.maxIconsSlider,
 		subpage.iconsPerRowSlider,
@@ -271,6 +253,7 @@ function Debuffs:Ensure(parent)
 		end
 
 		self.enabledCheckbox:SetChecked(settings.enabled == true)
+		self.showTooltipsCheckbox:SetChecked(settings.showTooltips == true)
 		self.anchorDropdown:SetValue(anchor)
 		self.maxIconsSlider:SetValueSilently(settings.maxIcons or defaults.maxIcons)
 		self.iconsPerRowSlider:SetValueSilently(settings.iconsPerRow or defaults.iconsPerRow)

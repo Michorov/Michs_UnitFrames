@@ -14,7 +14,6 @@ Libs/MichsPixelPerfectLib-1.0/MichsPixelPerfectLib-1.0.lua
 
 PixelPerfect.lua
 Database.lua
-AuraHandler.lua
 
 # Style
 Style/Fonts.lua
@@ -32,8 +31,9 @@ Frames/Widgets/Bars/Power.lua
 Frames/Widgets/Bars/Cast.lua
 Frames/Widgets/Bars/Absorbs.lua
 Frames/Widgets/Bars/HealAbsorbs.lua
-Frames/Widgets/Auras/Buffs.lua
-Frames/Widgets/Auras/Debuffs.lua
+Frames/ManagedContainers/AuraButtons.lua
+Frames/ManagedContainers/Buffs.lua
+Frames/ManagedContainers/Debuffs.lua
 Frames/Widgets/Texts/Name.lua
 Frames/Widgets/Texts/Health.lua
 Frames/Widgets/Texts/Power.lua

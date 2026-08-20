@@ -6,15 +6,14 @@ addon.Updater = Updater
 local initialized = false
 
 local function UpdateUnitState(frame)
-	addon.AuraHandler:UpdateAurasForUnit(frame.unit)
 	addon.Frames.Widgets.Bars.Health:UpdateState(frame)
 	addon.Frames.Widgets.Bars.Power:UpdateState(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateState(frame)
 	addon.Frames.Widgets.Background:UpdateState(frame)
 	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame)
-	addon.Frames.Widgets.Auras.Buffs:UpdateState(frame)
-	addon.Frames.Widgets.Auras.Debuffs:UpdateState(frame)
+	addon.Frames.ManagedContainers.Buffs:SetUnit(frame)
+	addon.Frames.ManagedContainers.Debuffs:SetUnit(frame)
 	addon.Frames.Widgets.Texts.Name:UpdateState(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateState(frame)
 	addon.Frames.Widgets.Texts.Power:UpdateState(frame)
@@ -31,8 +30,8 @@ local function UpdateUnitSettings(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame)
-	addon.Frames.Widgets.Auras.Buffs:UpdateSettings(frame)
-	addon.Frames.Widgets.Auras.Debuffs:UpdateSettings(frame)
+	addon.Frames.ManagedContainers.Buffs:UpdateSettings(frame)
+	addon.Frames.ManagedContainers.Debuffs:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
@@ -72,11 +71,11 @@ local function BuildSettingsUpdater(updateReasons)
 		end
 
 		if updateReasons.buffsSettingsChanged then
-			addon.Frames.Widgets.Auras.Buffs:UpdateSettings(frame)
+			addon.Frames.ManagedContainers.Buffs:UpdateSettings(frame)
 		end
 
 		if updateReasons.debuffsSettingsChanged then
-			addon.Frames.Widgets.Auras.Debuffs:UpdateSettings(frame)
+			addon.Frames.ManagedContainers.Debuffs:UpdateSettings(frame)
 		end
 
 		if updateReasons.healthTextSettingsChanged then
@@ -126,14 +125,6 @@ local function BuildStateUpdater(updateReasons)
 
 		if updateReasons.healAbsorbsStateChanged then
 			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame)
-		end
-
-		if updateReasons.buffsStateChanged then
-			addon.Frames.Widgets.Auras.Buffs:UpdateState(frame)
-		end
-
-		if updateReasons.debuffsStateChanged then
-			addon.Frames.Widgets.Auras.Debuffs:UpdateState(frame)
 		end
 
 		if updateReasons.unitColorStateChanged then
