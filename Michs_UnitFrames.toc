@@ -1,10 +1,11 @@
-## Interface: 120007, 120100
+## Interface: 16001, 120105
 ## Title: Mich's UnitFrames
 ## Category: Mich's Toolkit
 ## Notes: Custom unit frames for player, target, pet, boss, and related units.
 ## Author: Mich
-## Version: 1.0.3
+## Version: 1.0.4
 ## SavedVariables: Michs_UnitFramesDB
+## IconTexture: Interface\AddOns\Michs_UnitFrames\Media\LogoIcon.png
 
 Libs/LibStub/LibStub.lua
 Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
