@@ -51,7 +51,8 @@ local function UpdateColor(frame)
 	local unit = frame.unit
 	if cachedSettings.colorByClassOrReaction and unit and UnitExists(unit) then
 		if UnitIsPlayer(unit) then
-			local classColor = C_ClassColor.GetClassColor(select(2, UnitClass(unit)))
+			local _, classToken = UnitClass(unit)
+			local classColor = classToken and C_ClassColor.GetClassColor(classToken)
 			if classColor then
 				r, g, b = classColor:GetRGB()
 			end
