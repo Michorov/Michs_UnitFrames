@@ -3,7 +3,7 @@
 ## Category: Mich's Toolkit
 ## Notes: Custom unit frames for player, target, pet, boss, and related units.
 ## Author: Mich
-## Version: 1.0.4
+## Version: 1.0.5
 ## SavedVariables: Michs_UnitFramesDB
 ## IconTexture: Interface\AddOns\Michs_UnitFrames\Media\LogoIcon.png
 
