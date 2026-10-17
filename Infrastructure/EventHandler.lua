@@ -148,6 +148,10 @@ function EventHandler:PLAYER_REGEN_DISABLED()
 		addon.Options:Close()
 	end
 
+	if addon.FrameRegistry:IsUnlocked() then
+		addon.FrameRegistry:SetUnlocked(false)
+	end
+
 	if encounterActive then
 		return
 	end
@@ -157,6 +161,10 @@ function EventHandler:PLAYER_REGEN_DISABLED()
 end
 
 function EventHandler:PLAYER_REGEN_ENABLED()
+	if addon.FrameRegistry.restoreLiveDriversAfterCombat then
+		addon.FrameRegistry:UpdateStateDrivers()
+	end
+
 	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
 
 	if addon.Options:ShouldOpenAfterCombat() then

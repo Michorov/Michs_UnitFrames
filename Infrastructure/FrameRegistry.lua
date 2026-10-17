@@ -3,9 +3,14 @@ local _, addon = ...
 local FrameRegistry = {}
 addon.FrameRegistry = FrameRegistry
 
+FrameRegistry.restoreLiveDriversAfterCombat = false
+
 local PP = addon.PixelPerfect
 local initialized = false
 local map = {}
+local dummyFrames = {}
+local framesUnlocked = false
+local liveContainer
 local bossContainer
 local hiddenBlizzardFrames
 local blizzardFrameStates = {}
@@ -43,7 +48,7 @@ local function UpdateFrame(frame, stateCallback, settingsCallback)
 end
 
 local function CreateUnitFrame(unit, frameName, parent)
-	local frame = CreateFrame("Button", frameName, parent or UIParent, "SecureUnitButtonTemplate, PingableUnitFrameTemplate")
+	local frame = CreateFrame("Button", frameName, parent or liveContainer, "SecureUnitButtonTemplate, PingableUnitFrameTemplate")
 	local settingsUnit = unit:match("^boss%d+$") and "boss" or unit
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetFrameLevel(10)
@@ -199,10 +204,13 @@ local function UpdateFrameLayout(unit)
 	local frame = map[unit]
 	local profile = addon.Database:GetProfile()
 	local settings = profile.frames[unit]
-	local position = settings.position
+	local width = PP:ToUIScaled(settings.size.width)
+	local height = PP:ToUIScaled(settings.size.height)
 
-	frame:SetSize(PP:ToUIScaled(settings.size.width), PP:ToUIScaled(settings.size.height))
-	PP:CenterElement(frame, UIParent, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	for _, layoutFrame in ipairs({ frame, dummyFrames[unit] }) do
+		layoutFrame:SetSize(width, height)
+		PP:CenterElement(layoutFrame, UIParent, PP:ToUIScaled(settings.position.x), PP:ToUIScaled(settings.position.y))
+	end
 
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
@@ -223,25 +231,29 @@ local function UpdateBossLayout()
 	local frameWidth = PP:ToUIScaled(settings.size.width)
 	local frameHeight = PP:ToUIScaled(settings.size.height)
 	local spacing = PP:ToUIScaled(settings.spacing)
+	local containerHeight = (frameHeight * 5) + (spacing * 4)
+	local dummyContainer = dummyFrames.boss
 
-	bossContainer:SetSize(frameWidth, (frameHeight * 5) + (spacing * 4))
-	PP:CenterElement(
-		bossContainer,
-		UIParent,
-		PP:ToUIScaled(settings.position.x),
-		PP:ToUIScaled(settings.position.y)
-	)
+	for _, container in ipairs({ bossContainer, dummyContainer }) do
+		container:SetSize(frameWidth, containerHeight)
+		PP:CenterElement(container, UIParent, PP:ToUIScaled(settings.position.x), PP:ToUIScaled(settings.position.y))
+	end
 
 	local previousBossFrame
 	for bossIndex = 1, 5 do
 		local frame = map["boss" .. bossIndex]
+		local dummyFrame = dummyContainer.frames[bossIndex]
 		frame:SetSize(frameWidth, frameHeight)
 		frame:ClearAllPoints()
+		dummyFrame:SetSize(frameWidth, frameHeight)
+		dummyFrame:ClearAllPoints()
 
 		if previousBossFrame then
 			frame:SetPoint("TOPLEFT", previousBossFrame, "BOTTOMLEFT", 0, -spacing)
+			dummyFrame:SetPoint("TOPLEFT", dummyContainer.frames[bossIndex - 1], "BOTTOMLEFT", 0, -spacing)
 		else
 			frame:SetPoint("TOPLEFT", bossContainer, "TOPLEFT", 0, 0)
+			dummyFrame:SetPoint("TOPLEFT", dummyContainer, "TOPLEFT", 0, 0)
 		end
 
 		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
@@ -342,10 +354,61 @@ function FrameRegistry:UpdateBlizzardFrameVisibility()
 	end
 end
 
+function FrameRegistry:UpdateStateDrivers()
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	if InCombatLockdown() then
+		self.restoreLiveDriversAfterCombat = true
+		return
+	end
+
+	UnregisterStateDriver(liveContainer, "visibility")
+	if framesUnlocked then
+		RegisterStateDriver(liveContainer, "visibility", "[combat] show; hide")
+	else
+		liveContainer:Show()
+	end
+
+	self.restoreLiveDriversAfterCombat = false
+end
+
+function FrameRegistry:IsUnlocked()
+	return framesUnlocked
+end
+
+function FrameRegistry:SetUnlocked(unlocked)
+	if not initialized then
+		error("FrameRegistry is not initialized", 2)
+	end
+
+	unlocked = unlocked == true
+	if unlocked and InCombatLockdown() then
+		return
+	end
+
+	if unlocked then
+		self:UpdateAllLayouts()
+	end
+
+	framesUnlocked = unlocked
+	for _, frame in pairs(dummyFrames) do
+		frame:SetShown(unlocked)
+	end
+
+	self:UpdateStateDrivers()
+end
+
 function FrameRegistry:Initialize()
 	if initialized then
 		error("FrameRegistry already initialized", 2)
 	end
+
+	liveContainer = CreateFrame("Frame", "MUF_LiveFrameContainer", UIParent)
+	liveContainer:SetAllPoints(UIParent)
+	liveContainer:SetFrameStrata("MEDIUM")
+	liveContainer:SetFrameLevel(0)
 
 	CreateUnitFrame("player", "MUF_PlayerFrame")
 	CreateUnitFrame("target", "MUF_TargetFrame")
@@ -354,7 +417,7 @@ function FrameRegistry:Initialize()
 	CreateUnitFrame("focus", "MUF_FocusFrame")
 	CreateUnitFrame("focustarget", "MUF_FocusTargetFrame")
 
-	bossContainer = CreateFrame("Frame", "MUF_BossContainer", UIParent)
+	bossContainer = CreateFrame("Frame", "MUF_BossContainer", liveContainer)
 	bossContainer:SetFrameStrata("MEDIUM")
 	bossContainer:SetFrameLevel(9)
 	hiddenBlizzardFrames = CreateFrame("Frame", "MUF_HiddenBlizzardFrames", UIParent)
@@ -364,6 +427,14 @@ function FrameRegistry:Initialize()
 		local unit = "boss" .. bossIndex
 		CreateUnitFrame(unit, "MUF_Boss" .. bossIndex .. "Frame", bossContainer)
 	end
+
+	dummyFrames.player = addon.Frames:CreateDummyFrame("player", "MUF_DummyPlayerFrame")
+	dummyFrames.target = addon.Frames:CreateDummyFrame("target", "MUF_DummyTargetFrame")
+	dummyFrames.pet = addon.Frames:CreateDummyFrame("pet", "MUF_DummyPetFrame")
+	dummyFrames.targettarget = addon.Frames:CreateDummyFrame("targettarget", "MUF_DummyTargetOfTargetFrame")
+	dummyFrames.focus = addon.Frames:CreateDummyFrame("focus", "MUF_DummyFocusFrame")
+	dummyFrames.focustarget = addon.Frames:CreateDummyFrame("focustarget", "MUF_DummyFocusTargetFrame")
+	dummyFrames.boss = addon.Frames:CreateDummyBossGroup("MUF_DummyBossContainer")
 
 	UpdateFrameVisibility("player")
 	UpdateFrameVisibility("target")

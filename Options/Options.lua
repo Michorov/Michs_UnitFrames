@@ -96,6 +96,10 @@ function Options:Ensure()
 		self:StartMoving()
 	end)
 
+	panel:HookScript("OnHide", function()
+		addon.FrameRegistry:SetUnlocked(false)
+	end)
+
 	panel:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
 

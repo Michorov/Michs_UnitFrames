@@ -28,6 +28,13 @@ function Layout:Ensure(parent)
 	page.header.title:SetTextColor(0.88, 0.89, 0.92, 1)
 	page.header.title:SetText("Layout")
 
+	page.unlockButton = addon.Options.Controls.Button:Create(page.header, "Unlock")
+	page.unlockButton:SetLayoutWidth(80)
+	page.unlockButton:SetOnClick(function(self)
+		addon.FrameRegistry:SetUnlocked(not addon.FrameRegistry:IsUnlocked())
+		self:SetText(addon.FrameRegistry:IsUnlocked() and "Lock" or "Unlock")
+	end)
+
 	page.enabledCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Enabled")
 	page.enabledCheckbox:SetLayoutPoint("TOPLEFT", page.body, "TOPLEFT", 0, 0)
 	page.enabledCheckbox:SetOnValueChanged(function(_, enabled)
@@ -107,6 +114,7 @@ function Layout:Ensure(parent)
 
 	function page:UpdateState(profile, unit)
 		local settings = profile.frames[unit]
+		self.unlockButton:SetText(addon.FrameRegistry:IsUnlocked() and "Lock" or "Unlock")
 		self.enabledCheckbox:SetChecked(settings.enabled)
 		self.hideBlizzardFrameCheckbox:SetText(unit == "boss" and "Hide Blizzard Frames" or "Hide Blizzard Frame")
 		self.hideBlizzardFrameCheckbox:SetChecked(settings.hideBlizzardFrame)
