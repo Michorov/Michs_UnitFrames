@@ -13,6 +13,10 @@ local DEFAULTS = {
 			font = defaultFont,
 			texture = "M-SolidDarker",
 			mouseoverHighlight = true,
+			minimap = {
+				hide = false,
+				minimapPos = 225,
+			},
 		},
 		frames = {
 			player = {
@@ -722,6 +726,10 @@ function Database:Initialize()
 
 		if addon.Options and addon.Options.RefreshProfile then
 			addon.Options:RefreshProfile()
+		end
+
+		if addon.Options and addon.Options.Minimap then
+			addon.Options.Minimap:Refresh()
 		end
 	end
 

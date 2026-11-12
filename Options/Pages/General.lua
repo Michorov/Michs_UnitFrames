@@ -39,6 +39,14 @@ function General:Ensure(parent)
 		addon.UpdateScheduler:Notify("mouseoverHighlightSettingsChanged")
 	end)
 
+	page.body.minimapIconCheckbox = addon.Options.Controls.Checkbox:Create(page.body, "Minimap Icon")
+	page.body.minimapIconCheckbox:SetLayoutWidth(178)
+	page.body.minimapIconCheckbox:SetLayoutPoint("TOPLEFT", page.body.mouseoverHighlightCheckbox, "TOPRIGHT", 24, 0)
+	page.body.minimapIconCheckbox:SetOnValueChanged(function(_, enabled)
+		addon.Database:GetProfile().general.minimap.hide = not enabled
+		addon.Options.Minimap:Refresh()
+	end)
+
 	page.body.fontDropdown = addon.Options.Controls.Dropdown:Create(page.body, "Global Font")
 	page.body.fontDropdown:SetLayoutWidth(178)
 	page.body.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions())
@@ -83,6 +91,7 @@ function General:Ensure(parent)
 		self.body.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(profile.general.texture))
 		self.body.textureDropdown:SetValue(profile.general.texture)
 		self.body.mouseoverHighlightCheckbox:SetChecked(profile.general.mouseoverHighlight)
+		self.body.minimapIconCheckbox:SetChecked(not profile.general.minimap.hide)
 	end
 
 	return page
