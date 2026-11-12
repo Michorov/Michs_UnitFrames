@@ -35,7 +35,7 @@ function Level:Ensure(frame)
 	if not frame.levelText then
 		local levelFrame = CreateFrame("Frame", nil, frame)
 		levelFrame:SetAllPoints(frame)
-		levelFrame:SetFrameLevel(30)
+		levelFrame:SetFrameLevel(55)
 		levelFrame.text = levelFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 		levelFrame:Hide()
 
