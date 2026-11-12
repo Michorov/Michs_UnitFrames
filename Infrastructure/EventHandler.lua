@@ -98,6 +98,7 @@ function EventHandler:Initialize()
 	end
 
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventFrame:RegisterEvent("PLAYER_LEVEL_CHANGED")
 	eventFrame:RegisterEvent("ENCOUNTER_START")
 	eventFrame:RegisterEvent("ENCOUNTER_END")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -233,12 +234,12 @@ function EventHandler:UNIT_NAME_UPDATE(event, unit)
 	addon.UpdateScheduler:Notify("nameStateChanged", unit)
 end
 
-function EventHandler:UNIT_LEVEL(event, unit)
-	if unit == "player" then
-		addon.UpdateScheduler:Notify("levelStateChanged")
-	else
-		addon.UpdateScheduler:Notify("levelStateChanged", unit)
-	end
+function EventHandler:UNIT_LEVEL()
+	addon.UpdateScheduler:Notify("levelStateChanged")
+end
+
+function EventHandler:PLAYER_LEVEL_CHANGED()
+	addon.UpdateScheduler:Notify("levelStateChanged")
 end
 
 function EventHandler:UNIT_POWER_FREQUENT(event, unit)
