@@ -359,16 +359,16 @@ local DEFAULTS = {
 				classification = {
 					enabled = true,
 					anchor = "TOPLEFT",
-					size = 24,
-					position = { x = 2, y = 12 },
+					size = 16,
+					position = { x = 2, y = 8 },
 				},
 				levelText = {
 					enabled = true,
 					anchor = "TOPRIGHT",
 					font = -1,
 					outline = "OUTLINE",
-					size = 16,
-					position = { x = 0, y = 8 },
+					size = 10,
+					position = { x = 0, y = 5 },
 				},
 				nameText = {
 					enabled = true,
@@ -440,16 +440,16 @@ local DEFAULTS = {
 				classification = {
 					enabled = true,
 					anchor = "TOPLEFT",
-					size = 24,
-					position = { x = 2, y = 12 },
+					size = 16,
+					position = { x = 2, y = 8 },
 				},
 				levelText = {
 					enabled = true,
 					anchor = "TOPRIGHT",
 					font = -1,
 					outline = "OUTLINE",
-					size = 16,
-					position = { x = 0, y = 8 },
+					size = 10,
+					position = { x = 0, y = 5 },
 				},
 				nameText = {
 					enabled = true,
@@ -537,16 +537,16 @@ local DEFAULTS = {
 				classification = {
 					enabled = true,
 					anchor = "TOPLEFT",
-					size = 24,
-					position = { x = 2, y = 12 },
+					size = 16,
+					position = { x = 2, y = 8 },
 				},
 				levelText = {
 					enabled = true,
 					anchor = "TOPRIGHT",
 					font = -1,
 					outline = "OUTLINE",
-					size = 16,
-					position = { x = 0, y = 8 },
+					size = 10,
+					position = { x = 0, y = 5 },
 				},
 				nameText = {
 					enabled = true,
@@ -618,16 +618,16 @@ local DEFAULTS = {
 				classification = {
 					enabled = true,
 					anchor = "TOPLEFT",
-					size = 24,
-					position = { x = 2, y = 12 },
+					size = 16,
+					position = { x = 2, y = 8 },
 				},
 				levelText = {
 					enabled = true,
 					anchor = "TOPRIGHT",
 					font = -1,
 					outline = "OUTLINE",
-					size = 16,
-					position = { x = 0, y = 8 },
+					size = 10,
+					position = { x = 0, y = 5 },
 				},
 				nameText = {
 					enabled = true,
