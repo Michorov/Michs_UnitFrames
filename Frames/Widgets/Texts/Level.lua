@@ -82,7 +82,8 @@ function Level:UpdateState(frame)
 
 	local level = UnitEffectiveLevel(unit)
 	local color = GetCreatureDifficultyColor(level)
-	frame.levelText.text:SetText(level > 0 and level or "??")
+	local text = level > 0 and tostring(level) or "??"
+	frame.levelText.text:SetText(text)
 	frame.levelText.text:SetTextColor(color.r, color.g, color.b)
 	frame.levelText:Show()
 end

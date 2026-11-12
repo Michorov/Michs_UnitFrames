@@ -11,6 +11,7 @@ local activeSubpage = "combat"
 
 local subpageOptions = {
 	{ value = "raidMarker", text = "Raid Marker" },
+	{ value = "classification", text = "Creature Rank" },
 	{ value = "groupStatus", text = "Leader & Assistant" },
 	{ value = "combat", text = "Combat" },
 }
@@ -48,6 +49,7 @@ function Indicators:Ensure(parent)
 	page.subpages = {
 		combat = addon.Options.Pages.Indicators.Combat:Ensure(page.body),
 		raidMarker = addon.Options.Pages.Indicators.RaidMarker:Ensure(page.body),
+		classification = addon.Options.Pages.Indicators.Classification:Ensure(page.body),
 		groupStatus = addon.Options.Pages.Indicators.GroupStatus:Ensure(page.body),
 	}
 

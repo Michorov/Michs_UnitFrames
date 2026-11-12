@@ -38,6 +38,7 @@ local supportedCastUnits = {
 local unitEvents = {
 	"UNIT_NAME_UPDATE",
 	"UNIT_LEVEL",
+	"UNIT_CLASSIFICATION_CHANGED",
 	"UNIT_POWER_FREQUENT",
 	"UNIT_MAXPOWER",
 	"UNIT_DISPLAYPOWER",
@@ -236,6 +237,10 @@ end
 
 function EventHandler:UNIT_LEVEL()
 	addon.UpdateScheduler:Notify("levelStateChanged")
+end
+
+function EventHandler:UNIT_CLASSIFICATION_CHANGED()
+	addon.UpdateScheduler:Notify("classificationStateChanged")
 end
 
 function EventHandler:PLAYER_LEVEL_CHANGED()
