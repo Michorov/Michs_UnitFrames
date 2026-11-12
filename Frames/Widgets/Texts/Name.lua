@@ -119,7 +119,11 @@ function Name:UpdateState(frame)
 		return
 	end
 
-	frame.nameText.text:SetText(UnitName(unit) or "")
+	if RegionalUniqueNamesEnabled and RegionalUniqueNamesEnabled() then
+		frame.nameText.text:SetText(GetUnitName(unit) or "")
+	else
+		frame.nameText.text:SetText(UnitName(unit) or "")
+	end
 	UpdateColor(frame)
 	frame.nameText:Show()
 end
