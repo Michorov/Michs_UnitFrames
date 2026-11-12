@@ -52,6 +52,7 @@ function General:Ensure(parent)
 	page.body.fontDropdown:SetOnValueChanged(function(_, value)
 		addon.Database:GetProfile().general.font = value
 		addon.UpdateScheduler:Notify("nameTextSettingsChanged")
+		addon.UpdateScheduler:Notify("levelTextSettingsChanged")
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged")
 		addon.UpdateScheduler:Notify("powerTextSettingsChanged")
 		addon.UpdateScheduler:Notify("castSettingsChanged")

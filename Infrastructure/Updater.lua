@@ -15,6 +15,7 @@ local function UpdateUnitState(frame)
 	addon.Frames.ManagedContainers.Buffs:SetUnit(frame)
 	addon.Frames.ManagedContainers.Debuffs:SetUnit(frame)
 	addon.Frames.Widgets.Texts.Name:UpdateState(frame)
+	addon.Frames.Widgets.Texts.Level:UpdateState(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateState(frame)
 	addon.Frames.Widgets.Texts.Power:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateState(frame)
@@ -34,6 +35,7 @@ local function UpdateUnitSettings(frame)
 	addon.Frames.ManagedContainers.Debuffs:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Level:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
@@ -86,6 +88,10 @@ local function BuildSettingsUpdater(updateReasons)
 			addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
 		end
 
+		if updateReasons.levelTextSettingsChanged then
+			addon.Frames.Widgets.Texts.Level:UpdateSettings(frame)
+		end
+
 		if updateReasons.powerTextSettingsChanged then
 			addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
 		end
@@ -135,6 +141,10 @@ local function BuildStateUpdater(updateReasons)
 
 		if updateReasons.nameStateChanged then
 			addon.Frames.Widgets.Texts.Name:UpdateState(frame)
+		end
+
+		if updateReasons.levelStateChanged then
+			addon.Frames.Widgets.Texts.Level:UpdateState(frame)
 		end
 
 		if updateReasons.powerTypeChanged then

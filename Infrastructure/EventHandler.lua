@@ -37,6 +37,7 @@ local supportedCastUnits = {
 
 local unitEvents = {
 	"UNIT_NAME_UPDATE",
+	"UNIT_LEVEL",
 	"UNIT_POWER_FREQUENT",
 	"UNIT_MAXPOWER",
 	"UNIT_DISPLAYPOWER",
@@ -230,6 +231,14 @@ end
 
 function EventHandler:UNIT_NAME_UPDATE(event, unit)
 	addon.UpdateScheduler:Notify("nameStateChanged", unit)
+end
+
+function EventHandler:UNIT_LEVEL(event, unit)
+	if unit == "player" then
+		addon.UpdateScheduler:Notify("levelStateChanged")
+	else
+		addon.UpdateScheduler:Notify("levelStateChanged", unit)
+	end
 end
 
 function EventHandler:UNIT_POWER_FREQUENT(event, unit)

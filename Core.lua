@@ -22,6 +22,10 @@ local function InitializeAddon()
 
 		for unit, settings in pairs(profile.frames) do
 			if mediaType == "font" then
+				if settings.levelText.font == mediaName or (settings.levelText.font == -1 and globalFontRegistered) then
+					addon.UpdateScheduler:Notify("levelTextSettingsChanged", unit)
+				end
+
 				local castSettings = settings.cast
 				if castSettings then
 					local castFont = castSettings.font

@@ -11,6 +11,7 @@ local activeSubpage = "name"
 
 local subpageOptions = {
 	{ value = "name", text = "Name" },
+	{ value = "level", text = "Level" },
 	{ value = "health", text = "Health" },
 	{ value = "power", text = "Power" },
 }
@@ -48,6 +49,7 @@ function Texts:Ensure(parent)
 	page.subpages = {
 		health = addon.Options.Pages.Texts.Health:Ensure(page.body),
 		name = addon.Options.Pages.Texts.Name:Ensure(page.body),
+		level = addon.Options.Pages.Texts.Level:Ensure(page.body),
 		power = addon.Options.Pages.Texts.Power:Ensure(page.body),
 	}
 

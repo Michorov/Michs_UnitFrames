@@ -130,6 +130,14 @@ local DEFAULTS = {
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -4, y = 0 },
 				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
@@ -241,6 +249,14 @@ local DEFAULTS = {
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -4, y = 0 },
 				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
@@ -324,6 +340,14 @@ local DEFAULTS = {
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 0 },
 				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
@@ -390,6 +414,14 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 0 },
+				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
 				},
 				nameText = {
 					enabled = true,
@@ -474,6 +506,14 @@ local DEFAULTS = {
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 0 },
 				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
+				},
 				nameText = {
 					enabled = true,
 					anchor = "LEFT",
@@ -540,6 +580,14 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -2, y = 0 },
+				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
 				},
 				nameText = {
 					enabled = true,
@@ -638,6 +686,14 @@ local DEFAULTS = {
 					colorByClassOrReaction = false,
 					color = { r = 1, g = 1, b = 1, a = 1 },
 					position = { x = -4, y = 0 },
+				},
+				levelText = {
+					enabled = false,
+					anchor = "TOPRIGHT",
+					font = -1,
+					outline = "OUTLINE",
+					size = 16,
+					position = { x = 0, y = 8 },
 				},
 				nameText = {
 					enabled = true,

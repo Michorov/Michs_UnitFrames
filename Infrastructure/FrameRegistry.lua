@@ -103,6 +103,7 @@ local function CreateUnitFrame(unit, frameName, parent)
 	addon.Frames.Widgets.Indicators.RaidMarker:Ensure(frame)
 	addon.Frames.Widgets.Indicators.GroupStatus:Ensure(frame)
 	addon.Frames.Widgets.Texts.Name:Ensure(frame)
+	addon.Frames.Widgets.Texts.Level:Ensure(frame)
 	addon.Frames.Widgets.Texts.Health:Ensure(frame)
 	addon.Frames.Widgets.Texts.Power:Ensure(frame)
 	addon.Frames.Widgets.Border:Ensure(frame)
@@ -213,6 +214,7 @@ local function UpdateFrameLayout(unit)
 	end
 
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+	addon.Frames.Widgets.Texts.Level:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
@@ -257,6 +259,7 @@ local function UpdateBossLayout()
 		end
 
 		addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
+		addon.Frames.Widgets.Texts.Level:UpdateSettings(frame)
 		addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
 		addon.Frames.Widgets.Texts.Power:UpdateSettings(frame)
 		addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)

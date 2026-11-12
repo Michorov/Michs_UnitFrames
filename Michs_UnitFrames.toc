@@ -36,6 +36,7 @@ Frames/ManagedContainers/AuraButtons.lua
 Frames/ManagedContainers/Buffs.lua
 Frames/ManagedContainers/Debuffs.lua
 Frames/Widgets/Texts/Name.lua
+Frames/Widgets/Texts/Level.lua
 Frames/Widgets/Texts/Health.lua
 Frames/Widgets/Texts/Power.lua
 
@@ -60,6 +61,7 @@ Options/Pages/Bars/HealAbsorbs.lua
 Options/Pages/Bars.lua
 Options/Pages/Texts/Health.lua
 Options/Pages/Texts/Name.lua
+Options/Pages/Texts/Level.lua
 Options/Pages/Texts/Power.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras/Buffs.lua
