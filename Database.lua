@@ -81,6 +81,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -206,6 +207,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -331,6 +333,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -412,6 +415,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -509,6 +513,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -590,6 +595,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,
@@ -688,6 +694,7 @@ local DEFAULTS = {
 					texture = -1,
 					colorByClassOrReaction = true,
 					color = { r = 0.12, g = 0.12, b = 0.12, a = 1 },
+					tappedColor = { r = 0.7, g = 0.7, b = 0.7, a = 1 },
 				},
 				background = {
 					texture = -1,

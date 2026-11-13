@@ -13,6 +13,7 @@ local function UpdateSettingsCache(frame)
 	local profile = addon.Database:GetProfile()
 	local settings = profile.frames[frame.settingsUnit].health or {}
 	local color = settings.color or {}
+	local tappedColor = settings.tappedColor or {}
 	settingsCache[frame.settingsUnit] = {
 		texture = settings.texture,
 		colorByClassOrReaction = settings.colorByClassOrReaction == true,
@@ -21,6 +22,12 @@ local function UpdateSettingsCache(frame)
 			g = color.g or 0.12,
 			b = color.b or 0.12,
 			a = color.a or 1,
+		},
+		tappedColor = {
+			r = tappedColor.r or 0.7,
+			g = tappedColor.g or 0.7,
+			b = tappedColor.b or 0.7,
+			a = tappedColor.a or 1,
 		},
 	}
 	generalSettings = {
@@ -69,6 +76,9 @@ function Health:UpdateColor(frame)
 			if classColor then
 				r, g, b = classColor:GetRGB()
 			end
+		elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+			local tappedColor = cachedSettings.tappedColor
+			r, g, b, a = tappedColor.r, tappedColor.g, tappedColor.b, tappedColor.a
 		else
 			local reaction = UnitReaction(unit, "player")
 			local reactionColor = reaction and FACTION_BAR_COLORS[reaction]

@@ -39,6 +39,15 @@ function Health:Ensure(parent)
 		addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
 	end)
 
+	subpage.tappedColorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Claimed Mob Color")
+	subpage.tappedColorPicker:SetLayoutWidth(178)
+	subpage.tappedColorPicker:SetLayoutPoint("BOTTOMLEFT", subpage.colorPicker, "BOTTOMRIGHT", 24, 0)
+	subpage.tappedColorPicker:SetOnValueChanged(function(_, r, g, b, a)
+		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		addon.Database:GetProfile().frames[unit].health.tappedColor = { r = r, g = g, b = b, a = a }
+		addon.UpdateScheduler:Notify("healthSettingsChanged", unit)
+	end)
+
 	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
 	subpage.textureDropdown:SetLayoutWidth(178)
 	subpage.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(nil, true))
@@ -54,6 +63,8 @@ function Health:Ensure(parent)
 
 		self.colorModeDropdown:SetValue(settings.colorByClassOrReaction and "classOrReaction" or "static")
 		self.colorPicker:SetColor(settings.color)
+		self.tappedColorPicker:SetShown(unit ~= "player" and unit ~= "pet")
+		self.tappedColorPicker:SetColor(settings.tappedColor)
 		self.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(settings.texture, true))
 		self.textureDropdown:SetValue(settings.texture)
 	end
