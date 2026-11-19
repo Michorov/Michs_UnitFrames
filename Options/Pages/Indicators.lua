@@ -13,6 +13,7 @@ local subpageOptions = {
 	{ value = "raidMarker", text = "Raid Marker" },
 	{ value = "classification", text = "Creature Rank" },
 	{ value = "groupStatus", text = "Leader & Assistant" },
+	{ value = "petHappiness", text = "Pet Happiness" },
 	{ value = "combat", text = "Combat" },
 }
 
@@ -51,6 +52,7 @@ function Indicators:Ensure(parent)
 		raidMarker = addon.Options.Pages.Indicators.RaidMarker:Ensure(page.body),
 		classification = addon.Options.Pages.Indicators.Classification:Ensure(page.body),
 		groupStatus = addon.Options.Pages.Indicators.GroupStatus:Ensure(page.body),
+		petHappiness = addon.Options.Pages.Indicators.PetHappiness:Ensure(page.body),
 	}
 
 	for subpageKey, subpage in pairs(page.subpages) do

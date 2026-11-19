@@ -291,6 +291,16 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 120, height = 28 },
 				position = { x = -340, y = -310 },
+				petHappiness = {
+					enabled = true,
+					happy = true,
+					neutral = true,
+					unhappy = true,
+					anchor = "RIGHT",
+					position = { x = 32, y = 0 },
+					sizeMode = "auto",
+					customSize = 28,
+				},
 				power = {
 					enabled = true,
 					texture = -1,

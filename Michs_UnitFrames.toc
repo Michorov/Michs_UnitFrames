@@ -75,6 +75,7 @@ Options/Pages/Indicators/Combat.lua
 Options/Pages/Indicators/RaidMarker.lua
 Options/Pages/Indicators/Classification.lua
 Options/Pages/Indicators/GroupStatus.lua
+Options/Pages/Indicators/PetHappiness.lua
 Options/Pages/Indicators.lua
 Options/Pages/Profiles.lua
 Options/Sections/Header.lua

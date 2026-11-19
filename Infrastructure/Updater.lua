@@ -115,6 +115,10 @@ local function BuildSettingsUpdater(updateReasons)
 		if updateReasons.groupStatusSettingsChanged then
 			addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame)
 		end
+
+		if updateReasons.petHappinessSettingsChanged then
+			addon.Frames.Widgets.Indicators.PetHappiness:UpdateSettings(frame)
+		end
 	end
 end
 
