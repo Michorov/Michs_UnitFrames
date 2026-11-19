@@ -22,6 +22,7 @@ local function UpdateUnitState(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.Classification:UpdateState(frame)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
+	addon.Frames.Widgets.Indicators.PetHappiness:UpdateState(frame)
 end
 
 local function UpdateUnitSettings(frame)
@@ -42,6 +43,7 @@ local function UpdateUnitSettings(frame)
 	addon.Frames.Widgets.Indicators.RaidMarker:UpdateSettings(frame)
 	addon.Frames.Widgets.Indicators.Classification:UpdateSettings(frame)
 	addon.Frames.Widgets.Indicators.GroupStatus:UpdateSettings(frame)
+	addon.Frames.Widgets.Indicators.PetHappiness:UpdateSettings(frame)
 end
 
 local function BuildSettingsUpdater(updateReasons)
@@ -189,6 +191,10 @@ local function BuildStateUpdater(updateReasons)
 
 		if updateReasons.groupStatusStateChanged then
 			addon.Frames.Widgets.Indicators.GroupStatus:UpdateState(frame)
+		end
+
+		if updateReasons.petHappinessStateChanged then
+			addon.Frames.Widgets.Indicators.PetHappiness:UpdateState(frame)
 		end
 	end
 end

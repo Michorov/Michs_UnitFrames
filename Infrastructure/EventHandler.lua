@@ -108,6 +108,9 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	eventFrame:RegisterUnitEvent("UNIT_PET", "player")
+	if C_PetInfo and C_PetInfo.GetPetHappiness then
+		eventFrame:RegisterUnitEvent("UNIT_HAPPINESS", "pet")
+	end
 	eventFrame:RegisterUnitEvent("UNIT_TARGET", "target", "focus")
 	eventFrame:RegisterEvent("RAID_TARGET_UPDATE")
 	eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -211,6 +214,10 @@ end
 function EventHandler:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	addon.FrameRegistry:UpdateBlizzardFrameVisibility()
 	addon.UpdateScheduler:Notify("unitChanged", "boss")
+end
+
+function EventHandler:UNIT_HAPPINESS()
+	addon.UpdateScheduler:Notify("petHappinessStateChanged", "pet")
 end
 
 function EventHandler:UNIT_PET(event, unit)

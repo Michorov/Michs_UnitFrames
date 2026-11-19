@@ -30,6 +30,7 @@ Frames/Widgets/Indicators/Combat.lua
 Frames/Widgets/Indicators/RaidMarker.lua
 Frames/Widgets/Indicators/Classification.lua
 Frames/Widgets/Indicators/GroupStatus.lua
+Frames/Widgets/Indicators/PetHappiness.lua
 Frames/Widgets/Bars/Health.lua
 Frames/Widgets/Bars/Power.lua
 Frames/Widgets/Bars/Cast.lua
