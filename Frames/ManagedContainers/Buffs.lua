@@ -103,8 +103,8 @@ end
 local function UpdateContainerLayout(frame, cachedSettings)
 	local container = frame.buffs
 	local layout = anchorLayouts[cachedSettings.anchor] or anchorLayouts.TOPRIGHT
-	local iconSize = PP:ToUIScaled(cachedSettings.iconSize)
-	local spacing = PP:ToUIScaled(cachedSettings.spacing)
+	local iconSize = PP:ToUI(cachedSettings.iconSize)
+	local spacing = PP:ToUI(cachedSettings.spacing)
 	local visibleColumns = math.min(cachedSettings.maxIcons, cachedSettings.iconsPerRow)
 	local rowWidth = (iconSize * visibleColumns) + (spacing * (visibleColumns - 1)) + 1
 
@@ -113,8 +113,8 @@ local function UpdateContainerLayout(frame, cachedSettings)
 		layout.containerPoint,
 		frame,
 		layout.framePoint,
-		PP:ToUIScaled(cachedSettings.position.x),
-		PP:ToUIScaled(cachedSettings.position.y)
+		PP:ToUI(cachedSettings.position.x),
+		PP:ToUI(cachedSettings.position.y)
 	)
 	container:SetFlowLayoutAnchorPoint(layout.flowPoint)
 	container:SetFlowLayoutGrowthDirection(layout.xDirection, layout.yDirection)
@@ -123,7 +123,7 @@ end
 
 local function UpdateAuraGroupSettings(frame, cachedSettings)
 	local container = frame.buffs
-	local spacing = PP:ToUIScaled(cachedSettings.spacing)
+	local spacing = PP:ToUI(cachedSettings.spacing)
 	local maxFrameCount = cachedSettings.enabled and cachedSettings.maxIcons or 0
 
 	container:SetAuraGroupMaxFrameCount("buffs", maxFrameCount)

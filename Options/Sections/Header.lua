@@ -45,10 +45,10 @@ end
 
 function Header:UpdateLayout()
 	header.title:ClearAllPoints()
-	header.title:SetPoint("TOPLEFT", header, "TOPLEFT", PP:ToUIScaled(8), PP:ToUIScaled(-8))
+	header.title:SetPoint("TOPLEFT", header, "TOPLEFT", PP:ToUI(8), PP:ToUI(-8))
 	header.title:SetFont(
 		"Interface\\AddOns\\Michs_UnitFrames\\Media\\Fonts\\Philosopher-Bold.ttf",
-		PP:ScaleFont(22),
+		PP:ToUI(22),
 		""
 	)
 end

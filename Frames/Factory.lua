@@ -51,14 +51,13 @@ local function EnableDragging(frame)
 
 		local _, physicalHeight = GetPhysicalScreenSize()
 		local pixelStep = (768 / physicalHeight) / UIParent:GetEffectiveScale()
+		local scale = (physicalHeight / 1080) * PP.globalScale
 		local positionXPx = RoundToNearestInt((centerX - parentCenterX) / pixelStep)
 		local positionYPx = RoundToNearestInt((centerY - parentCenterY) / pixelStep)
-		positionXPx = RoundToNearestInt(positionXPx / PP.globalScale)
-		positionYPx = RoundToNearestInt(positionYPx / PP.globalScale)
 
 		local position = addon.Database:GetProfile().frames[self.settingsUnit].position
-		position.x = RoundToNearestInt(positionXPx * pixelStep)
-		position.y = RoundToNearestInt(positionYPx * pixelStep)
+		position.x = RoundToNearestInt(positionXPx / scale)
+		position.y = RoundToNearestInt(positionYPx / scale)
 
 		addon.UpdateScheduler:Notify("layoutChanged", self.settingsUnit)
 		addon.Options:RefreshProfile()
@@ -100,7 +99,7 @@ function Frames:CreateDummyFrame(unit, frameName, parent)
 
 	PP:RegisterForUpdate(function()
 		addon.Frames.Widgets.Border:UpdateSettings(frame)
-		frame.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "OUTLINE")
+		frame.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(12), "OUTLINE")
 	end)
 
 	return frame

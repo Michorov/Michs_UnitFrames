@@ -39,7 +39,7 @@ local function ApplyOptionTexture(texture, option)
 end
 
 local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
-	local fontSize = PP:ScaleFont(control.layout.fontSize)
+	local fontSize = PP:ToUI(control.layout.fontSize)
 	if option and option.font then
 		fontString:SetFont(option.font, fontSize, "")
 	else
@@ -88,7 +88,7 @@ local function ScrollList(control, delta)
 		return
 	end
 
-	local step = PP:ToUIScaled(control.layout.listRowHeight + control.layout.listRowSpacing)
+	local step = PP:ToUI(control.layout.listRowHeight) + PP:ToUI(control.layout.listRowSpacing)
 	local value = control.list.scrollBar:GetValue() - (delta * step)
 	control.list.scrollBar:SetValue(math.max(0, math.min(control.list.scrollRange, value)))
 end
@@ -203,8 +203,8 @@ local function EnsureListRows(control)
 		ApplyOptionTextStyle(control, button.text, option, false)
 		button.text:SetText(option.text or "")
 		button.text:ClearAllPoints()
-		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUIScaled(control.layout.textInset), 0)
-		button.text:SetPoint("RIGHT", button, "RIGHT", PP:ToUIScaled(-control.layout.textInset), 0)
+		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUI(control.layout.textInset), 0)
+		button.text:SetPoint("RIGHT", button, "RIGHT", PP:ToUI(-control.layout.textInset), 0)
 		button:Show()
 	end
 
@@ -214,10 +214,10 @@ local function EnsureListRows(control)
 end
 
 local function UpdateListLayout(control)
-	local borderThickness = PP:ToUIScaled(control.layout.borderThickness)
-	local rowHeight = PP:ToUIScaled(control.layout.listRowHeight)
-	local rowSpacing = PP:ToUIScaled(control.layout.listRowSpacing)
-	local listPadding = PP:ToUIScaled(control.layout.listPadding)
+	local borderThickness = PP:ToUI(control.layout.borderThickness)
+	local rowHeight = PP:ToUI(control.layout.listRowHeight)
+	local rowSpacing = PP:ToUI(control.layout.listRowSpacing)
+	local listPadding = PP:ToUI(control.layout.listPadding)
 	local optionCount = #control.options
 	local visibleCount = math.min(optionCount, control.layout.maxVisibleRows)
 	local contentHeight = (optionCount * rowHeight)
@@ -227,8 +227,8 @@ local function UpdateListLayout(control)
 	local listHeight = visibleHeight
 		+ (listPadding * 2)
 	local isScrollable = optionCount > control.layout.maxVisibleRows
-	local scrollBarWidth = PP:ToUIScaled(control.layout.scrollBarWidth)
-	local scrollBarSpacing = PP:ToUIScaled(control.layout.scrollBarSpacing)
+	local scrollBarWidth = PP:ToUI(control.layout.scrollBarWidth)
+	local scrollBarSpacing = PP:ToUI(control.layout.scrollBarSpacing)
 	local contentWidth = control:GetWidth() - (listPadding * 2)
 	if isScrollable then
 		contentWidth = contentWidth - scrollBarWidth - scrollBarSpacing
@@ -247,7 +247,7 @@ local function UpdateListLayout(control)
 	control.list.scrollFrame:ClearAllPoints()
 	control.list.scrollFrame:SetPoint("TOPLEFT", control.list, "TOPLEFT", listPadding, -listPadding)
 	control.list.scrollFrame:SetSize(contentWidth, visibleHeight)
-	control.list.scrollChild:SetSize(contentWidth, math.max(contentHeight, PP:ToUIScaled(1)))
+	control.list.scrollChild:SetSize(contentWidth, math.max(contentHeight, PP:ToUI(1)))
 
 	EnsureListRows(control)
 
@@ -271,10 +271,10 @@ local function UpdateListLayout(control)
 
 	control.list.scrollRange = math.max(0, contentHeight - visibleHeight)
 	if isScrollable then
-		local scrollTrackWidth = PP:ToUIScaled(control.layout.scrollTrackWidth)
-		local scrollThumbWidth = PP:ToUIScaled(control.layout.scrollThumbWidth)
+		local scrollTrackWidth = PP:ToUI(control.layout.scrollTrackWidth)
+		local scrollThumbWidth = PP:ToUI(control.layout.scrollThumbWidth)
 		local scrollThumbHeight = math.max(
-			PP:ToUIScaled(control.layout.scrollThumbMinHeight),
+			PP:ToUI(control.layout.scrollThumbMinHeight),
 			visibleHeight * (visibleHeight / contentHeight)
 		)
 
@@ -320,7 +320,7 @@ local function ToggleDropdown(control)
 	control.list:Show()
 
 	local hasFontOptions = false
-	local fontSize = PP:ScaleFont(control.layout.fontSize)
+	local fontSize = PP:ToUI(control.layout.fontSize)
 	for index, option in ipairs(control.options) do
 		if option.font then
 			hasFontOptions = true
@@ -596,25 +596,25 @@ function Dropdown:Create(parent, labelText)
 	end
 
 	function control:UpdateLayout()
-		local labelHeight = PP:ToUIScaled(self.layout.labelHeight)
-		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
-		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
-		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
-		local textInset = PP:ToUIScaled(self.layout.textInset)
-		local selectionRightInset = PP:ToUIScaled(self.layout.selectionRightInset)
-		local arrowWidth = self.layout.arrowWidth
-		local arrowHeight = self.layout.arrowHeight
-		local arrowStrokeThickness = self.layout.arrowStrokeThickness
-		local arrowSideInset = math.max(1, arrowStrokeThickness / 2)
-		local usableArrowWidth = math.max(2, arrowWidth - (arrowSideInset * 2))
-		local usableArrowHeight = math.max(2, arrowHeight - 2)
+		local labelHeight = PP:ToUI(self.layout.labelHeight)
+		local labelSpacing = PP:ToUI(self.layout.labelSpacing)
+		local fieldHeight = PP:ToUI(self.layout.fieldHeight)
+		local borderThickness = PP:ToUI(self.layout.borderThickness)
+		local textInset = PP:ToUI(self.layout.textInset)
+		local selectionRightInset = PP:ToUI(self.layout.selectionRightInset)
+		local arrowWidth = PP:ToUI(self.layout.arrowWidth)
+		local arrowHeight = PP:ToUI(self.layout.arrowHeight)
+		local arrowStrokeThickness = PP:ToUI(self.layout.arrowStrokeThickness)
+		local arrowSideInset = math.max(PP:ToUI(1), arrowStrokeThickness / 2)
+		local usableArrowWidth = math.max(PP:ToUI(2), arrowWidth - (arrowSideInset * 2))
+		local usableArrowHeight = math.max(PP:ToUI(2), arrowHeight - PP:ToUI(2))
 		local arrowHalfRun = usableArrowWidth / 2
 		local arrowStrokeLength = math.sqrt((arrowHalfRun * arrowHalfRun) + (usableArrowHeight * usableArrowHeight))
 		local arrowStrokeCenterOffsetX = usableArrowWidth / 4
 		local arrowStrokeRotation = math.atan2(usableArrowHeight, arrowHalfRun)
 
-		self:SetWidth(PP:ToUIScaled(self.layout.width))
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self:SetWidth(PP:ToUI(self.layout.width))
+		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 		UpdateSelectionText(self)
 
 		self.label:ClearAllPoints()
@@ -644,24 +644,24 @@ function Dropdown:Create(parent, labelText)
 		self.selectionText:SetPoint("LEFT", self.field, "LEFT", textInset, 0)
 		self.selectionText:SetPoint("RIGHT", self.field, "RIGHT", -selectionRightInset, 0)
 
-		self.arrow:SetSize(PP:ToUIScaled(arrowWidth), PP:ToUIScaled(arrowHeight))
+		self.arrow:SetSize(arrowWidth, arrowHeight)
 		self.arrow:ClearAllPoints()
 		self.arrow:SetPoint(
 			"CENTER",
 			self.field,
 			"RIGHT",
-			PP:ToUIScaled(-(self.layout.arrowInset + (arrowWidth / 2))),
+			-(PP:ToUI(self.layout.arrowInset) + (arrowWidth / 2)),
 			0
 		)
 
 		self.arrow.leftStroke:ClearAllPoints()
-		self.arrow.leftStroke:SetPoint("CENTER", self.arrow, "CENTER", PP:ToUIScaled(-arrowStrokeCenterOffsetX), 0)
-		self.arrow.leftStroke:SetSize(PP:ToUIScaled(arrowStrokeLength), PP:ToUIScaled(arrowStrokeThickness))
+		self.arrow.leftStroke:SetPoint("CENTER", self.arrow, "CENTER", -arrowStrokeCenterOffsetX, 0)
+		self.arrow.leftStroke:SetSize(arrowStrokeLength, arrowStrokeThickness)
 		self.arrow.leftStroke:SetRotation(-arrowStrokeRotation)
 
 		self.arrow.rightStroke:ClearAllPoints()
-		self.arrow.rightStroke:SetPoint("CENTER", self.arrow, "CENTER", PP:ToUIScaled(arrowStrokeCenterOffsetX), 0)
-		self.arrow.rightStroke:SetSize(PP:ToUIScaled(arrowStrokeLength), PP:ToUIScaled(arrowStrokeThickness))
+		self.arrow.rightStroke:SetPoint("CENTER", self.arrow, "CENTER", arrowStrokeCenterOffsetX, 0)
+		self.arrow.rightStroke:SetSize(arrowStrokeLength, arrowStrokeThickness)
 		self.arrow.rightStroke:SetRotation(arrowStrokeRotation)
 
 		if self.layout.point then
@@ -670,8 +670,8 @@ function Dropdown:Create(parent, labelText)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 

@@ -135,13 +135,13 @@ function Checkbox:Create(parent, text)
 	end
 
 	function checkbox:UpdateLayout()
-		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
-		local checkInset = PP:ToUIScaled(self.layout.checkInset)
+		local borderThickness = PP:ToUI(self.layout.borderThickness)
+		local checkInset = PP:ToUI(self.layout.checkInset)
 
-		self:SetSize(PP:ToUIScaled(self.layout.width), PP:ToUIScaled(self.layout.height))
+		self:SetSize(PP:ToUI(self.layout.width), PP:ToUI(self.layout.height))
 		self.box:ClearAllPoints()
 		self.box:SetPoint("LEFT", self, "LEFT", 0, 0)
-		self.box:SetSize(PP:ToUIScaled(self.layout.boxSize), PP:ToUIScaled(self.layout.boxSize))
+		self.box:SetSize(PP:ToUI(self.layout.boxSize), PP:ToUI(self.layout.boxSize))
 
 		self.boxTopBorder:SetHeight(borderThickness)
 		self.boxBottomBorder:SetHeight(borderThickness)
@@ -152,13 +152,13 @@ function Checkbox:Create(parent, text)
 		self.check:SetPoint("TOPLEFT", self.box, "TOPLEFT", checkInset, -checkInset)
 		self.check:SetPoint("BOTTOMRIGHT", self.box, "BOTTOMRIGHT", -checkInset, checkInset)
 
-		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 		self.text:ClearAllPoints()
 		self.text:SetPoint(
 			"LEFT",
 			self,
 			"LEFT",
-			PP:ToUIScaled(self.layout.boxSize + self.layout.textInset),
+			PP:ToUI(self.layout.boxSize) + PP:ToUI(self.layout.textInset),
 			0
 		)
 		self.text:SetPoint("RIGHT", self, "RIGHT", 0, 0)
@@ -169,8 +169,8 @@ function Checkbox:Create(parent, text)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 	end

@@ -249,10 +249,10 @@ function Profiles:Ensure(parent)
 	)
 
 	function page:UpdateLayout()
-		self.activeSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
-		self.createSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
-		self.copySectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
-		self.deleteSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
+		self.activeSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		self.createSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		self.copySectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		self.deleteSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
 
 		self.activeSectionTitle:ClearAllPoints()
 		self.activeSectionTitle:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
@@ -262,7 +262,7 @@ function Profiles:Ensure(parent)
 			self.activeProfileDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 		self.copySectionTitle:ClearAllPoints()
 		self.copySectionTitle:SetPoint(
@@ -270,7 +270,7 @@ function Profiles:Ensure(parent)
 			self.newProfileInput,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 		self.deleteSectionTitle:ClearAllPoints()
 		self.deleteSectionTitle:SetPoint(
@@ -278,7 +278,7 @@ function Profiles:Ensure(parent)
 			self.copyFromDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 	end
 

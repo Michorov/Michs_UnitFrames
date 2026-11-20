@@ -85,8 +85,8 @@ function AuraButtons:Initialize(button, container)
 end
 
 function AuraButtons:ApplyIconSettings(button, cachedSettings)
-	local iconSize = PP:ToUIScaled(cachedSettings.iconSize)
-	local borderSize = PP:ToUIScaled(1)
+	local iconSize = PP:ToUI(cachedSettings.iconSize)
+	local borderSize = PP:ToUI(1)
 
 	button:SetSize(iconSize, iconSize)
 	button.icon:ClearAllPoints()
@@ -98,7 +98,7 @@ function AuraButtons:ApplyIconSettings(button, cachedSettings)
 end
 
 function AuraButtons:ApplyBorderSettings(button)
-	local borderSize = PP:ToUIScaled(1)
+	local borderSize = PP:ToUI(1)
 	local edges = button.border.edges
 
 	button.border:Show()
@@ -116,7 +116,7 @@ function AuraButtons:ApplyCooldownSettings(button, cachedSettings)
 	button.cooldown:SetHideCountdownNumbers(not cachedSettings.showCooldown)
 
 	if cachedSettings.showCooldown and button.cooldown.SetCountdownFont then
-		local fontSize = PP:ScaleFont(cachedSettings.cooldownFontSize)
+		local fontSize = PP:ToUI(cachedSettings.cooldownFontSize)
 		local fontName = "MUF_CooldownFont_" .. tostring(fontSize)
 		local cooldownFont = _G[fontName]
 		if not cooldownFont then
@@ -129,9 +129,9 @@ function AuraButtons:ApplyCooldownSettings(button, cachedSettings)
 end
 
 function AuraButtons:ApplyCountSettings(button, cachedSettings)
-	local borderSize = PP:ToUIScaled(1)
+	local borderSize = PP:ToUI(1)
 
-	button.count:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(cachedSettings.stacksFontSize), "OUTLINE")
+	button.count:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(cachedSettings.stacksFontSize), "OUTLINE")
 	button.count:SetTextColor(1, 1, 1, 1)
 	button.count:ClearAllPoints()
 	button.count:SetAlpha(cachedSettings.showStacks and 1 or 0)

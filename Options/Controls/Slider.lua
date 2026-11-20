@@ -218,23 +218,23 @@ function Slider:Create(parent, text)
 	end
 
 	function control:UpdateLayout()
-		local width = PP:ToUIScaled(self.layout.width)
-		local topRowHeight = PP:ToUIScaled(self.layout.topRowHeight)
-		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
-		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
-		local thumbSize = PP:ToUIScaled(self.layout.thumbSize)
-		local trackHeight = PP:ToUIScaled(self.layout.trackHeight)
-		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
+		local width = PP:ToUI(self.layout.width)
+		local topRowHeight = PP:ToUI(self.layout.topRowHeight)
+		local labelSpacing = PP:ToUI(self.layout.labelSpacing)
+		local fieldHeight = PP:ToUI(self.layout.fieldHeight)
+		local thumbSize = PP:ToUI(self.layout.thumbSize)
+		local trackHeight = PP:ToUI(self.layout.trackHeight)
+		local borderThickness = PP:ToUI(self.layout.borderThickness)
 		local sliderTopOffset = topRowHeight + labelSpacing
 
 		self.trackWidth = width
 		self:SetSize(width, topRowHeight + labelSpacing + fieldHeight)
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
-		self.valueInput:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		self.valueInput:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 
 		self.valueInput:ClearAllPoints()
 		self.valueInput:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
-		self.valueInput:SetSize(PP:ToUIScaled(self.layout.valueInputWidth), topRowHeight)
+		self.valueInput:SetSize(PP:ToUI(self.layout.valueInputWidth), topRowHeight)
 
 		self.label:ClearAllPoints()
 		self.label:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
@@ -242,7 +242,7 @@ function Slider:Create(parent, text)
 			"TOPRIGHT",
 			self.valueInput,
 			"TOPLEFT",
-			PP:ToUIScaled(-self.layout.valueInputGap),
+			PP:ToUI(-self.layout.valueInputGap),
 			0
 		)
 		self.label:SetHeight(topRowHeight)
@@ -269,8 +269,8 @@ function Slider:Create(parent, text)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 

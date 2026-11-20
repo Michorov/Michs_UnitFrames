@@ -166,18 +166,18 @@ function Input:Create(parent, labelText)
 	end
 
 	function control:UpdateLayout()
-		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
-		local labelHeight = PP:ToUIScaled(self.layout.labelHeight)
-		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
-		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
-		local textInset = PP:ToUIScaled(self.layout.textInset)
+		local fieldHeight = PP:ToUI(self.layout.fieldHeight)
+		local labelHeight = PP:ToUI(self.layout.labelHeight)
+		local labelSpacing = PP:ToUI(self.layout.labelSpacing)
+		local borderThickness = PP:ToUI(self.layout.borderThickness)
+		local textInset = PP:ToUI(self.layout.textInset)
 
-		self:SetWidth(PP:ToUIScaled(self.layout.width))
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
-		self.field:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self:SetWidth(PP:ToUI(self.layout.width))
+		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		self.field:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 		self.placeholderText:SetFont(
 			"Fonts\\ARIALN.TTF",
-			PP:ScaleFont(self.layout.fontSize),
+			PP:ToUI(self.layout.fontSize),
 			""
 		)
 
@@ -227,8 +227,8 @@ function Input:Create(parent, labelText)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 

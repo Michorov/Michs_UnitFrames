@@ -115,15 +115,15 @@ function Button:Create(parent, text)
 	end
 
 	function button:UpdateLayout()
-		self:SetSize(PP:ToUIScaled(self.layout.width), PP:ToUIScaled(self.layout.height))
-		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self:SetSize(PP:ToUI(self.layout.width), PP:ToUI(self.layout.height))
+		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 		self.text:SetJustifyH(self.layout.textAlignment)
 		self.text:ClearAllPoints()
 
 		if self.layout.textAlignment == "LEFT" then
-			self.text:SetPoint("LEFT", self, "LEFT", PP:ToUIScaled(self.layout.textInset), 0)
+			self.text:SetPoint("LEFT", self, "LEFT", PP:ToUI(self.layout.textInset), 0)
 		elseif self.layout.textAlignment == "RIGHT" then
-			self.text:SetPoint("RIGHT", self, "RIGHT", PP:ToUIScaled(-self.layout.textInset), 0)
+			self.text:SetPoint("RIGHT", self, "RIGHT", PP:ToUI(-self.layout.textInset), 0)
 		else
 			self.text:SetPoint("CENTER", self, "CENTER", 0, 0)
 		end
@@ -134,7 +134,7 @@ function Button:Create(parent, text)
 			self.borderLeft:Hide()
 			self.borderRight:Hide()
 		else
-			local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
+			local borderThickness = PP:ToUI(self.layout.borderThickness)
 			self.borderTop:SetHeight(borderThickness)
 			self.borderBottom:SetHeight(borderThickness)
 			self.borderLeft:SetWidth(borderThickness)
@@ -152,8 +152,8 @@ function Button:Create(parent, text)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 	end

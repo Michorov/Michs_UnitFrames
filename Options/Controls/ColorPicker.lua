@@ -198,12 +198,12 @@ function ColorPicker:Create(parent, labelText)
 	end
 
 	function control:UpdateLayout()
-		local pickerSize = PP:ToUIScaled(self.layout.pickerSize)
-		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
-		local swatchInnerInset = PP:ToUIScaled(self.layout.swatchInnerInset)
+		local pickerSize = PP:ToUI(self.layout.pickerSize)
+		local borderThickness = PP:ToUI(self.layout.borderThickness)
+		local swatchInnerInset = PP:ToUI(self.layout.swatchInnerInset)
 
-		self:SetSize(PP:ToUIScaled(self.layout.width), pickerSize)
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(self.layout.fontSize), "")
+		self:SetSize(PP:ToUI(self.layout.width), pickerSize)
+		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
 
 		self.field:ClearAllPoints()
 		self.field:SetPoint("LEFT", self, "LEFT", 0, 0)
@@ -221,7 +221,7 @@ function ColorPicker:Create(parent, labelText)
 		self.label:ClearAllPoints()
 		if self.labelVisible then
 			self.label:Show()
-			self.label:SetPoint("LEFT", self.field, "RIGHT", PP:ToUIScaled(self.layout.labelInset), 0)
+			self.label:SetPoint("LEFT", self.field, "RIGHT", PP:ToUI(self.layout.labelInset), 0)
 			self.label:SetPoint("RIGHT", self, "RIGHT", 0, 0)
 			self.label:SetPoint("TOP", self.field, "TOP", 0, 0)
 			self.label:SetPoint("BOTTOM", self.field, "BOTTOM", 0, 0)
@@ -235,8 +235,8 @@ function ColorPicker:Create(parent, labelText)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUIScaled(self.layout.offsetX),
-				PP:ToUIScaled(self.layout.offsetY)
+				PP:ToUI(self.layout.offsetX),
+				PP:ToUI(self.layout.offsetY)
 			)
 		end
 	end

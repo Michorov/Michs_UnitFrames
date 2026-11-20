@@ -77,10 +77,10 @@ function Texts:Ensure(parent)
 	end
 
 	function page:UpdateLayout()
-		self.header:SetHeight(PP:ToUIScaled(32))
-		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(20), "")
-		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUIScaled(-16))
-		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUIScaled(-16))
+		self.header:SetHeight(PP:ToUI(32))
+		self.header.title:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(20), "")
+		self.body:SetPoint("TOPLEFT", self.header, "BOTTOMLEFT", 0, PP:ToUI(-16))
+		self.body:SetPoint("TOPRIGHT", self.header, "BOTTOMRIGHT", 0, PP:ToUI(-16))
 	end
 
 	function page:UpdateState(profile, unit)

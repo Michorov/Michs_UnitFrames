@@ -207,12 +207,12 @@ local function UpdateFrameLayout(unit)
 	local frame = map[unit]
 	local profile = addon.Database:GetProfile()
 	local settings = profile.frames[unit]
-	local width = PP:ToUIScaled(settings.size.width)
-	local height = PP:ToUIScaled(settings.size.height)
+	local width = PP:ToUI(settings.size.width)
+	local height = PP:ToUI(settings.size.height)
 
 	for _, layoutFrame in ipairs({ frame, dummyFrames[unit] }) do
 		layoutFrame:SetSize(width, height)
-		PP:CenterElement(layoutFrame, UIParent, PP:ToUIScaled(settings.position.x), PP:ToUIScaled(settings.position.y))
+		PP:CenterElement(layoutFrame, UIParent, settings.position.x, settings.position.y)
 	end
 
 	addon.Frames.Widgets.Texts.Name:UpdateSettings(frame)
@@ -234,15 +234,15 @@ end
 local function UpdateBossLayout()
 	local profile = addon.Database:GetProfile()
 	local settings = profile.frames.boss
-	local frameWidth = PP:ToUIScaled(settings.size.width)
-	local frameHeight = PP:ToUIScaled(settings.size.height)
-	local spacing = PP:ToUIScaled(settings.spacing)
+	local frameWidth = PP:ToUI(settings.size.width)
+	local frameHeight = PP:ToUI(settings.size.height)
+	local spacing = PP:ToUI(settings.spacing)
 	local containerHeight = (frameHeight * 5) + (spacing * 4)
 	local dummyContainer = dummyFrames.boss
 
 	for _, container in ipairs({ bossContainer, dummyContainer }) do
 		container:SetSize(frameWidth, containerHeight)
-		PP:CenterElement(container, UIParent, PP:ToUIScaled(settings.position.x), PP:ToUIScaled(settings.position.y))
+		PP:CenterElement(container, UIParent, settings.position.x, settings.position.y)
 	end
 
 	local previousBossFrame

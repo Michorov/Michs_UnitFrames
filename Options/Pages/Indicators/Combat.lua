@@ -88,7 +88,7 @@ function Combat:Ensure(parent)
 	end)
 
 	function subpage:UpdateLayout()
-		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(14), "")
+		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
 	end
 
 	function subpage:UpdateState(profile, unit)

@@ -68,7 +68,7 @@ end
 
 function SideMenu:UpdateLayout()
 	sideMenu.rightBorder:ClearAllPoints()
-	sideMenu.rightBorder:SetPoint("TOPRIGHT", sideMenu, "TOPRIGHT", 0, PP:ToUIScaled(-8))
-	sideMenu.rightBorder:SetPoint("BOTTOMRIGHT", sideMenu, "BOTTOMRIGHT", 0, PP:ToUIScaled(8))
-	sideMenu.rightBorder:SetWidth(PP:ToUIScaled(1))
+	sideMenu.rightBorder:SetPoint("TOPRIGHT", sideMenu, "TOPRIGHT", 0, PP:ToUI(-8))
+	sideMenu.rightBorder:SetPoint("BOTTOMRIGHT", sideMenu, "BOTTOMRIGHT", 0, PP:ToUI(8))
+	sideMenu.rightBorder:SetWidth(PP:ToUI(1))
 end

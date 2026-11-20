@@ -101,9 +101,9 @@ function Name:UpdateSettings(frame)
 	end
 
 	nameText:ClearAllPoints()
-	nameText:SetPoint(anchor, frame.nameText, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	nameText:SetPoint(anchor, frame.nameText, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
 
-	nameText:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size), cachedSettings.outline)
+	nameText:SetFont(LSM:Fetch("font", font), PP:ToUI(cachedSettings.size), cachedSettings.outline)
 	nameText:SetShadowColor(0, 0, 0, 0.9)
 	nameText:SetShadowOffset(1, -1)
 

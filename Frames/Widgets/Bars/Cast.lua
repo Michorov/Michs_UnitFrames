@@ -217,10 +217,10 @@ function Cast:UpdateLayout(frame)
 
 	local fontSize = cachedSettings.fontSize
 	local position = cachedSettings.position
-	local height = PP:ToUIScaled(cachedSettings.height)
-	local borderThickness = PP:ToUIScaled(1)
+	local height = PP:ToUI(cachedSettings.height)
+	local borderThickness = PP:ToUI(1)
 	local point = position == "TOP" and "BOTTOM" or "TOP"
-	local yOffset = PP:ToUIScaled(position == "TOP" and 1 or -1)
+	local yOffset = PP:ToUI(position == "TOP" and 1 or -1)
 	local leftPoint = point .. "LEFT"
 	local rightPoint = point .. "RIGHT"
 	local relativeLeftPoint = position .. "LEFT"
@@ -245,11 +245,11 @@ function Cast:UpdateLayout(frame)
 		spellNamePosition,
 		castBar,
 		spellNamePosition,
-		spellNamePosition == "LEFT" and PP:ToUIScaled(2) or PP:ToUIScaled(-2),
+		spellNamePosition == "LEFT" and PP:ToUI(2) or PP:ToUI(-2),
 		0
 	)
 	castBar.spellName:SetJustifyH(spellNamePosition)
-	castBar.spellName:SetFont(LSM:Fetch("font", font), PP:ScaleFont(fontSize), "OUTLINE")
+	castBar.spellName:SetFont(LSM:Fetch("font", font), PP:ToUI(fontSize), "OUTLINE")
 	castBar.spellName:SetShadowColor(0, 0, 0, 0.9)
 	castBar.spellName:SetShadowOffset(1, -1)
 
@@ -258,11 +258,11 @@ function Cast:UpdateLayout(frame)
 		castTimePosition,
 		castBar,
 		castTimePosition,
-		castTimePosition == "LEFT" and PP:ToUIScaled(2) or PP:ToUIScaled(-2),
+		castTimePosition == "LEFT" and PP:ToUI(2) or PP:ToUI(-2),
 		0
 	)
 	castBar.castTime:SetJustifyH(castTimePosition)
-	castBar.castTime:SetFont(LSM:Fetch("font", font), PP:ScaleFont(fontSize), "OUTLINE")
+	castBar.castTime:SetFont(LSM:Fetch("font", font), PP:ToUI(fontSize), "OUTLINE")
 	castBar.castTime:SetShadowColor(0, 0, 0, 0.9)
 	castBar.castTime:SetShadowOffset(1, -1)
 
@@ -273,17 +273,17 @@ function Cast:UpdateLayout(frame)
 	then
 		castBar.spellName:ClearAllPoints()
 		if spellNamePosition == "LEFT" then
-			castBar.spellName:SetPoint("LEFT", castBar.castTime, "RIGHT", PP:ToUIScaled(4), 0)
-			castBar.spellName:SetPoint("RIGHT", castBar, "RIGHT", PP:ToUIScaled(-2), 0)
+			castBar.spellName:SetPoint("LEFT", castBar.castTime, "RIGHT", PP:ToUI(4), 0)
+			castBar.spellName:SetPoint("RIGHT", castBar, "RIGHT", PP:ToUI(-2), 0)
 		else
-			castBar.spellName:SetPoint("LEFT", castBar, "LEFT", PP:ToUIScaled(2), 0)
-			castBar.spellName:SetPoint("RIGHT", castBar.castTime, "LEFT", PP:ToUIScaled(-4), 0)
+			castBar.spellName:SetPoint("LEFT", castBar, "LEFT", PP:ToUI(2), 0)
+			castBar.spellName:SetPoint("RIGHT", castBar.castTime, "LEFT", PP:ToUI(-4), 0)
 		end
 	elseif spellNamePosition ~= castTimePosition then
 		if spellNamePosition == "LEFT" then
-			castBar.spellName:SetPoint("RIGHT", castBar.castTime, "LEFT", PP:ToUIScaled(-4), 0)
+			castBar.spellName:SetPoint("RIGHT", castBar.castTime, "LEFT", PP:ToUI(-4), 0)
 		else
-			castBar.spellName:SetPoint("LEFT", castBar.castTime, "RIGHT", PP:ToUIScaled(4), 0)
+			castBar.spellName:SetPoint("LEFT", castBar.castTime, "RIGHT", PP:ToUI(4), 0)
 		end
 	end
 

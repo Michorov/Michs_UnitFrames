@@ -128,8 +128,8 @@ function Health:UpdateSettings(frame)
 	end
 
 	text:ClearAllPoints()
-	text:SetPoint(anchor, frame.healthText, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
-	text:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size), cachedSettings.outline)
+	text:SetPoint(anchor, frame.healthText, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
+	text:SetFont(LSM:Fetch("font", font), PP:ToUI(cachedSettings.size), cachedSettings.outline)
 	text:SetShadowColor(0, 0, 0, 0.9)
 	text:SetShadowOffset(1, -1)
 

@@ -51,10 +51,10 @@ function RaidMarker:UpdateSettings(frame)
 
 	local anchor = cachedSettings.anchor
 	local position = cachedSettings.position
-	local size = PP:ToUIScaled(cachedSettings.size)
+	local size = PP:ToUI(cachedSettings.size)
 	frame.raidMarker:SetSize(size, size)
 	frame.raidMarker:ClearAllPoints()
-	frame.raidMarker:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	frame.raidMarker:SetPoint(anchor, frame, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
 	self:UpdateState(frame)
 end
 

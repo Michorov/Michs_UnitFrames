@@ -92,11 +92,11 @@ function Power:UpdateSettings(frame)
 		texture = generalSettings.texture
 	end
 
-	local borderThickness = PP:ToUIScaled(1)
+	local borderThickness = PP:ToUI(1)
 	local border = frame.powerBar.border
 
 	frame.powerBar:SetStatusBarTexture(addon.Style.Textures:Fetch(texture))
-	frame.powerBar:SetHeight(PP:ToUIScaled(cachedSettings.height))
+	frame.powerBar:SetHeight(PP:ToUI(cachedSettings.height))
 	border.left:SetWidth(borderThickness)
 	border.right:SetWidth(borderThickness)
 	border.top:SetHeight(borderThickness)

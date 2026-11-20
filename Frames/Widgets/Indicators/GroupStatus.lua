@@ -60,10 +60,10 @@ function GroupStatus:UpdateSettings(frame)
 
 	local anchor = cachedSettings.anchor
 	local position = cachedSettings.position
-	local size = PP:ToUIScaled(cachedSettings.size)
+	local size = PP:ToUI(cachedSettings.size)
 	frame.groupStatus:SetSize(size, size)
 	frame.groupStatus:ClearAllPoints()
-	frame.groupStatus:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	frame.groupStatus:SetPoint(anchor, frame, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
 	self:UpdateState(frame)
 end
 

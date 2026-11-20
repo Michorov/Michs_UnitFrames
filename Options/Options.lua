@@ -105,8 +105,11 @@ function Options:Ensure()
 
 		local panelCenterX, panelCenterY = self:GetCenter()
 		local parentCenterX, parentCenterY = UIParent:GetCenter()
-		panelOffsetX = panelCenterX - parentCenterX
-		panelOffsetY = panelCenterY - parentCenterY
+		local _, physicalHeight = GetPhysicalScreenSize()
+		local pixelStep = (768 / physicalHeight) / UIParent:GetEffectiveScale()
+		local scale = (physicalHeight / 1080) * PP.globalScale
+		panelOffsetX = (panelCenterX - parentCenterX) / (pixelStep * scale)
+		panelOffsetY = (panelCenterY - parentCenterY) / (pixelStep * scale)
 		PP:CenterElement(self, UIParent, panelOffsetX, panelOffsetY)
 	end)
 
@@ -116,18 +119,18 @@ function Options:Ensure()
 end
 
 function Options:UpdateLayout()
-	panel:SetSize(PP:ToUIScaled(800), PP:ToUIScaled(500))
+	panel:SetSize(PP:ToUI(800), PP:ToUI(500))
 	PP:CenterElement(panel, UIParent, panelOffsetX, panelOffsetY)
 
-	local borderThickness = PP:ToUIScaled(1)
+	local borderThickness = PP:ToUI(1)
 	panel.topBorder:SetHeight(borderThickness)
 	panel.bottomBorder:SetHeight(borderThickness)
 	panel.leftBorder:SetWidth(borderThickness)
 	panel.rightBorder:SetWidth(borderThickness)
 
-	panel.header:SetHeight(PP:ToUIScaled(40))
-	panel.statusBar:SetHeight(PP:ToUIScaled(32))
-	panel.sideMenu:SetWidth(PP:ToUIScaled(154))
+	panel.header:SetHeight(PP:ToUI(40))
+	panel.statusBar:SetHeight(PP:ToUI(32))
+	panel.sideMenu:SetWidth(PP:ToUI(154))
 
 	addon.Options.Sections.Header:UpdateLayout()
 	addon.Options.Sections.StatusBar:UpdateLayout()

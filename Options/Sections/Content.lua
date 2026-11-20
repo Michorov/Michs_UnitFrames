@@ -62,7 +62,7 @@ function Content:Ensure(parent)
 end
 
 function Content:UpdateLayout()
-	local inset = PP:ToUIScaled(32)
+	local inset = PP:ToUI(32)
 
 	for _, page in pairs(pages) do
 		page:ClearAllPoints()

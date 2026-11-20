@@ -63,8 +63,8 @@ function Level:UpdateSettings(frame)
 	end
 
 	levelText:ClearAllPoints()
-	levelText:SetPoint(anchor, frame.levelText, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
-	levelText:SetFont(LSM:Fetch("font", font), PP:ScaleFont(cachedSettings.size), cachedSettings.outline)
+	levelText:SetPoint(anchor, frame.levelText, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
+	levelText:SetFont(LSM:Fetch("font", font), PP:ToUI(cachedSettings.size), cachedSettings.outline)
 	levelText:SetShadowColor(0, 0, 0, 0.9)
 	levelText:SetShadowOffset(1, -1)
 

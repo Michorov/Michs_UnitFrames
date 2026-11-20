@@ -43,7 +43,7 @@ end
 
 function Border:UpdateSettings(frame)
 	local border = frame.border
-	local uiThickness = PP:ToUIScaled(1)
+	local uiThickness = PP:ToUI(1)
 
 	border.left:SetWidth(uiThickness)
 	border.right:SetWidth(uiThickness)

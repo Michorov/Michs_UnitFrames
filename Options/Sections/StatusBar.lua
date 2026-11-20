@@ -43,12 +43,12 @@ end
 
 function StatusBar:UpdateLayout()
 	statusBar.text:ClearAllPoints()
-	statusBar.text:SetPoint("LEFT", statusBar, "LEFT", PP:ToUIScaled(10), 0)
-	statusBar.text:SetPoint("RIGHT", statusBar, "RIGHT", PP:ToUIScaled(-8), 0)
-	statusBar.text:SetFont("Fonts\\ARIALN.TTF", PP:ScaleFont(12), "")
+	statusBar.text:SetPoint("LEFT", statusBar, "LEFT", PP:ToUI(10), 0)
+	statusBar.text:SetPoint("RIGHT", statusBar, "RIGHT", PP:ToUI(-8), 0)
+	statusBar.text:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(12), "")
 
 	statusBar.topBorder:ClearAllPoints()
-	statusBar.topBorder:SetPoint("TOPLEFT", statusBar, "TOPLEFT", PP:ToUIScaled(8), 0)
-	statusBar.topBorder:SetPoint("TOPRIGHT", statusBar, "TOPRIGHT", PP:ToUIScaled(-8), 0)
-	statusBar.topBorder:SetHeight(PP:ToUIScaled(1))
+	statusBar.topBorder:SetPoint("TOPLEFT", statusBar, "TOPLEFT", PP:ToUI(8), 0)
+	statusBar.topBorder:SetPoint("TOPRIGHT", statusBar, "TOPRIGHT", PP:ToUI(-8), 0)
+	statusBar.topBorder:SetHeight(PP:ToUI(1))
 end

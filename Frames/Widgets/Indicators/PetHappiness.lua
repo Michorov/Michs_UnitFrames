@@ -67,13 +67,13 @@ function PetHappiness:UpdateSettings(frame)
 
 	local size = frame:GetHeight()
 	if cachedSettings.sizeMode == "manual" then
-		size = PP:ToUIScaled(cachedSettings.customSize)
+		size = PP:ToUI(cachedSettings.customSize)
 	end
 	local anchor = cachedSettings.anchor
 	local position = cachedSettings.position
 	indicator:SetSize(size, size)
 	indicator:ClearAllPoints()
-	indicator:SetPoint(anchor, frame, anchor, PP:ToUIScaled(position.x), PP:ToUIScaled(position.y))
+	indicator:SetPoint(anchor, frame, anchor, PP:ToUI(position.x), PP:ToUI(position.y))
 	self:UpdateState(frame)
 end
 
