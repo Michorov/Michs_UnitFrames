@@ -228,7 +228,7 @@ function Buffs:Create(page)
 	}
 
 	function subpage:UpdateLayout()
-		OptionsUILib.Theme:ApplyFont(self.unavailableText, PP:ScaleFont(14), "")
+		OptionsUILib.Theme:ApplyFont(self.unavailableText, PP:ToUI(14), "")
 	end
 
 	function subpage:UpdateState(profile, unit)

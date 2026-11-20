@@ -253,10 +253,10 @@ function Profiles:Create(panel)
 	)
 
 	function page:UpdateLayout()
-		OptionsUILib.Theme:ApplyFont(self.activeSectionTitle, PP:ScaleFont(14), "")
-		OptionsUILib.Theme:ApplyFont(self.createSectionTitle, PP:ScaleFont(14), "")
-		OptionsUILib.Theme:ApplyFont(self.copySectionTitle, PP:ScaleFont(14), "")
-		OptionsUILib.Theme:ApplyFont(self.deleteSectionTitle, PP:ScaleFont(14), "")
+		OptionsUILib.Theme:ApplyFont(self.activeSectionTitle, PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.createSectionTitle, PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.copySectionTitle, PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.deleteSectionTitle, PP:ToUI(14), "")
 
 		self.activeSectionTitle:ClearAllPoints()
 		self.activeSectionTitle:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
@@ -266,7 +266,7 @@ function Profiles:Create(panel)
 			self.activeProfileDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 		self.copySectionTitle:ClearAllPoints()
 		self.copySectionTitle:SetPoint(
@@ -274,7 +274,7 @@ function Profiles:Create(panel)
 			self.newProfileInput,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 		self.deleteSectionTitle:ClearAllPoints()
 		self.deleteSectionTitle:SetPoint(
@@ -282,7 +282,7 @@ function Profiles:Create(panel)
 			self.copyFromDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUIScaled(-24)
+			PP:ToUI(-24)
 		)
 	end
 

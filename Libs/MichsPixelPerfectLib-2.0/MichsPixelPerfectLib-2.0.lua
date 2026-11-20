@@ -140,7 +140,6 @@ function Scaler:CenterElement(element, parent, offsetX, offsetY)
 		return
 	end
 
-	-- Existing dimensions are UI units; offsets are raw settings scaled once.
 	local parentWidthPx = ToPixels(parent:GetWidth())
 	local parentHeightPx = ToPixels(parent:GetHeight())
 	local elementWidthPx = ToPixels(element:GetWidth())
