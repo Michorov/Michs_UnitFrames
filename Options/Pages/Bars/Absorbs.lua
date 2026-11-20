@@ -8,28 +8,25 @@ addon.Options.Pages.Bars.Absorbs = addon.Options.Pages.Bars.Absorbs or {}
 local Absorbs = addon.Options.Pages.Bars.Absorbs
 local subpage
 
-function Absorbs:Ensure(parent)
-	if subpage then
-		return subpage
-	end
+function Absorbs:Create(page)
+	local owner = page:RegisterSubPage("absorbs", { title = "Absorbs" })
+	subpage = owner.frame
 
-	subpage = CreateFrame("Frame", nil, parent)
-
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].absorbs.enabled = enabled
 		addon.UpdateScheduler:Notify("absorbsSettingsChanged", unit)
 	end)
 
-	subpage.colorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Color")
-	subpage.colorPicker:SetLayoutWidth(178)
+	subpage.colorPicker = owner:CreateControl("ColorPicker", "Color")
+	subpage.colorPicker:SetLayoutWidth(176)
 	subpage.colorPicker:SetHasOpacity(true)
 	subpage.colorPicker:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -24)
 	subpage.colorPicker:SetOnValueChanged(function(_, r, g, b, a)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].absorbs.color = { r = r, g = g, b = b, a = a }
 		addon.UpdateScheduler:Notify("absorbsSettingsChanged", unit)
 	end)
@@ -40,5 +37,9 @@ function Absorbs:Ensure(parent)
 		self.colorPicker:SetColor(settings.color)
 	end
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	return owner
 end

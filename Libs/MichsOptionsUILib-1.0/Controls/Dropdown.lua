@@ -1,11 +1,12 @@
-local _, addon = ...
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0", true)
+if not OptionsUILib then
+	return
+end
 
-addon.Options = addon.Options or {}
-addon.Options.Controls = addon.Options.Controls or {}
-addon.Options.Controls.Dropdown = addon.Options.Controls.Dropdown or {}
+OptionsUILib.Controls = OptionsUILib.Controls or {}
+OptionsUILib.Controls.Dropdown = OptionsUILib.Controls.Dropdown or {}
 
-local Dropdown = addon.Options.Controls.Dropdown
-local PP = addon.PixelPerfect
+local Dropdown = OptionsUILib.Controls.Dropdown
 
 local openDropdown
 local defaultArrowColor = { 0.72, 0.74, 0.78, 1 }
@@ -39,16 +40,19 @@ local function ApplyOptionTexture(texture, option)
 end
 
 local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
-	local fontSize = PP:ToUI(control.layout.fontSize)
+	local PP = control.PP
+	local fontSize = PP:ScaleFont(control.layout.fontSize)
+
 	if option and option.font then
 		fontString:SetFont(option.font, fontSize, "")
 	else
-		fontString:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
+		OptionsUILib.Theme:ApplyFont(fontString, fontSize, "")
 	end
 
 	if option and option.texture then
+		local shadowOffset = PP:ToUIScaled(1)
 		fontString:SetShadowColor(0, 0, 0, 1)
-		fontString:SetShadowOffset(1, -1)
+		fontString:SetShadowOffset(shadowOffset, -shadowOffset)
 	else
 		fontString:SetShadowColor(0, 0, 0, 0)
 		fontString:SetShadowOffset(0, 0)
@@ -62,20 +66,37 @@ local function ApplyOptionTextStyle(control, fontString, option, isPlaceholder)
 			option.textColor[4] or 1
 		)
 	elseif isPlaceholder then
-		fontString:SetTextColor(0.50, 0.52, 0.56, 1)
+		fontString:SetTextColor(OptionsUILib.Theme:GetTextColor("placeholder"))
 	else
-		fontString:SetTextColor(0.85, 0.85, 0.88, 1)
+		fontString:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
 	end
+end
+
+local function GetOptionText(control, option)
+	if option and option.textKey and control.panel then
+		return control.panel:Localize(option.textKey, option.textArgs)
+	end
+
+	return option and option.text or nil
 end
 
 local function UpdateSelectionText(control)
 	local selectedOption = GetOption(control.options, control.value)
-	local selectedText = selectedOption and selectedOption.text
+	local selectedText = GetOptionText(control, selectedOption)
 	local isPlaceholder = not selectedText
+	local displayText = selectedText or control.placeholder or ""
 
-	control.selectionText:SetText(selectedText or control.placeholder or "")
 	ApplyOptionTexture(control.selectionTexture, selectedOption)
 	ApplyOptionTextStyle(control, control.selectionText, selectedOption, isPlaceholder)
+
+	if selectedOption and selectedOption.font then
+		control.selectionText:SetText("")
+		C_Timer.After(0, function()
+			control.selectionText:SetText(displayText)
+		end)
+	else
+		control.selectionText:SetText(displayText)
+	end
 end
 
 local function SetArrowColor(control, color)
@@ -83,19 +104,27 @@ local function SetArrowColor(control, color)
 	control.arrow.rightStroke:SetColorTexture(color[1], color[2], color[3], color[4])
 end
 
+local function SetScrollThumbColor(control, color)
+	control.list.scrollBar.thumb:SetColorTexture(color[1], color[2], color[3], color[4])
+end
+
 local function ScrollList(control, delta)
 	if not control.list.scrollBar:IsShown() then
 		return
 	end
 
-	local step = PP:ToUI(control.layout.listRowHeight) + PP:ToUI(control.layout.listRowSpacing)
+	local PP = control.PP
+	local step = PP:ToUIScaled(control.layout.listRowHeight + control.layout.listRowSpacing)
 	local value = control.list.scrollBar:GetValue() - (delta * step)
 	control.list.scrollBar:SetValue(math.max(0, math.min(control.list.scrollRange, value)))
 end
 
 local function StopScrollBarDrag(control)
 	control.list.scrollHitArea:SetScript("OnUpdate", nil)
+	control.list.isScrollDragging = false
 	control.list.scrollDragOffset = nil
+
+	SetScrollThumbColor(control, { OptionsUILib.Theme:GetTextColor("placeholder") })
 end
 
 local function UpdateScrollBarDrag(control)
@@ -140,6 +169,8 @@ local function StartScrollBarDrag(control)
 		control.list.scrollDragOffset = thumbHeight / 2
 	end
 
+	control.list.isScrollDragging = true
+	SetScrollThumbColor(control, { OptionsUILib.Theme:GetColor("brand") })
 	control.list.scrollHitArea:SetScript("OnUpdate", function()
 		UpdateScrollBarDrag(control)
 	end)
@@ -147,6 +178,8 @@ local function StartScrollBarDrag(control)
 end
 
 local function EnsureListRows(control)
+	local PP = control.PP
+
 	for index, option in ipairs(control.options) do
 		local button = control.list.buttons[index]
 
@@ -163,7 +196,7 @@ local function EnsureListRows(control)
 			button.previewTexture:Hide()
 
 			button.hoverTexture = button:CreateTexture(nil, "ARTWORK")
-			button.hoverTexture:SetColorTexture(1, 1, 1, 0.03)
+			button.hoverTexture:SetColorTexture(OptionsUILib.Theme:GetColor("controlHoverOverlay"))
 			button.hoverTexture:SetAllPoints(button)
 			button.hoverTexture:Hide()
 
@@ -189,7 +222,9 @@ local function EnsureListRows(control)
 				control:SetValue(self.value)
 				HideOpenDropdown()
 
-				if control.onValueChanged then
+				if control.HandleValueChanged then
+					control:HandleValueChanged(self.value)
+				elseif control.onValueChanged then
 					control.onValueChanged(control, self.value)
 				end
 			end)
@@ -201,10 +236,20 @@ local function EnsureListRows(control)
 		button.value = option.value
 		ApplyOptionTexture(button.previewTexture, option)
 		ApplyOptionTextStyle(control, button.text, option, false)
-		button.text:SetText(option.text or "")
+
+		local optionText = GetOptionText(control, option) or ""
+		if option.font then
+			button.text:SetText("")
+			C_Timer.After(0, function()
+				button.text:SetText(optionText)
+			end)
+		else
+			button.text:SetText(optionText)
+		end
+
 		button.text:ClearAllPoints()
-		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUI(control.layout.textInset), 0)
-		button.text:SetPoint("RIGHT", button, "RIGHT", PP:ToUI(-control.layout.textInset), 0)
+		button.text:SetPoint("LEFT", button, "LEFT", PP:ToUIScaled(control.layout.textInset), 0)
+		button.text:SetPoint("RIGHT", button, "RIGHT", PP:ToUIScaled(-control.layout.textInset), 0)
 		button:Show()
 	end
 
@@ -214,21 +259,19 @@ local function EnsureListRows(control)
 end
 
 local function UpdateListLayout(control)
-	local borderThickness = PP:ToUI(control.layout.borderThickness)
-	local rowHeight = PP:ToUI(control.layout.listRowHeight)
-	local rowSpacing = PP:ToUI(control.layout.listRowSpacing)
-	local listPadding = PP:ToUI(control.layout.listPadding)
+	local PP = control.PP
+	local borderThickness = PP:ToUIScaled(control.layout.borderThickness)
+	local rowHeight = PP:ToUIScaled(control.layout.listRowHeight)
+	local rowSpacing = PP:ToUIScaled(control.layout.listRowSpacing)
+	local listPadding = PP:ToUIScaled(control.layout.listPadding)
 	local optionCount = #control.options
 	local visibleCount = math.min(optionCount, control.layout.maxVisibleRows)
-	local contentHeight = (optionCount * rowHeight)
-		+ (math.max(0, optionCount - 1) * rowSpacing)
-	local visibleHeight = (visibleCount * rowHeight)
-		+ (math.max(0, visibleCount - 1) * rowSpacing)
-	local listHeight = visibleHeight
-		+ (listPadding * 2)
+	local contentHeight = (optionCount * rowHeight) + (math.max(0, optionCount - 1) * rowSpacing)
+	local visibleHeight = (visibleCount * rowHeight) + (math.max(0, visibleCount - 1) * rowSpacing)
+	local listHeight = visibleHeight + (listPadding * 2)
 	local isScrollable = optionCount > control.layout.maxVisibleRows
-	local scrollBarWidth = PP:ToUI(control.layout.scrollBarWidth)
-	local scrollBarSpacing = PP:ToUI(control.layout.scrollBarSpacing)
+	local scrollBarWidth = PP:ToUIScaled(control.layout.scrollBarWidth)
+	local scrollBarSpacing = PP:ToUIScaled(control.layout.scrollBarSpacing)
 	local contentWidth = control:GetWidth() - (listPadding * 2)
 	if isScrollable then
 		contentWidth = contentWidth - scrollBarWidth - scrollBarSpacing
@@ -247,7 +290,7 @@ local function UpdateListLayout(control)
 	control.list.scrollFrame:ClearAllPoints()
 	control.list.scrollFrame:SetPoint("TOPLEFT", control.list, "TOPLEFT", listPadding, -listPadding)
 	control.list.scrollFrame:SetSize(contentWidth, visibleHeight)
-	control.list.scrollChild:SetSize(contentWidth, math.max(contentHeight, PP:ToUI(1)))
+	control.list.scrollChild:SetSize(contentWidth, math.max(contentHeight, PP:ToUIScaled(1)))
 
 	EnsureListRows(control)
 
@@ -271,10 +314,10 @@ local function UpdateListLayout(control)
 
 	control.list.scrollRange = math.max(0, contentHeight - visibleHeight)
 	if isScrollable then
-		local scrollTrackWidth = PP:ToUI(control.layout.scrollTrackWidth)
-		local scrollThumbWidth = PP:ToUI(control.layout.scrollThumbWidth)
+		local scrollTrackWidth = PP:ToUIScaled(control.layout.scrollTrackWidth)
+		local scrollThumbWidth = PP:ToUIScaled(control.layout.scrollThumbWidth)
 		local scrollThumbHeight = math.max(
-			PP:ToUI(control.layout.scrollThumbMinHeight),
+			PP:ToUIScaled(control.layout.scrollThumbMinHeight),
 			visibleHeight * (visibleHeight / contentHeight)
 		)
 
@@ -289,13 +332,7 @@ local function UpdateListLayout(control)
 		control.list.scrollBar:Show()
 
 		control.list.scrollHitArea:ClearAllPoints()
-		control.list.scrollHitArea:SetPoint(
-			"TOPLEFT",
-			control.list.scrollFrame,
-			"TOPRIGHT",
-			0,
-			listPadding
-		)
+		control.list.scrollHitArea:SetPoint("TOPLEFT", control.list.scrollFrame, "TOPRIGHT", 0, listPadding)
 		control.list.scrollHitArea:SetPoint("BOTTOMRIGHT", control.list, "BOTTOMRIGHT", 0, 0)
 		control.list.scrollHitArea:Show()
 	else
@@ -319,42 +356,18 @@ local function ToggleDropdown(control)
 	UpdateListLayout(control)
 	control.list:Show()
 
-	local hasFontOptions = false
-	local fontSize = PP:ToUI(control.layout.fontSize)
-	for index, option in ipairs(control.options) do
-		if option.font then
-			hasFontOptions = true
-			local rowText = control.list.buttons[index].text
-			rowText:SetText("")
-			rowText:SetFont("Fonts\\ARIALN.TTF", fontSize, "")
-			rowText:SetText(option.text or "")
-		end
-	end
-
-	if hasFontOptions then
-		C_Timer.After(0, function()
-			if not control.list:IsShown() then
-				return
-			end
-
-			for index, option in ipairs(control.options) do
-				if option.font then
-					local rowText = control.list.buttons[index].text
-					rowText:SetText("")
-					ApplyOptionTextStyle(control, rowText, option, false)
-					rowText:SetText(option.text or "")
-				end
-			end
-		end)
-	end
-
-	control:SetArrowColor({ 0.96, 0.66, 0.31, 1 })
+	control:SetArrowColor({ OptionsUILib.Theme:GetColor("brand") })
 	openDropdown = control
 end
 
-function Dropdown:Create(parent, labelText)
+function Dropdown:Create(parent, PP, labelText)
+	if not parent or not PP then
+		return nil
+	end
+
 	local control = CreateFrame("Frame", nil, parent)
 
+	control.PP = PP
 	control.layout = {
 		parent = parent,
 		width = 220,
@@ -391,33 +404,34 @@ function Dropdown:Create(parent, labelText)
 	control.labelVisible = true
 
 	control.label = control:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	control.label:SetTextColor(0.85, 0.85, 0.88, 1)
+	control.label:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
 	control.label:SetJustifyH("LEFT")
+	OptionsUILib.Theme:ApplyFont(control.label, control.PP:ScaleFont(control.layout.fontSize), "")
 	control.label:SetText(labelText or "Dropdown")
 
 	control.field = CreateFrame("Button", nil, control, "BackdropTemplate")
 	control.field:SetBackdrop({
 		bgFile = "Interface\\Buttons\\WHITE8x8",
 	})
-	control.field:SetBackdropColor(0.04, 0.05, 0.07, 1)
+	control.field:SetBackdropColor(OptionsUILib.Theme:GetColor("controlBackground"))
 
 	control.field.topBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.topBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.topBorder:SetPoint("TOPLEFT", control.field, "TOPLEFT", 0, 0)
 	control.field.topBorder:SetPoint("TOPRIGHT", control.field, "TOPRIGHT", 0, 0)
 
 	control.field.bottomBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.bottomBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.bottomBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.bottomBorder:SetPoint("BOTTOMLEFT", control.field, "BOTTOMLEFT", 0, 0)
 	control.field.bottomBorder:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
 
 	control.field.leftBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.leftBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.leftBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.leftBorder:SetPoint("TOPLEFT", control.field, "TOPLEFT", 0, 0)
 	control.field.leftBorder:SetPoint("BOTTOMLEFT", control.field, "BOTTOMLEFT", 0, 0)
 
 	control.field.rightBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.rightBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.rightBorder:SetPoint("TOPRIGHT", control.field, "TOPRIGHT", 0, 0)
 	control.field.rightBorder:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
 
@@ -430,6 +444,7 @@ function Dropdown:Create(parent, labelText)
 	control.selectionText:SetJustifyH("LEFT")
 	control.selectionText:SetWordWrap(false)
 	control.selectionText:SetMaxLines(1)
+	OptionsUILib.Theme:ApplyFont(control.selectionText, control.PP:ScaleFont(control.layout.fontSize), "")
 	control.selectionText:SetText(control.placeholder)
 
 	control.arrow = CreateFrame("Frame", nil, control.field)
@@ -437,7 +452,7 @@ function Dropdown:Create(parent, labelText)
 	control.arrow.rightStroke = control.arrow:CreateTexture(nil, "OVERLAY")
 
 	control.field.hoverTexture = control.field:CreateTexture(nil, "ARTWORK")
-	control.field.hoverTexture:SetColorTexture(1, 1, 1, 0.03)
+	control.field.hoverTexture:SetColorTexture(OptionsUILib.Theme:GetColor("controlHoverOverlay"))
 	control.field.hoverTexture:SetAllPoints(control.field)
 	control.field.hoverTexture:Hide()
 
@@ -447,7 +462,7 @@ function Dropdown:Create(parent, labelText)
 	control.list:SetBackdrop({
 		bgFile = "Interface\\Buttons\\WHITE8x8",
 	})
-	control.list:SetBackdropColor(0.04, 0.05, 0.07, 1)
+	control.list:SetBackdropColor(OptionsUILib.Theme:GetColor("controlBackground"))
 	control.list:Hide()
 	control.list.buttons = {}
 	control.list.scrollRange = 0
@@ -472,12 +487,12 @@ function Dropdown:Create(parent, labelText)
 	end)
 
 	control.list.scrollBar.track = control.list.scrollBar:CreateTexture(nil, "ARTWORK")
-	control.list.scrollBar.track:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.scrollBar.track:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.list.scrollBar.track:SetPoint("TOP", control.list.scrollBar, "TOP", 0, 0)
 	control.list.scrollBar.track:SetPoint("BOTTOM", control.list.scrollBar, "BOTTOM", 0, 0)
 
 	control.list.scrollBar.thumb = control.list.scrollBar:CreateTexture(nil, "OVERLAY")
-	control.list.scrollBar.thumb:SetColorTexture(0.55, 0.57, 0.61, 1)
+	SetScrollThumbColor(control, { OptionsUILib.Theme:GetTextColor("placeholder") })
 	control.list.scrollBar:SetThumbTexture(control.list.scrollBar.thumb)
 
 	control.list.scrollHitArea = CreateFrame("Button", nil, control.list)
@@ -504,22 +519,22 @@ function Dropdown:Create(parent, labelText)
 	end)
 
 	control.list.topBorder = control.list:CreateTexture(nil, "OVERLAY")
-	control.list.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.topBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.list.topBorder:SetPoint("TOPLEFT", control.list, "TOPLEFT", 0, 0)
 	control.list.topBorder:SetPoint("TOPRIGHT", control.list, "TOPRIGHT", 0, 0)
 
 	control.list.bottomBorder = control.list:CreateTexture(nil, "OVERLAY")
-	control.list.bottomBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.bottomBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.list.bottomBorder:SetPoint("BOTTOMLEFT", control.list, "BOTTOMLEFT", 0, 0)
 	control.list.bottomBorder:SetPoint("BOTTOMRIGHT", control.list, "BOTTOMRIGHT", 0, 0)
 
 	control.list.leftBorder = control.list:CreateTexture(nil, "OVERLAY")
-	control.list.leftBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.leftBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.list.leftBorder:SetPoint("TOPLEFT", control.list, "TOPLEFT", 0, 0)
 	control.list.leftBorder:SetPoint("BOTTOMLEFT", control.list, "BOTTOMLEFT", 0, 0)
 
 	control.list.rightBorder = control.list:CreateTexture(nil, "OVERLAY")
-	control.list.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.list.rightBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.list.rightBorder:SetPoint("TOPRIGHT", control.list, "TOPRIGHT", 0, 0)
 	control.list.rightBorder:SetPoint("BOTTOMRIGHT", control.list, "BOTTOMRIGHT", 0, 0)
 
@@ -536,6 +551,10 @@ function Dropdown:Create(parent, labelText)
 	function control:SetValue(value)
 		self.value = value
 		UpdateSelectionText(self)
+	end
+
+	function control:SetBoundValue(value)
+		self:SetValue(value)
 	end
 
 	function control:GetValue()
@@ -596,25 +615,26 @@ function Dropdown:Create(parent, labelText)
 	end
 
 	function control:UpdateLayout()
-		local labelHeight = PP:ToUI(self.layout.labelHeight)
-		local labelSpacing = PP:ToUI(self.layout.labelSpacing)
-		local fieldHeight = PP:ToUI(self.layout.fieldHeight)
-		local borderThickness = PP:ToUI(self.layout.borderThickness)
-		local textInset = PP:ToUI(self.layout.textInset)
-		local selectionRightInset = PP:ToUI(self.layout.selectionRightInset)
-		local arrowWidth = PP:ToUI(self.layout.arrowWidth)
-		local arrowHeight = PP:ToUI(self.layout.arrowHeight)
-		local arrowStrokeThickness = PP:ToUI(self.layout.arrowStrokeThickness)
-		local arrowSideInset = math.max(PP:ToUI(1), arrowStrokeThickness / 2)
-		local usableArrowWidth = math.max(PP:ToUI(2), arrowWidth - (arrowSideInset * 2))
-		local usableArrowHeight = math.max(PP:ToUI(2), arrowHeight - PP:ToUI(2))
+		local PP = self.PP
+		local labelHeight = PP:ToUIScaled(self.layout.labelHeight)
+		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
+		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
+		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
+		local textInset = PP:ToUIScaled(self.layout.textInset)
+		local selectionRightInset = PP:ToUIScaled(self.layout.selectionRightInset)
+		local arrowWidth = self.layout.arrowWidth
+		local arrowHeight = self.layout.arrowHeight
+		local arrowStrokeThickness = self.layout.arrowStrokeThickness
+		local arrowSideInset = math.max(1, arrowStrokeThickness / 2)
+		local usableArrowWidth = math.max(2, arrowWidth - (arrowSideInset * 2))
+		local usableArrowHeight = math.max(2, arrowHeight - 2)
 		local arrowHalfRun = usableArrowWidth / 2
 		local arrowStrokeLength = math.sqrt((arrowHalfRun * arrowHalfRun) + (usableArrowHeight * usableArrowHeight))
 		local arrowStrokeCenterOffsetX = usableArrowWidth / 4
 		local arrowStrokeRotation = math.atan2(usableArrowHeight, arrowHalfRun)
 
-		self:SetWidth(PP:ToUI(self.layout.width))
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		self:SetWidth(PP:ToUIScaled(self.layout.width))
+		OptionsUILib.Theme:ApplyFont(self.label, PP:ScaleFont(self.layout.fontSize), "")
 		UpdateSelectionText(self)
 
 		self.label:ClearAllPoints()
@@ -644,24 +664,24 @@ function Dropdown:Create(parent, labelText)
 		self.selectionText:SetPoint("LEFT", self.field, "LEFT", textInset, 0)
 		self.selectionText:SetPoint("RIGHT", self.field, "RIGHT", -selectionRightInset, 0)
 
-		self.arrow:SetSize(arrowWidth, arrowHeight)
+		self.arrow:SetSize(PP:ToUIScaled(arrowWidth), PP:ToUIScaled(arrowHeight))
 		self.arrow:ClearAllPoints()
 		self.arrow:SetPoint(
 			"CENTER",
 			self.field,
 			"RIGHT",
-			-(PP:ToUI(self.layout.arrowInset) + (arrowWidth / 2)),
+			PP:ToUIScaled(-(self.layout.arrowInset + (arrowWidth / 2))),
 			0
 		)
 
 		self.arrow.leftStroke:ClearAllPoints()
-		self.arrow.leftStroke:SetPoint("CENTER", self.arrow, "CENTER", -arrowStrokeCenterOffsetX, 0)
-		self.arrow.leftStroke:SetSize(arrowStrokeLength, arrowStrokeThickness)
+		self.arrow.leftStroke:SetPoint("CENTER", self.arrow, "CENTER", PP:ToUIScaled(-arrowStrokeCenterOffsetX), 0)
+		self.arrow.leftStroke:SetSize(PP:ToUIScaled(arrowStrokeLength), PP:ToUIScaled(arrowStrokeThickness))
 		self.arrow.leftStroke:SetRotation(-arrowStrokeRotation)
 
 		self.arrow.rightStroke:ClearAllPoints()
-		self.arrow.rightStroke:SetPoint("CENTER", self.arrow, "CENTER", arrowStrokeCenterOffsetX, 0)
-		self.arrow.rightStroke:SetSize(arrowStrokeLength, arrowStrokeThickness)
+		self.arrow.rightStroke:SetPoint("CENTER", self.arrow, "CENTER", PP:ToUIScaled(arrowStrokeCenterOffsetX), 0)
+		self.arrow.rightStroke:SetSize(PP:ToUIScaled(arrowStrokeLength), PP:ToUIScaled(arrowStrokeThickness))
 		self.arrow.rightStroke:SetRotation(arrowStrokeRotation)
 
 		if self.layout.point then
@@ -670,8 +690,8 @@ function Dropdown:Create(parent, labelText)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUI(self.layout.offsetX),
-				PP:ToUI(self.layout.offsetY)
+				PP:ToUIScaled(self.layout.offsetX),
+				PP:ToUIScaled(self.layout.offsetY)
 			)
 		end
 
@@ -684,7 +704,7 @@ function Dropdown:Create(parent, labelText)
 
 	control.field:SetScript("OnEnter", function(self)
 		self.hoverTexture:Show()
-		control:SetArrowColor({ 0.96, 0.66, 0.31, 1 })
+		control:SetArrowColor({ OptionsUILib.Theme:GetColor("brand") })
 	end)
 
 	control.field:SetScript("OnLeave", function(self)
@@ -702,10 +722,6 @@ function Dropdown:Create(parent, labelText)
 		if openDropdown == self then
 			HideOpenDropdown()
 		end
-	end)
-
-	PP:RegisterForUpdate(function()
-		control:UpdateLayout()
 	end)
 
 	return control

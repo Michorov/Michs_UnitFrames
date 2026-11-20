@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "MichsPixelPerfectLib-2.0", 2
+local MAJOR, MINOR = "MichsPixelPerfectLib-2.0", 5
 
 assert(LibStub, MAJOR .. " requires LibStub")
 
@@ -155,26 +155,15 @@ function Scaler:CenterElement(element, parent, offsetX, offsetY)
 end
 
 local pixelGridEventFrame = CreateFrame("Frame")
-pixelGridEventFrame:RegisterEvent("ADDON_LOADED")
 pixelGridEventFrame:RegisterEvent("PLAYER_LOGIN")
 pixelGridEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 pixelGridEventFrame:RegisterEvent("UI_SCALE_CHANGED")
 pixelGridEventFrame:RegisterEvent("DISPLAY_SIZE_CHANGED")
 pixelGridEventFrame:SetScript("OnEvent", function(_, event)
-	if event == "UI_SCALE_CHANGED" or event == "DISPLAY_SIZE_CHANGED" then
-		-- Wait for the resolution, UI scale and parent dimensions to update.
-		C_Timer.After(0, function()
-			RefreshPixelGrid()
-			RunAllUpdateCallbacks(event)
-		end)
-		return
-	end
-
-	RefreshPixelGrid()
-
-	if event ~= "ADDON_LOADED" then
+	C_Timer.After(0, function()
+		RefreshPixelGrid()
 		RunAllUpdateCallbacks(event)
-	end
+	end)
 end)
 
 RefreshPixelGrid()

@@ -13,38 +13,35 @@ local colorModeOptions = {
 	{ value = "classOrReaction", text = "Class/Reaction" },
 }
 
-function Background:Ensure(parent)
-	if subpage then
-		return subpage
-	end
+function Background:Create(page)
+	local owner = page:RegisterSubPage("background", { title = "Background" })
+	subpage = owner.frame
 
-	subpage = CreateFrame("Frame", nil, parent)
-
-	subpage.colorModeDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Color Mode")
-	subpage.colorModeDropdown:SetLayoutWidth(178)
+	subpage.colorModeDropdown = owner:CreateControl("Dropdown", "Color Mode")
+	subpage.colorModeDropdown:SetLayoutWidth(176)
 	subpage.colorModeDropdown:SetOptions(colorModeOptions)
 	subpage.colorModeDropdown:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.colorModeDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].background.colorByClassOrReaction = value == "classOrReaction"
 		addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
 	end)
 
-	subpage.colorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Static Color")
-	subpage.colorPicker:SetLayoutWidth(178)
+	subpage.colorPicker = owner:CreateControl("ColorPicker", "Static Color")
+	subpage.colorPicker:SetLayoutWidth(176)
 	subpage.colorPicker:SetLayoutPoint("BOTTOMLEFT", subpage.colorModeDropdown, "BOTTOMRIGHT", 24, 0)
 	subpage.colorPicker:SetOnValueChanged(function(_, r, g, b, a)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].background.color = { r = r, g = g, b = b, a = a }
 		addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
 	end)
 
-	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
-	subpage.textureDropdown:SetLayoutWidth(178)
+	subpage.textureDropdown = owner:CreateControl("Dropdown", "Texture")
+	subpage.textureDropdown:SetLayoutWidth(176)
 	subpage.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(nil, true))
 	subpage.textureDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.textureDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].background.texture = value
 		addon.UpdateScheduler:Notify("backgroundSettingsChanged", unit)
 	end)
@@ -58,5 +55,9 @@ function Background:Ensure(parent)
 		self.textureDropdown:SetValue(settings.texture)
 	end
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	return owner
 end

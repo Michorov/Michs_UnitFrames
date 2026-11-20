@@ -42,110 +42,107 @@ local healthFormatOptions = {
 	{ value = "percentFull", text = "100% | 100,000" },
 }
 
-function Health:Ensure(parent)
-	if subpage then
-		return subpage
-	end
+function Health:Create(page)
+	local owner = page:RegisterSubPage("health", { title = "Health" })
+	subpage = owner.frame
 
-	subpage = CreateFrame("Frame", nil, parent)
-
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.enabled = enabled
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.fontDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font")
-	subpage.fontDropdown:SetLayoutWidth(178)
+	subpage.fontDropdown = owner:CreateControl("Dropdown", "Font")
+	subpage.fontDropdown:SetLayoutWidth(176)
 	subpage.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions(nil, true))
 	subpage.fontDropdown:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -24)
 	subpage.fontDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.font = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.outlineDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font Style")
-	subpage.outlineDropdown:SetLayoutWidth(178)
+	subpage.outlineDropdown = owner:CreateControl("Dropdown", "Font Style")
+	subpage.outlineDropdown:SetLayoutWidth(176)
 	subpage.outlineDropdown:SetOptions(outlineOptions)
 	subpage.outlineDropdown:SetLayoutPoint("TOPLEFT", subpage.fontDropdown, "TOPRIGHT", 24, 0)
 	subpage.outlineDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.outline = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Font Size")
-	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider = owner:CreateControl("Slider", "Font Size")
+	subpage.sizeSlider:SetLayoutWidth(176)
 	subpage.sizeSlider:SetMinMaxValues(6, 32)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint("TOPLEFT", subpage.outlineDropdown, "TOPRIGHT", 24, 0)
 	subpage.sizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.size = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
-	subpage.anchorDropdown:SetLayoutWidth(178)
+	subpage.anchorDropdown = owner:CreateControl("Dropdown", "Position")
+	subpage.anchorDropdown:SetLayoutWidth(176)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
 	subpage.anchorDropdown:SetLayoutPoint("TOPLEFT", subpage.fontDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.anchor = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
-	subpage.offsetXSlider:SetLayoutWidth(178)
+	subpage.offsetXSlider = owner:CreateControl("Slider", "Offset X")
+	subpage.offsetXSlider:SetLayoutWidth(176)
 	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
 	subpage.offsetXSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.position.x = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.offsetYSlider = addon.Options.Controls.Slider:Create(subpage, "Offset Y")
-	subpage.offsetYSlider:SetLayoutWidth(178)
+	subpage.offsetYSlider = owner:CreateControl("Slider", "Offset Y")
+	subpage.offsetYSlider:SetLayoutWidth(176)
 	subpage.offsetYSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "TOPRIGHT", 24, 0)
 	subpage.offsetYSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.position.y = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.colorModeDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Color Mode")
-	subpage.colorModeDropdown:SetLayoutWidth(178)
+	subpage.colorModeDropdown = owner:CreateControl("Dropdown", "Color Mode")
+	subpage.colorModeDropdown:SetLayoutWidth(176)
 	subpage.colorModeDropdown:SetOptions(colorModeOptions)
 	subpage.colorModeDropdown:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.colorModeDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.colorByClassOrReaction = value == "classOrReaction"
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.colorPicker = addon.Options.Controls.ColorPicker:Create(subpage, "Static Color")
-	subpage.colorPicker:SetLayoutWidth(178)
+	subpage.colorPicker = owner:CreateControl("ColorPicker", "Static Color")
+	subpage.colorPicker:SetLayoutWidth(176)
 	subpage.colorPicker:SetLayoutPoint("BOTTOMLEFT", subpage.colorModeDropdown, "BOTTOMRIGHT", 24, 0)
 	subpage.colorPicker:SetOnValueChanged(function(_, r, g, b, a)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.color = { r = r, g = g, b = b, a = a }
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
 
-	subpage.healthFormatDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Health Format")
-	subpage.healthFormatDropdown:SetLayoutWidth(178)
+	subpage.healthFormatDropdown = owner:CreateControl("Dropdown", "Health Format")
+	subpage.healthFormatDropdown:SetLayoutWidth(176)
 	subpage.healthFormatDropdown:SetOptions(healthFormatOptions)
 	subpage.healthFormatDropdown:SetLayoutPoint("TOPLEFT", subpage.colorModeDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.healthFormatDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].healthText.format = value
 		addon.UpdateScheduler:Notify("healthTextSettingsChanged", unit)
 	end)
@@ -165,5 +162,9 @@ function Health:Ensure(parent)
 		self.healthFormatDropdown:SetValue(settings.format)
 	end
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	return owner
 end

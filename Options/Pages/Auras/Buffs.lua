@@ -1,12 +1,14 @@
 local _, addon = ...
 
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0")
+
 addon.Options = addon.Options or {}
 addon.Options.Pages = addon.Options.Pages or {}
 addon.Options.Pages.Auras = addon.Options.Pages.Auras or {}
 addon.Options.Pages.Auras.Buffs = addon.Options.Pages.Auras.Buffs or {}
 
 local Buffs = addon.Options.Pages.Auras.Buffs
-local PP = addon.PixelPerfect
+local PP = addon.OptionsUI.PP
 local subpage
 
 local defaults = {
@@ -63,100 +65,97 @@ local function Notify(unit)
 	addon.UpdateScheduler:Notify("buffsSettingsChanged", unit)
 end
 
-function Buffs:Ensure(parent)
-	if subpage then
-		return subpage
-	end
-
-	subpage = CreateFrame("Frame", nil, parent)
+function Buffs:Create(page)
+	local owner = page:RegisterSubPage("buffs", { title = "Buffs" })
+	subpage = owner.frame
 	subpage.unavailableText = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	subpage.unavailableText:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.unavailableText:SetJustifyH("LEFT")
-	subpage.unavailableText:SetTextColor(0.72, 0.74, 0.78, 1)
+	subpage.unavailableText:SetTextColor(OptionsUILib.Theme:GetTextColor("secondary"))
 	subpage.unavailableText:SetText("Buffs are not available for this frame")
 	subpage.unavailableText:Hide()
 
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
 	subpage.enabledCheckbox:SetLayoutWidth(126)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).enabled = enabled == true
 		Notify(unit)
 	end)
 
-	subpage.showTooltipsCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Show Tooltips")
+	subpage.showTooltipsCheckbox = owner:CreateControl("Checkbox", "Show Tooltips")
 	subpage.showTooltipsCheckbox:SetLayoutWidth(126)
 	subpage.showTooltipsCheckbox:SetLayoutPoint("TOPLEFT", subpage.enabledCheckbox, "BOTTOMLEFT", 0, -4)
 	subpage.showTooltipsCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).showTooltips = enabled == true
 		Notify(unit)
 	end)
 
-	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
+	subpage.anchorDropdown = owner:CreateControl("Dropdown", "Position")
 	subpage.anchorDropdown:SetLayoutWidth(126)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
 	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).anchor = value
 		Notify(unit)
 	end)
 
-	subpage.maxIconsSlider = addon.Options.Controls.Slider:Create(subpage, "Max Icons")
+	subpage.maxIconsSlider = owner:CreateControl("Slider", "Max Icons")
 	subpage.maxIconsSlider:SetLayoutWidth(126)
 	subpage.maxIconsSlider:SetMinMaxValues(1, 20)
 	subpage.maxIconsSlider:SetStep(1)
 	subpage.maxIconsSlider:SetLayoutPoint("TOPLEFT", subpage.showTooltipsCheckbox, "BOTTOMLEFT", 0, -16)
 	subpage.maxIconsSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).maxIcons = value
 		Notify(unit)
 	end)
 
-	subpage.iconsPerRowSlider = addon.Options.Controls.Slider:Create(subpage, "Icons Per Row")
+	subpage.iconsPerRowSlider = owner:CreateControl("Slider", "Icons Per Row")
 	subpage.iconsPerRowSlider:SetLayoutWidth(126)
 	subpage.iconsPerRowSlider:SetMinMaxValues(1, 10)
 	subpage.iconsPerRowSlider:SetStep(1)
 	subpage.iconsPerRowSlider:SetLayoutPoint("TOPLEFT", subpage.maxIconsSlider, "TOPRIGHT", 24, 0)
 	subpage.iconsPerRowSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).iconsPerRow = value
 		Notify(unit)
 	end)
 
-	subpage.spacingSlider = addon.Options.Controls.Slider:Create(subpage, "Spacing")
+	subpage.spacingSlider = owner:CreateControl("Slider", "Spacing")
 	subpage.spacingSlider:SetLayoutWidth(126)
 	subpage.spacingSlider:SetMinMaxValues(-4, 12)
 	subpage.spacingSlider:SetStep(1)
 	subpage.spacingSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).spacing = value
 		Notify(unit)
 	end)
 
-	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
+	subpage.offsetXSlider = owner:CreateControl("Slider", "Offset X")
 	subpage.offsetXSlider:SetLayoutWidth(126)
 	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).position.x = value
 		Notify(unit)
 	end)
 
-	subpage.offsetYSlider = addon.Options.Controls.Slider:Create(subpage, "Offset Y")
+	subpage.offsetYSlider = owner:CreateControl("Slider", "Offset Y")
 	subpage.offsetYSlider:SetLayoutWidth(126)
 	subpage.offsetYSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "TOPRIGHT", 24, 0)
 	subpage.offsetYSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).position.y = value
 		Notify(unit)
 	end)
 
-	subpage.iconSizeSlider = addon.Options.Controls.Slider:Create(subpage, "Icon Size")
+	subpage.iconSizeSlider = owner:CreateControl("Slider", "Icon Size")
 	subpage.iconSizeSlider:SetLayoutWidth(126)
 	subpage.iconSizeSlider:SetMinMaxValues(12, 48)
 	subpage.iconSizeSlider:SetStep(1)
@@ -165,49 +164,49 @@ function Buffs:Ensure(parent)
 	subpage.anchorDropdown:SetLayoutPoint("TOPLEFT", subpage.maxIconsSlider, "BOTTOMLEFT", 0, -16)
 	subpage.offsetXSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
 	subpage.iconSizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).iconSize = value
 		Notify(unit)
 	end)
 
-	subpage.showStacksDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Show Stacks")
+	subpage.showStacksDropdown = owner:CreateControl("Dropdown", "Show Stacks")
 	subpage.showStacksDropdown:SetLayoutWidth(126)
 	subpage.showStacksDropdown:SetOptions(visibilityOptions)
 	subpage.showStacksDropdown:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -16)
 	subpage.showStacksDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).showStacks = value == true
 		Notify(unit)
 	end)
 
-	subpage.stacksFontSizeSlider = addon.Options.Controls.Slider:Create(subpage, "Stack Font Size")
+	subpage.stacksFontSizeSlider = owner:CreateControl("Slider", "Stack Font Size")
 	subpage.stacksFontSizeSlider:SetLayoutWidth(126)
 	subpage.stacksFontSizeSlider:SetMinMaxValues(6, 20)
 	subpage.stacksFontSizeSlider:SetStep(1)
 	subpage.stacksFontSizeSlider:SetLayoutPoint("TOPLEFT", subpage.showStacksDropdown, "TOPRIGHT", 24, 0)
 	subpage.stacksFontSizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).stacksFontSize = value
 		Notify(unit)
 	end)
 
-	subpage.showCooldownDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Show Cooldown")
+	subpage.showCooldownDropdown = owner:CreateControl("Dropdown", "Show Cooldown")
 	subpage.showCooldownDropdown:SetLayoutWidth(126)
 	subpage.showCooldownDropdown:SetOptions(visibilityOptions)
 	subpage.showCooldownDropdown:SetLayoutPoint("TOPLEFT", subpage.showStacksDropdown, "BOTTOMLEFT", 0, -16)
 	subpage.showCooldownDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).showCooldown = value == true
 		Notify(unit)
 	end)
 
-	subpage.cooldownFontSizeSlider = addon.Options.Controls.Slider:Create(subpage, "Cooldown Font Size")
+	subpage.cooldownFontSizeSlider = owner:CreateControl("Slider", "Cooldown Font Size")
 	subpage.cooldownFontSizeSlider:SetLayoutWidth(126)
 	subpage.cooldownFontSizeSlider:SetMinMaxValues(6, 20)
 	subpage.cooldownFontSizeSlider:SetStep(1)
 	subpage.cooldownFontSizeSlider:SetLayoutPoint("TOPLEFT", subpage.showCooldownDropdown, "TOPRIGHT", 24, 0)
 	subpage.cooldownFontSizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		GetEditableSettings(unit).cooldownFontSize = value
 		Notify(unit)
 	end)
@@ -229,7 +228,7 @@ function Buffs:Ensure(parent)
 	}
 
 	function subpage:UpdateLayout()
-		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.unavailableText, PP:ScaleFont(14), "")
 	end
 
 	function subpage:UpdateState(profile, unit)
@@ -290,5 +289,15 @@ function Buffs:Ensure(parent)
 
 	subpage:UpdateLayout()
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	local UpdateLayout = owner.UpdateLayout
+	function owner:UpdateLayout()
+		UpdateLayout(self)
+		subpage:UpdateLayout()
+	end
+
+	return owner
 end

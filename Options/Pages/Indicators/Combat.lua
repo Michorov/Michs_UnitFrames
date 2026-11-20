@@ -1,12 +1,14 @@
 local _, addon = ...
 
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0")
+
 addon.Options = addon.Options or {}
 addon.Options.Pages = addon.Options.Pages or {}
 addon.Options.Pages.Indicators = addon.Options.Pages.Indicators or {}
 addon.Options.Pages.Indicators.Combat = addon.Options.Pages.Indicators.Combat or {}
 
 local Combat = addon.Options.Pages.Indicators.Combat
-local PP = addon.PixelPerfect
+local PP = addon.OptionsUI.PP
 local subpage
 
 local anchorOptions = {
@@ -21,29 +23,26 @@ local anchorOptions = {
 	{ value = "CENTER", text = "Center" },
 }
 
-function Combat:Ensure(parent)
-	if subpage then
-		return subpage
-	end
-
-	subpage = CreateFrame("Frame", nil, parent)
+function Combat:Create(page)
+	local owner = page:RegisterSubPage("combat", { title = "Combat" })
+	subpage = owner.frame
 	subpage.unavailableText = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	subpage.unavailableText:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.unavailableText:SetJustifyH("LEFT")
-	subpage.unavailableText:SetTextColor(0.72, 0.74, 0.78, 1)
+	subpage.unavailableText:SetTextColor(OptionsUILib.Theme:GetTextColor("secondary"))
 	subpage.unavailableText:SetText("Combat indicator is not available for this frame")
 	subpage.unavailableText:Hide()
 
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
 		addon.Database:GetProfile().frames.player.combatIndicator.enabled = enabled
 		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
 	end)
 
-	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
-	subpage.anchorDropdown:SetLayoutWidth(178)
+	subpage.anchorDropdown = owner:CreateControl("Dropdown", "Position")
+	subpage.anchorDropdown:SetLayoutWidth(176)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
 	subpage.anchorDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -57,8 +56,8 @@ function Combat:Ensure(parent)
 		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
 	end)
 
-	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
-	subpage.offsetXSlider:SetLayoutWidth(178)
+	subpage.offsetXSlider = owner:CreateControl("Slider", "Offset X")
+	subpage.offsetXSlider:SetLayoutWidth(176)
 	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
@@ -67,8 +66,8 @@ function Combat:Ensure(parent)
 		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
 	end)
 
-	subpage.offsetYSlider = addon.Options.Controls.Slider:Create(subpage, "Offset Y")
-	subpage.offsetYSlider:SetLayoutWidth(178)
+	subpage.offsetYSlider = owner:CreateControl("Slider", "Offset Y")
+	subpage.offsetYSlider:SetLayoutWidth(176)
 	subpage.offsetYSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "TOPRIGHT", 24, 0)
@@ -77,8 +76,8 @@ function Combat:Ensure(parent)
 		addon.UpdateScheduler:Notify("combatIndicatorSettingsChanged", "player")
 	end)
 
-	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Size")
-	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider = owner:CreateControl("Slider", "Size")
+	subpage.sizeSlider:SetLayoutWidth(176)
 	subpage.sizeSlider:SetMinMaxValues(8, 64)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -24)
@@ -88,7 +87,7 @@ function Combat:Ensure(parent)
 	end)
 
 	function subpage:UpdateLayout()
-		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.unavailableText, PP:ScaleFont(14), "")
 	end
 
 	function subpage:UpdateState(profile, unit)
@@ -114,5 +113,15 @@ function Combat:Ensure(parent)
 
 	subpage:UpdateLayout()
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	local UpdateLayout = owner.UpdateLayout
+	function owner:UpdateLayout()
+		UpdateLayout(self)
+		subpage:UpdateLayout()
+	end
+
+	return owner
 end

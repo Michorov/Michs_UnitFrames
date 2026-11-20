@@ -1,11 +1,13 @@
 local _, addon = ...
 
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0")
+
 addon.Options = addon.Options or {}
 addon.Options.Pages = addon.Options.Pages or {}
 addon.Options.Pages.Profiles = addon.Options.Pages.Profiles or {}
 
 local Profiles = addon.Options.Pages.Profiles
-local PP = addon.PixelPerfect
+local PP = addon.OptionsUI.PP
 local page
 
 local function PrintProfileMessage(message)
@@ -112,34 +114,36 @@ local function DeleteProfile()
 	PrintProfileMessage(("Deleted profile '%s'."):format(target))
 end
 
-function Profiles:Ensure(parent)
-	if page then
-		return page
-	end
-
-	page = CreateFrame("Frame", nil, parent)
+function Profiles:Create(panel)
+	local owner = panel:RegisterPage("profiles", {
+		title = "Profiles",
+		showHeader = true,
+		sidebarPlacement = "bottom",
+	})
+	local content = owner:RegisterSubPage("profiles", { title = "Profiles" })
+	page = content.frame
 
 	page.activeSectionTitle = page:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	page.activeSectionTitle:SetJustifyH("LEFT")
-	page.activeSectionTitle:SetTextColor(0.96, 0.66, 0.31, 1)
+	page.activeSectionTitle:SetTextColor(OptionsUILib.Theme:GetColor("brand"))
 	page.activeSectionTitle:SetText("Active Profile")
 
 	page.createSectionTitle = page:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	page.createSectionTitle:SetJustifyH("LEFT")
-	page.createSectionTitle:SetTextColor(0.96, 0.66, 0.31, 1)
+	page.createSectionTitle:SetTextColor(OptionsUILib.Theme:GetColor("brand"))
 	page.createSectionTitle:SetText("Create New Profile")
 
 	page.copySectionTitle = page:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	page.copySectionTitle:SetJustifyH("LEFT")
-	page.copySectionTitle:SetTextColor(0.96, 0.66, 0.31, 1)
+	page.copySectionTitle:SetTextColor(OptionsUILib.Theme:GetColor("brand"))
 	page.copySectionTitle:SetText("Copy Profile")
 
 	page.deleteSectionTitle = page:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	page.deleteSectionTitle:SetJustifyH("LEFT")
-	page.deleteSectionTitle:SetTextColor(0.96, 0.66, 0.31, 1)
+	page.deleteSectionTitle:SetTextColor(OptionsUILib.Theme:GetColor("brand"))
 	page.deleteSectionTitle:SetText("Delete Profile")
 
-	page.activeProfileDropdown = addon.Options.Controls.Dropdown:Create(page, "")
+	page.activeProfileDropdown = content:CreateControl("Dropdown", "")
 	page.activeProfileDropdown:SetLayoutWidth(200)
 	page.activeProfileDropdown:SetLabelVisible(false)
 	page.activeProfileDropdown:SetOnValueChanged(function(_, value)
@@ -148,39 +152,39 @@ function Profiles:Ensure(parent)
 		end
 	end)
 
-	page.resetProfileButton = addon.Options.Controls.Button:Create(page, "Reset")
+	page.resetProfileButton = content:CreateControl("Button", "Reset")
 	page.resetProfileButton:SetLayoutSize(88, 24)
 	page.resetProfileButton:SetOnClick(ResetProfile)
 
-	page.newProfileInput = addon.Options.Controls.Input:Create(page, "")
+	page.newProfileInput = content:CreateControl("Input", "")
 	page.newProfileInput:SetLayoutWidth(200)
 	page.newProfileInput:SetLabelVisible(false)
 	page.newProfileInput:SetPlaceholder("New Profile Name")
 	page.newProfileInput:SetOnEnterPressed(CreateProfile)
 
-	page.createProfileButton = addon.Options.Controls.Button:Create(page, "Create")
+	page.createProfileButton = content:CreateControl("Button", "Create")
 	page.createProfileButton:SetLayoutSize(88, 24)
 	page.createProfileButton:SetOnClick(CreateProfile)
 
-	page.copyFromDropdown = addon.Options.Controls.Dropdown:Create(page, "")
+	page.copyFromDropdown = content:CreateControl("Dropdown", "")
 	page.copyFromDropdown:SetLayoutWidth(200)
 	page.copyFromDropdown:SetLabelVisible(false)
 
-	page.copyProfileInput = addon.Options.Controls.Input:Create(page, "")
+	page.copyProfileInput = content:CreateControl("Input", "")
 	page.copyProfileInput:SetLayoutWidth(200)
 	page.copyProfileInput:SetLabelVisible(false)
 	page.copyProfileInput:SetPlaceholder("New Profile Name")
 	page.copyProfileInput:SetOnEnterPressed(CopyProfile)
 
-	page.copyProfileButton = addon.Options.Controls.Button:Create(page, "Copy")
+	page.copyProfileButton = content:CreateControl("Button", "Copy")
 	page.copyProfileButton:SetLayoutSize(88, 24)
 	page.copyProfileButton:SetOnClick(CopyProfile)
 
-	page.deleteProfileDropdown = addon.Options.Controls.Dropdown:Create(page, "")
+	page.deleteProfileDropdown = content:CreateControl("Dropdown", "")
 	page.deleteProfileDropdown:SetLayoutWidth(200)
 	page.deleteProfileDropdown:SetLabelVisible(false)
 
-	page.deleteProfileButton = addon.Options.Controls.Button:Create(page, "Delete")
+	page.deleteProfileButton = content:CreateControl("Button", "Delete")
 	page.deleteProfileButton:SetLayoutSize(88, 24)
 	page.deleteProfileButton:SetOnClick(DeleteProfile)
 
@@ -249,10 +253,10 @@ function Profiles:Ensure(parent)
 	)
 
 	function page:UpdateLayout()
-		self.activeSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
-		self.createSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
-		self.copySectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
-		self.deleteSectionTitle:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.activeSectionTitle, PP:ScaleFont(14), "")
+		OptionsUILib.Theme:ApplyFont(self.createSectionTitle, PP:ScaleFont(14), "")
+		OptionsUILib.Theme:ApplyFont(self.copySectionTitle, PP:ScaleFont(14), "")
+		OptionsUILib.Theme:ApplyFont(self.deleteSectionTitle, PP:ScaleFont(14), "")
 
 		self.activeSectionTitle:ClearAllPoints()
 		self.activeSectionTitle:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
@@ -262,7 +266,7 @@ function Profiles:Ensure(parent)
 			self.activeProfileDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUI(-24)
+			PP:ToUIScaled(-24)
 		)
 		self.copySectionTitle:ClearAllPoints()
 		self.copySectionTitle:SetPoint(
@@ -270,7 +274,7 @@ function Profiles:Ensure(parent)
 			self.newProfileInput,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUI(-24)
+			PP:ToUIScaled(-24)
 		)
 		self.deleteSectionTitle:ClearAllPoints()
 		self.deleteSectionTitle:SetPoint(
@@ -278,7 +282,7 @@ function Profiles:Ensure(parent)
 			self.copyFromDropdown,
 			"BOTTOMLEFT",
 			0,
-			PP:ToUI(-24)
+			PP:ToUIScaled(-24)
 		)
 	end
 
@@ -300,6 +304,16 @@ function Profiles:Ensure(parent)
 	end
 
 	page:UpdateLayout()
-	page:UpdateState()
-	return page
+
+	content:SetStateUpdater(function(profile, unit)
+		page:UpdateState(profile, unit)
+	end)
+
+	local UpdateLayout = content.UpdateLayout
+	function content:UpdateLayout()
+		UpdateLayout(self)
+		page:UpdateLayout()
+	end
+
+	return owner
 end

@@ -1,21 +1,26 @@
-local _, addon = ...
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0", true)
+if not OptionsUILib then
+	return
+end
 
-addon.Options = addon.Options or {}
-addon.Options.Controls = addon.Options.Controls or {}
-addon.Options.Controls.Button = addon.Options.Controls.Button or {}
+OptionsUILib.Controls = OptionsUILib.Controls or {}
+OptionsUILib.Controls.Button = OptionsUILib.Controls.Button or {}
 
-local Button = addon.Options.Controls.Button
-local PP = addon.PixelPerfect
+local Button = OptionsUILib.Controls.Button
 
-function Button:Create(parent, text)
+function Button:Create(parent, PP, text)
+	if not parent or not PP then
+		return nil
+	end
+
 	local button = CreateFrame("Button", nil, parent, "BackdropTemplate")
 
+	button.PP = PP
 	button.layout = {
-		parent = parent,
-		width = 48,
+		width = 116,
 		height = 24,
 		borderThickness = 1,
-		fontSize = 14,
+		fontSize = 12,
 		textAlignment = "CENTER",
 		textInset = 0,
 		point = nil,
@@ -28,45 +33,33 @@ function Button:Create(parent, text)
 	button:SetBackdrop({
 		bgFile = "Interface\\Buttons\\WHITE8x8",
 	})
-	button:SetBackdropColor(0.12, 0.12, 0.14, 1)
+	button:SetBackdropColor(OptionsUILib.Theme:GetColor("buttonBackground"))
 
 	button.borderTop = button:CreateTexture(nil, "OVERLAY")
-	button.borderTop:SetColorTexture(0.15, 0.17, 0.20, 1)
+	button.borderTop:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	button.borderTop:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
 	button.borderTop:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
 
 	button.borderBottom = button:CreateTexture(nil, "OVERLAY")
-	button.borderBottom:SetColorTexture(0.15, 0.17, 0.20, 1)
+	button.borderBottom:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	button.borderBottom:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 0)
 	button.borderBottom:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 
 	button.borderLeft = button:CreateTexture(nil, "OVERLAY")
-	button.borderLeft:SetColorTexture(0.15, 0.17, 0.20, 1)
+	button.borderLeft:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	button.borderLeft:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
 	button.borderLeft:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 0)
 
 	button.borderRight = button:CreateTexture(nil, "OVERLAY")
-	button.borderRight:SetColorTexture(0.15, 0.17, 0.20, 1)
+	button.borderRight:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	button.borderRight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
 	button.borderRight:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 
 	button.text = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	button.text:SetPoint("CENTER", button, "CENTER", 0, 0)
-	button.text:SetText(text or "Button")
-	button.text:SetTextColor(0.85, 0.85, 0.88, 1)
-
-	button:SetScript("OnEnter", function(self)
-		self:SetBackdropColor(0.18, 0.18, 0.22, 1)
-		self.text:SetTextColor(0.96, 0.66, 0.31, 1)
-	end)
-
-	button:SetScript("OnLeave", function(self)
-		self:SetBackdropColor(0.12, 0.12, 0.14, 1)
-		self.text:SetTextColor(0.85, 0.85, 0.88, 1)
-	end)
+	button.text:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
 
 	function button:SetOnClick(callback)
-		self:SetScript("OnClick", callback)
+		self.onClickCallback = callback
 	end
 
 	function button:SetText(value)
@@ -100,14 +93,14 @@ function Button:Create(parent, text)
 	end
 
 	function button:SetTextAlignment(alignment, inset)
-		self.layout.textAlignment = alignment
+		self.layout.textAlignment = alignment or "CENTER"
 		self.layout.textInset = inset or 0
 		self:UpdateLayout()
 	end
 
 	function button:SetLayoutPoint(point, relativeTo, relativePoint, offsetX, offsetY)
 		self.layout.point = point
-		self.layout.relativeTo = relativeTo or self.layout.parent
+		self.layout.relativeTo = relativeTo or parent
 		self.layout.relativePoint = relativePoint or point
 		self.layout.offsetX = offsetX or 0
 		self.layout.offsetY = offsetY or 0
@@ -115,36 +108,28 @@ function Button:Create(parent, text)
 	end
 
 	function button:UpdateLayout()
-		self:SetSize(PP:ToUI(self.layout.width), PP:ToUI(self.layout.height))
-		self.text:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		local PP = self.PP
+		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
+		local textInset = PP:ToUIScaled(self.layout.textInset)
+
+		self:SetSize(PP:ToUIScaled(self.layout.width), PP:ToUIScaled(self.layout.height))
+
+		OptionsUILib.Theme:ApplyFont(self.text, PP:ScaleFont(self.layout.fontSize), "")
 		self.text:SetJustifyH(self.layout.textAlignment)
 		self.text:ClearAllPoints()
 
 		if self.layout.textAlignment == "LEFT" then
-			self.text:SetPoint("LEFT", self, "LEFT", PP:ToUI(self.layout.textInset), 0)
+			self.text:SetPoint("LEFT", self, "LEFT", textInset, 0)
 		elseif self.layout.textAlignment == "RIGHT" then
-			self.text:SetPoint("RIGHT", self, "RIGHT", PP:ToUI(-self.layout.textInset), 0)
+			self.text:SetPoint("RIGHT", self, "RIGHT", -textInset, 0)
 		else
 			self.text:SetPoint("CENTER", self, "CENTER", 0, 0)
 		end
 
-		if self.layout.borderThickness == 0 then
-			self.borderTop:Hide()
-			self.borderBottom:Hide()
-			self.borderLeft:Hide()
-			self.borderRight:Hide()
-		else
-			local borderThickness = PP:ToUI(self.layout.borderThickness)
-			self.borderTop:SetHeight(borderThickness)
-			self.borderBottom:SetHeight(borderThickness)
-			self.borderLeft:SetWidth(borderThickness)
-			self.borderRight:SetWidth(borderThickness)
-
-			self.borderTop:Show()
-			self.borderBottom:Show()
-			self.borderLeft:Show()
-			self.borderRight:Show()
-		end
+		self.borderTop:SetHeight(borderThickness)
+		self.borderBottom:SetHeight(borderThickness)
+		self.borderLeft:SetWidth(borderThickness)
+		self.borderRight:SetWidth(borderThickness)
 
 		if self.layout.point then
 			self:ClearAllPoints()
@@ -152,15 +137,34 @@ function Button:Create(parent, text)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUI(self.layout.offsetX),
-				PP:ToUI(self.layout.offsetY)
+				PP:ToUIScaled(self.layout.offsetX),
+				PP:ToUIScaled(self.layout.offsetY)
 			)
 		end
 	end
 
-	PP:RegisterForUpdate(function()
-		button:UpdateLayout()
+	button:SetScript("OnEnter", function(self)
+		self:SetBackdropColor(OptionsUILib.Theme:GetColor("buttonBackgroundHover"))
+		self.text:SetTextColor(OptionsUILib.Theme:GetColor("brand"))
 	end)
+
+	button:SetScript("OnLeave", function(self)
+		self:SetBackdropColor(OptionsUILib.Theme:GetColor("buttonBackground"))
+		self.text:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
+	end)
+
+	button:SetScript("OnClick", function(self)
+		if OptionsUILib.Controls.Dropdown and OptionsUILib.Controls.Dropdown.CloseOpenDropdown then
+			OptionsUILib.Controls.Dropdown:CloseOpenDropdown()
+		end
+
+		if self.onClickCallback then
+			self.onClickCallback(self)
+		end
+	end)
+
+	button:UpdateLayout()
+	button:SetText(text or "Button")
 
 	return button
 end

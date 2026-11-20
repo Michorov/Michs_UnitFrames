@@ -1,12 +1,14 @@
 local _, addon = ...
 
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0")
+
 addon.Options = addon.Options or {}
 addon.Options.Pages = addon.Options.Pages or {}
 addon.Options.Pages.Bars = addon.Options.Pages.Bars or {}
 addon.Options.Pages.Bars.Cast = addon.Options.Pages.Bars.Cast or {}
 
 local Cast = addon.Options.Pages.Bars.Cast
-local PP = addon.PixelPerfect
+local PP = addon.OptionsUI.PP
 local subpage
 
 local availableUnits = {
@@ -28,35 +30,30 @@ local positionOptions = {
 	{ value = "BOTTOM", text = "Bottom" },
 }
 
-function Cast:Ensure(parent)
-	if subpage then
-		return subpage
-	end
-
-	subpage = CreateFrame("Frame", nil, parent)
+function Cast:Create(page)
+	local owner = page:RegisterSubPage("cast", { title = "Cast" })
+	subpage = owner.frame
 	subpage.unavailableText = subpage:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	subpage.unavailableText:SetPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.unavailableText:SetJustifyH("LEFT")
-	subpage.unavailableText:SetTextColor(0.72, 0.74, 0.78, 1)
+	subpage.unavailableText:SetTextColor(OptionsUILib.Theme:GetTextColor("secondary"))
 	subpage.unavailableText:SetText("Cast bar is not available for this frame")
 	subpage.unavailableText:Hide()
 
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.enabled = enabled
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.hideBlizzardCastBarCheckbox = addon.Options.Controls.Checkbox:Create(
-		subpage,
-		"Hide Blizzard Castbar"
+	subpage.hideBlizzardCastBarCheckbox = owner:CreateControl("Checkbox", "Hide Blizzard Castbar"
 	)
-	subpage.hideBlizzardCastBarCheckbox:SetLayoutWidth(178)
+	subpage.hideBlizzardCastBarCheckbox:SetLayoutWidth(176)
 	subpage.hideBlizzardCastBarCheckbox:SetLayoutPoint(
 		"TOPLEFT",
 		subpage.enabledCheckbox,
@@ -65,7 +62,7 @@ function Cast:Ensure(parent)
 		-8
 	)
 	subpage.hideBlizzardCastBarCheckbox:SetOnValueChanged(function(_, hidden)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		if unit ~= "player" then
 			return
 		end
@@ -75,8 +72,8 @@ function Cast:Ensure(parent)
 		addon.UpdateScheduler:Notify("visibilityChanged", "player")
 	end)
 
-	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
-	subpage.textureDropdown:SetLayoutWidth(178)
+	subpage.textureDropdown = owner:CreateControl("Dropdown", "Texture")
+	subpage.textureDropdown:SetLayoutWidth(176)
 	subpage.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(nil, true))
 	subpage.textureDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -86,15 +83,15 @@ function Cast:Ensure(parent)
 		-24
 	)
 	subpage.textureDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.texture = value
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.fontDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Font")
-	subpage.fontDropdown:SetLayoutWidth(178)
+	subpage.fontDropdown = owner:CreateControl("Dropdown", "Font")
+	subpage.fontDropdown:SetLayoutWidth(176)
 	subpage.fontDropdown:SetOptions(addon.Style.Fonts:GetOptions(nil, true))
 	subpage.fontDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -104,15 +101,15 @@ function Cast:Ensure(parent)
 		0
 	)
 	subpage.fontDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.font = value
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.positionDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Bar Position")
-	subpage.positionDropdown:SetLayoutWidth(178)
+	subpage.positionDropdown = owner:CreateControl("Dropdown", "Bar Position")
+	subpage.positionDropdown:SetLayoutWidth(176)
 	subpage.positionDropdown:SetOptions(positionOptions)
 	subpage.positionDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -122,15 +119,15 @@ function Cast:Ensure(parent)
 		-24
 	)
 	subpage.positionDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.position = value
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.iconDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Icon Position")
-	subpage.iconDropdown:SetLayoutWidth(178)
+	subpage.iconDropdown = owner:CreateControl("Dropdown", "Icon Position")
+	subpage.iconDropdown:SetLayoutWidth(176)
 	subpage.iconDropdown:SetOptions(elementPositionOptions)
 	subpage.iconDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -140,7 +137,7 @@ function Cast:Ensure(parent)
 		0
 	)
 	subpage.iconDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.icon = frameSettings.cast.icon or {}
@@ -148,8 +145,8 @@ function Cast:Ensure(parent)
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Bar Size")
-	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider = owner:CreateControl("Slider", "Bar Size")
+	subpage.sizeSlider:SetLayoutWidth(176)
 	subpage.sizeSlider:SetMinMaxValues(1, 50)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint(
@@ -160,15 +157,15 @@ function Cast:Ensure(parent)
 		0
 	)
 	subpage.sizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.height = value
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.spellNameDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Spell Name")
-	subpage.spellNameDropdown:SetLayoutWidth(178)
+	subpage.spellNameDropdown = owner:CreateControl("Dropdown", "Spell Name")
+	subpage.spellNameDropdown:SetLayoutWidth(176)
 	subpage.spellNameDropdown:SetOptions(elementPositionOptions)
 	subpage.spellNameDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -178,7 +175,7 @@ function Cast:Ensure(parent)
 		-24
 	)
 	subpage.spellNameDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.spellName = frameSettings.cast.spellName or {}
@@ -186,8 +183,8 @@ function Cast:Ensure(parent)
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.castTimeDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Cast Time")
-	subpage.castTimeDropdown:SetLayoutWidth(178)
+	subpage.castTimeDropdown = owner:CreateControl("Dropdown", "Cast Time")
+	subpage.castTimeDropdown:SetLayoutWidth(176)
 	subpage.castTimeDropdown:SetOptions(elementPositionOptions)
 	subpage.castTimeDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -197,7 +194,7 @@ function Cast:Ensure(parent)
 		0
 	)
 	subpage.castTimeDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.castTime = frameSettings.cast.castTime or {}
@@ -205,8 +202,8 @@ function Cast:Ensure(parent)
 		addon.UpdateScheduler:Notify("castSettingsChanged", unit)
 	end)
 
-	subpage.fontSizeSlider = addon.Options.Controls.Slider:Create(subpage, "Font Size")
-	subpage.fontSizeSlider:SetLayoutWidth(178)
+	subpage.fontSizeSlider = owner:CreateControl("Slider", "Font Size")
+	subpage.fontSizeSlider:SetLayoutWidth(176)
 	subpage.fontSizeSlider:SetMinMaxValues(6, 32)
 	subpage.fontSizeSlider:SetStep(1)
 	subpage.fontSizeSlider:SetLayoutPoint(
@@ -217,7 +214,7 @@ function Cast:Ensure(parent)
 		0
 	)
 	subpage.fontSizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		local frameSettings = addon.Database:GetProfile().frames[unit]
 		frameSettings.cast = frameSettings.cast or {}
 		frameSettings.cast.fontSize = value
@@ -225,7 +222,7 @@ function Cast:Ensure(parent)
 	end)
 
 	function subpage:UpdateLayout()
-		self.unavailableText:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(14), "")
+		OptionsUILib.Theme:ApplyFont(self.unavailableText, PP:ScaleFont(14), "")
 	end
 
 	function subpage:UpdateState(profile, unit)
@@ -296,5 +293,15 @@ function Cast:Ensure(parent)
 
 	subpage:UpdateLayout()
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	local UpdateLayout = owner.UpdateLayout
+	function owner:UpdateLayout()
+		UpdateLayout(self)
+		subpage:UpdateLayout()
+	end
+
+	return owner
 end

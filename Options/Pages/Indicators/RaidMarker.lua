@@ -20,24 +20,21 @@ local anchorOptions = {
 	{ value = "CENTER", text = "Center" },
 }
 
-function RaidMarker:Ensure(parent)
-	if subpage then
-		return subpage
-	end
+function RaidMarker:Create(page)
+	local owner = page:RegisterSubPage("raidMarker", { title = "Raid Marker" })
+	subpage = owner.frame
 
-	subpage = CreateFrame("Frame", nil, parent)
-
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].raidMarker.enabled = enabled
 		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
-	subpage.anchorDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Position")
-	subpage.anchorDropdown:SetLayoutWidth(178)
+	subpage.anchorDropdown = owner:CreateControl("Dropdown", "Position")
+	subpage.anchorDropdown:SetLayoutWidth(176)
 	subpage.anchorDropdown:SetOptions(anchorOptions)
 	subpage.anchorDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -47,40 +44,40 @@ function RaidMarker:Ensure(parent)
 		-24
 	)
 	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].raidMarker.anchor = value
 		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
-	subpage.offsetXSlider = addon.Options.Controls.Slider:Create(subpage, "Offset X")
-	subpage.offsetXSlider:SetLayoutWidth(178)
+	subpage.offsetXSlider = owner:CreateControl("Slider", "Offset X")
+	subpage.offsetXSlider:SetLayoutWidth(176)
 	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "TOPRIGHT", 24, 0)
 	subpage.offsetXSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].raidMarker.position.x = value
 		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
-	subpage.offsetYSlider = addon.Options.Controls.Slider:Create(subpage, "Offset Y")
-	subpage.offsetYSlider:SetLayoutWidth(178)
+	subpage.offsetYSlider = owner:CreateControl("Slider", "Offset Y")
+	subpage.offsetYSlider:SetLayoutWidth(176)
 	subpage.offsetYSlider:SetMinMaxValues(-100, 100)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetLayoutPoint("TOPLEFT", subpage.offsetXSlider, "TOPRIGHT", 24, 0)
 	subpage.offsetYSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].raidMarker.position.y = value
 		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
 
-	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Size")
-	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider = owner:CreateControl("Slider", "Size")
+	subpage.sizeSlider:SetLayoutWidth(176)
 	subpage.sizeSlider:SetMinMaxValues(8, 64)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint("TOPLEFT", subpage.anchorDropdown, "BOTTOMLEFT", 0, -24)
 	subpage.sizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].raidMarker.size = value
 		addon.UpdateScheduler:Notify("raidMarkerSettingsChanged", unit)
 	end)
@@ -94,5 +91,9 @@ function RaidMarker:Ensure(parent)
 		self.sizeSlider:SetValueSilently(settings.size)
 	end
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	return owner
 end

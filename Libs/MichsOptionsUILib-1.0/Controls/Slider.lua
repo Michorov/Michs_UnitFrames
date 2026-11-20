@@ -1,11 +1,12 @@
-local _, addon = ...
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0", true)
+if not OptionsUILib then
+	return
+end
 
-addon.Options = addon.Options or {}
-addon.Options.Controls = addon.Options.Controls or {}
-addon.Options.Controls.Slider = addon.Options.Controls.Slider or {}
+OptionsUILib.Controls = OptionsUILib.Controls or {}
+OptionsUILib.Controls.Slider = OptionsUILib.Controls.Slider or {}
 
-local Slider = addon.Options.Controls.Slider
-local PP = addon.PixelPerfect
+local Slider = OptionsUILib.Controls.Slider
 
 local function UpdateVisuals(control)
 	local minValue, maxValue = control.slider:GetMinMaxValues()
@@ -37,6 +38,25 @@ local function UpdateValueText(control, value)
 	end
 end
 
+local function ParsePercentOrRaw(control, text)
+	local sanitizedText = (text or ""):gsub("%s+", ""):gsub(",", ".")
+	local hasPercent = sanitizedText:find("%%") ~= nil
+	local numericText = sanitizedText:gsub("%%", "")
+	local number = tonumber(numericText)
+
+	if not number then
+		return nil
+	end
+
+	local _, maxValue = control.slider:GetMinMaxValues()
+
+	if hasPercent or number > maxValue then
+		return number / 100
+	end
+
+	return number
+end
+
 local function CommitValueInput(control)
 	if control.isCommittingValueInput then
 		return
@@ -47,7 +67,9 @@ local function CommitValueInput(control)
 	local text = control.valueInput:GetText() or ""
 	local parsedValue
 
-	if control.valueParser then
+	if control.valueParser == "percent" then
+		parsedValue = ParsePercentOrRaw(control, text)
+	elseif control.valueParser then
 		parsedValue = control.valueParser(control, text)
 	else
 		parsedValue = tonumber(text)
@@ -76,9 +98,14 @@ local function CommitValueInput(control)
 	control.isCommittingValueInput = false
 end
 
-function Slider:Create(parent, text)
+function Slider:Create(parent, PP, text)
+	if not parent or not PP then
+		return nil
+	end
+
 	local control = CreateFrame("Frame", nil, parent)
 
+	control.PP = PP
 	control.layout = {
 		parent = parent,
 		width = 220,
@@ -89,7 +116,7 @@ function Slider:Create(parent, text)
 		labelSpacing = 4,
 		borderThickness = 1,
 		fontSize = 12,
-		valueInputWidth = 40,
+		valueInputWidth = 34,
 		valueInputGap = 6,
 		point = nil,
 		relativeTo = parent,
@@ -99,7 +126,7 @@ function Slider:Create(parent, text)
 	}
 
 	control.label = control:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	control.label:SetTextColor(0.85, 0.85, 0.88, 1)
+	control.label:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
 	control.label:SetJustifyH("LEFT")
 	control.label:SetJustifyV("MIDDLE")
 	control.label:SetText(text or "Slider")
@@ -118,30 +145,30 @@ function Slider:Create(parent, text)
 	control.slider:SetObeyStepOnDrag(true)
 
 	control.track = control.slider:CreateTexture(nil, "BACKGROUND")
-	control.track:SetColorTexture(0.04, 0.05, 0.07, 1)
+	control.track:SetColorTexture(OptionsUILib.Theme:GetColor("controlBackground"))
 
 	control.trackTopBorder = control.slider:CreateTexture(nil, "OVERLAY")
-	control.trackTopBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.trackTopBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.trackTopBorder:SetPoint("TOPLEFT", control.track, "TOPLEFT", 0, 0)
 	control.trackTopBorder:SetPoint("TOPRIGHT", control.track, "TOPRIGHT", 0, 0)
 
 	control.trackBottomBorder = control.slider:CreateTexture(nil, "OVERLAY")
-	control.trackBottomBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.trackBottomBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.trackBottomBorder:SetPoint("BOTTOMLEFT", control.track, "BOTTOMLEFT", 0, 0)
 	control.trackBottomBorder:SetPoint("BOTTOMRIGHT", control.track, "BOTTOMRIGHT", 0, 0)
 
 	control.trackLeftBorder = control.slider:CreateTexture(nil, "OVERLAY")
-	control.trackLeftBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.trackLeftBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.trackLeftBorder:SetPoint("TOPLEFT", control.track, "TOPLEFT", 0, 0)
 	control.trackLeftBorder:SetPoint("BOTTOMLEFT", control.track, "BOTTOMLEFT", 0, 0)
 
 	control.trackRightBorder = control.slider:CreateTexture(nil, "OVERLAY")
-	control.trackRightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.trackRightBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.trackRightBorder:SetPoint("TOPRIGHT", control.track, "TOPRIGHT", 0, 0)
 	control.trackRightBorder:SetPoint("BOTTOMRIGHT", control.track, "BOTTOMRIGHT", 0, 0)
 
 	control.fill = control.slider:CreateTexture(nil, "ARTWORK", nil, 1)
-	control.fill:SetColorTexture(0.96, 0.66, 0.31, 1)
+	control.fill:SetColorTexture(OptionsUILib.Theme:GetColor("brand"))
 	control.fill:SetPoint("LEFT", control.track, "LEFT", 0, 0)
 
 	control.slider:SetThumbTexture("Interface\\Buttons\\WHITE8x8")
@@ -149,7 +176,7 @@ function Slider:Create(parent, text)
 	control.thumb:SetVertexColor(0, 0, 0, 0)
 
 	control.handle = control.slider:CreateTexture(nil, "OVERLAY", nil, 2)
-	control.handle:SetColorTexture(0.96, 0.66, 0.31, 1)
+	control.handle:SetColorTexture(OptionsUILib.Theme:GetColor("brand"))
 
 	function control:SetLabel(value)
 		self.label:SetText(value or "")
@@ -189,6 +216,10 @@ function Slider:Create(parent, text)
 		self.suppressValueChanged = false
 	end
 
+	function control:SetBoundValue(value)
+		self:SetValueSilently(value)
+	end
+
 	function control:GetValue()
 		return self.slider:GetValue()
 	end
@@ -218,33 +249,28 @@ function Slider:Create(parent, text)
 	end
 
 	function control:UpdateLayout()
-		local width = PP:ToUI(self.layout.width)
-		local topRowHeight = PP:ToUI(self.layout.topRowHeight)
-		local labelSpacing = PP:ToUI(self.layout.labelSpacing)
-		local fieldHeight = PP:ToUI(self.layout.fieldHeight)
-		local thumbSize = PP:ToUI(self.layout.thumbSize)
-		local trackHeight = PP:ToUI(self.layout.trackHeight)
-		local borderThickness = PP:ToUI(self.layout.borderThickness)
+		local PP = self.PP
+		local width = PP:ToUIScaled(self.layout.width)
+		local topRowHeight = PP:ToUIScaled(self.layout.topRowHeight)
+		local labelSpacing = PP:ToUIScaled(self.layout.labelSpacing)
+		local fieldHeight = PP:ToUIScaled(self.layout.fieldHeight)
+		local thumbSize = PP:ToUIScaled(self.layout.thumbSize)
+		local trackHeight = PP:ToUIScaled(self.layout.trackHeight)
+		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
 		local sliderTopOffset = topRowHeight + labelSpacing
 
 		self.trackWidth = width
 		self:SetSize(width, topRowHeight + labelSpacing + fieldHeight)
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
-		self.valueInput:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		OptionsUILib.Theme:ApplyFont(self.label, PP:ScaleFont(self.layout.fontSize), "")
+		OptionsUILib.Theme:ApplyFont(self.valueInput, PP:ScaleFont(self.layout.fontSize), "")
 
 		self.valueInput:ClearAllPoints()
 		self.valueInput:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
-		self.valueInput:SetSize(PP:ToUI(self.layout.valueInputWidth), topRowHeight)
+		self.valueInput:SetSize(PP:ToUIScaled(self.layout.valueInputWidth), topRowHeight)
 
 		self.label:ClearAllPoints()
 		self.label:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
-		self.label:SetPoint(
-			"TOPRIGHT",
-			self.valueInput,
-			"TOPLEFT",
-			PP:ToUI(-self.layout.valueInputGap),
-			0
-		)
+		self.label:SetPoint("TOPRIGHT", self.valueInput, "TOPLEFT", PP:ToUIScaled(-self.layout.valueInputGap), 0)
 		self.label:SetHeight(topRowHeight)
 
 		self.slider:ClearAllPoints()
@@ -269,8 +295,8 @@ function Slider:Create(parent, text)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUI(self.layout.offsetX),
-				PP:ToUI(self.layout.offsetY)
+				PP:ToUIScaled(self.layout.offsetX),
+				PP:ToUIScaled(self.layout.offsetY)
 			)
 		end
 
@@ -306,23 +332,24 @@ function Slider:Create(parent, text)
 	end)
 
 	control.slider:SetScript("OnLeave", function()
-		control.handle:SetColorTexture(0.96, 0.66, 0.31, 1)
-		control.fill:SetColorTexture(0.96, 0.66, 0.31, 1)
+		control.handle:SetColorTexture(OptionsUILib.Theme:GetColor("brand"))
+		control.fill:SetColorTexture(OptionsUILib.Theme:GetColor("brand"))
 	end)
 
 	control.slider:SetScript("OnValueChanged", function(_, value)
 		UpdateVisuals(control)
 		UpdateValueText(control, value)
 
-		if not control.suppressValueChanged and control.onValueChanged then
-			control.onValueChanged(control, value)
+		if not control.suppressValueChanged then
+			if control.HandleValueChanged then
+				control:HandleValueChanged(value)
+			elseif control.onValueChanged then
+				control.onValueChanged(control, value)
+			end
 		end
 	end)
 
-	PP:RegisterForUpdate(function()
-		control:UpdateLayout()
-	end)
-
+	control:UpdateLayout()
 	control:SetValue(0)
 	UpdateValueText(control, control.slider:GetValue())
 

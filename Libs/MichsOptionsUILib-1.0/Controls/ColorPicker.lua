@@ -1,11 +1,12 @@
-local _, addon = ...
+local OptionsUILib = LibStub("MichsOptionsUILib-1.0", true)
+if not OptionsUILib then
+	return
+end
 
-addon.Options = addon.Options or {}
-addon.Options.Controls = addon.Options.Controls or {}
-addon.Options.Controls.ColorPicker = addon.Options.Controls.ColorPicker or {}
+OptionsUILib.Controls = OptionsUILib.Controls or {}
+OptionsUILib.Controls.ColorPicker = OptionsUILib.Controls.ColorPicker or {}
 
-local ColorPicker = addon.Options.Controls.ColorPicker
-local PP = addon.PixelPerfect
+local ColorPicker = OptionsUILib.Controls.ColorPicker
 
 local function ClampChannel(value, fallback)
 	value = tonumber(value)
@@ -18,12 +19,21 @@ end
 
 local function UpdateVisual(control)
 	control.swatchFill:SetColorTexture(control.r, control.g, control.b, control.a)
-	control.field.hoverTexture:SetShown(control.isHovered)
+	control.field.hoverTexture:SetShown(control.isHovered == true)
 end
 
 local function NotifyValueChanged(control)
-	if control.onValueChanged then
-		control.onValueChanged(control, control.r, control.g, control.b, control.a)
+	local value = {
+		r = control.r,
+		g = control.g,
+		b = control.b,
+		a = control.a,
+	}
+
+	if control.HandleValueChanged then
+		control:HandleValueChanged(value)
+	elseif control.onValueChanged then
+		control.onValueChanged(control, value)
 	end
 end
 
@@ -32,9 +42,12 @@ local function OpenPicker(control)
 		return
 	end
 
-	addon.Options.Controls.Dropdown:CloseOpenDropdown()
+	if OptionsUILib.Controls.Dropdown then
+		OptionsUILib.Controls.Dropdown:CloseOpenDropdown()
+	end
 
 	local initialR, initialG, initialB, initialA = control:GetColor()
+
 	local function ApplyFromPicker()
 		local r, g, b = ColorPickerFrame:GetColorRGB()
 		local a = control.hasOpacity and (ColorPickerFrame:GetColorAlpha() or 1) or 1
@@ -68,11 +81,14 @@ local function OpenPicker(control)
 	})
 end
 
-function ColorPicker:Create(parent, labelText)
+function ColorPicker:Create(parent, PP, labelText)
 	local control = CreateFrame("Frame", nil, parent)
+
+	control.PP = PP
 	control.layout = {
 		parent = parent,
 		width = 220,
+		height = 44,
 		pickerSize = 24,
 		labelInset = 8,
 		borderThickness = 1,
@@ -93,7 +109,7 @@ function ColorPicker:Create(parent, labelText)
 	control.a = 1
 
 	control.label = control:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	control.label:SetTextColor(0.85, 0.85, 0.88, 1)
+	control.label:SetTextColor(OptionsUILib.Theme:GetTextColor("primary"))
 	control.label:SetJustifyH("LEFT")
 	control.label:SetJustifyV("MIDDLE")
 	control.label:SetText(labelText or "Color")
@@ -105,28 +121,30 @@ function ColorPicker:Create(parent, labelText)
 	control.field:SetBackdropColor(0.02, 0.03, 0.04, 1)
 
 	control.field.topBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.topBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.topBorder:SetPoint("TOPLEFT", control.field, "TOPLEFT", 0, 0)
 	control.field.topBorder:SetPoint("TOPRIGHT", control.field, "TOPRIGHT", 0, 0)
 
 	control.field.bottomBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.bottomBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.bottomBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.bottomBorder:SetPoint("BOTTOMLEFT", control.field, "BOTTOMLEFT", 0, 0)
 	control.field.bottomBorder:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
 
 	control.field.leftBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.leftBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.leftBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.leftBorder:SetPoint("TOPLEFT", control.field, "TOPLEFT", 0, 0)
 	control.field.leftBorder:SetPoint("BOTTOMLEFT", control.field, "BOTTOMLEFT", 0, 0)
 
 	control.field.rightBorder = control.field:CreateTexture(nil, "OVERLAY")
-	control.field.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
+	control.field.rightBorder:SetColorTexture(OptionsUILib.Theme:GetColor("border"))
 	control.field.rightBorder:SetPoint("TOPRIGHT", control.field, "TOPRIGHT", 0, 0)
 	control.field.rightBorder:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
 
 	control.field.hoverTexture = control.field:CreateTexture(nil, "OVERLAY", nil, 1)
-	control.field.hoverTexture:SetColorTexture(1, 1, 1, 0.08)
-	control.field.hoverTexture:SetAllPoints(control.field)
+	control.field.hoverTexture:SetColorTexture(OptionsUILib.Theme:GetColor("controlHoverOverlay"))
+	control.field.hoverTexture:SetPoint("TOPLEFT", control.field, "TOPLEFT", 0, 0)
+	control.field.hoverTexture:SetPoint("BOTTOMRIGHT", control.field, "BOTTOMRIGHT", 0, 0)
+	control.field.hoverTexture:Hide()
 
 	control.swatchFill = control.field:CreateTexture(nil, "ARTWORK")
 
@@ -136,6 +154,17 @@ function ColorPicker:Create(parent, labelText)
 
 	function control:SetLayoutWidth(width)
 		self.layout.width = width
+		self:UpdateLayout()
+	end
+
+	function control:SetLayoutHeight(height)
+		self.layout.height = height
+		self:UpdateLayout()
+	end
+
+	function control:SetLayoutSize(width, height)
+		self.layout.width = width
+		self.layout.height = height
 		self:UpdateLayout()
 	end
 
@@ -177,7 +206,12 @@ function ColorPicker:Create(parent, labelText)
 		self.g = ClampChannel(g, self.g)
 		self.b = ClampChannel(b, self.b)
 		self.a = self.hasOpacity and ClampChannel(a, self.a) or 1
+
 		UpdateVisual(self)
+	end
+
+	function control:SetBoundValue(value)
+		self:SetColor(value)
 	end
 
 	function control:GetColor()
@@ -185,7 +219,13 @@ function ColorPicker:Create(parent, labelText)
 	end
 
 	function control:SetOnValueChanged(callback)
-		self.onValueChanged = callback
+		self.onValueChanged = function(_, value)
+			if type(value) == "table" then
+				callback(self, value.r, value.g, value.b, value.a)
+			else
+				callback(self, self.r, self.g, self.b, self.a)
+			end
+		end
 	end
 
 	function control:SetLayoutPoint(point, relativeTo, relativePoint, offsetX, offsetY)
@@ -198,15 +238,16 @@ function ColorPicker:Create(parent, labelText)
 	end
 
 	function control:UpdateLayout()
-		local pickerSize = PP:ToUI(self.layout.pickerSize)
-		local borderThickness = PP:ToUI(self.layout.borderThickness)
-		local swatchInnerInset = PP:ToUI(self.layout.swatchInnerInset)
+		local pickerSize = PP:ToUIScaled(self.layout.pickerSize)
+		local borderThickness = PP:ToUIScaled(self.layout.borderThickness)
+		local swatchInnerInset = PP:ToUIScaled(self.layout.swatchInnerInset)
+		local pickerTopInset = PP:ToUIScaled(math.max(0, self.layout.height - self.layout.pickerSize))
 
-		self:SetSize(PP:ToUI(self.layout.width), pickerSize)
-		self.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(self.layout.fontSize), "")
+		self:SetSize(PP:ToUIScaled(self.layout.width), PP:ToUIScaled(self.layout.height))
+		OptionsUILib.Theme:ApplyFont(self.label, PP:ScaleFont(self.layout.fontSize), "")
 
 		self.field:ClearAllPoints()
-		self.field:SetPoint("LEFT", self, "LEFT", 0, 0)
+		self.field:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -pickerTopInset)
 		self.field:SetSize(pickerSize, pickerSize)
 
 		self.field.topBorder:SetHeight(borderThickness)
@@ -221,7 +262,7 @@ function ColorPicker:Create(parent, labelText)
 		self.label:ClearAllPoints()
 		if self.labelVisible then
 			self.label:Show()
-			self.label:SetPoint("LEFT", self.field, "RIGHT", PP:ToUI(self.layout.labelInset), 0)
+			self.label:SetPoint("LEFT", self.field, "RIGHT", PP:ToUIScaled(self.layout.labelInset), 0)
 			self.label:SetPoint("RIGHT", self, "RIGHT", 0, 0)
 			self.label:SetPoint("TOP", self.field, "TOP", 0, 0)
 			self.label:SetPoint("BOTTOM", self.field, "BOTTOM", 0, 0)
@@ -235,8 +276,8 @@ function ColorPicker:Create(parent, labelText)
 				self.layout.point,
 				self.layout.relativeTo,
 				self.layout.relativePoint,
-				PP:ToUI(self.layout.offsetX),
-				PP:ToUI(self.layout.offsetY)
+				PP:ToUIScaled(self.layout.offsetX),
+				PP:ToUIScaled(self.layout.offsetY)
 			)
 		end
 	end
@@ -253,10 +294,6 @@ function ColorPicker:Create(parent, labelText)
 
 	control.field:SetScript("OnClick", function()
 		OpenPicker(control)
-	end)
-
-	PP:RegisterForUpdate(function()
-		control:UpdateLayout()
 	end)
 
 	control:UpdateLayout()

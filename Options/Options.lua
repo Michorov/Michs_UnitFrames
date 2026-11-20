@@ -1,14 +1,22 @@
-local _, addon = ...
+local addonName, addon = ...
 
 addon.Options = addon.Options or {}
 local Options = addon.Options
 
-local PP = addon.PixelPerfect
 local initialized = false
 local panel
 local deferredOpen = false
-local panelOffsetX = 0
-local panelOffsetY = 0
+local addonVersion = C_AddOns.GetAddOnMetadata(addonName, "Version") or ""
+
+local unitOptions = {
+	{ value = "player", text = "Player" },
+	{ value = "target", text = "Target" },
+	{ value = "targettarget", text = "Target of Target" },
+	{ value = "pet", text = "Pet" },
+	{ value = "focus", text = "Focus" },
+	{ value = "focustarget", text = "Focus Target" },
+	{ value = "boss", text = "Boss" },
+}
 
 function Options:Initialize()
 	if initialized then
@@ -38,113 +46,48 @@ function Options:Ensure()
 		return
 	end
 
-	panel = CreateFrame("Frame", "MichsUnitFramesOptionsPanel", UIParent, "BackdropTemplate")
-	panel:Hide()
-	panel:SetFrameStrata("DIALOG")
-	panel:EnableMouse(true)
-	panel:SetMovable(true)
-	panel:SetClampedToScreen(true)
-	panel:RegisterForDrag("LeftButton")
-
-	panel:SetBackdrop({
-		bgFile = "Interface\\Buttons\\WHITE8x8",
+	panel = addon.OptionsUI:CreatePanel({
+		name = "MichsUnitFramesOptions",
+		title = "Mich's UnitFrames",
+		previewEnabled = false,
+		modes = { "player", "target", "targettarget", "pet", "focus", "focustarget", "boss" },
+		modeOptions = unitOptions,
+		activeMode = "player",
+		profileGetter = function()
+			return addon.Database:GetProfile()
+		end,
 	})
-	panel:SetBackdropColor(0.05, 0.07, 0.09, 0.96)
 
-	panel.topBorder = panel:CreateTexture(nil, "OVERLAY")
-	panel.topBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
-	panel.topBorder:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
-	panel.topBorder:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, 0)
-
-	panel.bottomBorder = panel:CreateTexture(nil, "OVERLAY")
-	panel.bottomBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
-	panel.bottomBorder:SetPoint("BOTTOMLEFT", panel, "BOTTOMLEFT", 0, 0)
-	panel.bottomBorder:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
-
-	panel.leftBorder = panel:CreateTexture(nil, "OVERLAY")
-	panel.leftBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
-	panel.leftBorder:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
-	panel.leftBorder:SetPoint("BOTTOMLEFT", panel, "BOTTOMLEFT", 0, 0)
-
-	panel.rightBorder = panel:CreateTexture(nil, "OVERLAY")
-	panel.rightBorder:SetColorTexture(0.15, 0.17, 0.20, 1)
-	panel.rightBorder:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, 0)
-	panel.rightBorder:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
-
-	panel.header = addon.Options.Sections.Header:Ensure(panel)
-	panel.header:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0)
-	panel.header:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, 0)
-
-	panel.statusBar = addon.Options.Sections.StatusBar:Ensure(panel)
-	panel.statusBar:SetPoint("BOTTOMLEFT", panel, "BOTTOMLEFT", 0, 0)
-	panel.statusBar:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", 0, 0)
-
-	panel.sideMenu = addon.Options.Sections.SideMenu:Ensure(panel)
-	panel.sideMenu:SetPoint("TOPLEFT", panel.header, "BOTTOMLEFT", 0, 0)
-	panel.sideMenu:SetPoint("BOTTOMLEFT", panel.statusBar, "TOPLEFT", 0, 0)
-
-	panel.content = addon.Options.Sections.Content:Ensure(panel)
-	panel.content:SetPoint("TOPLEFT", panel.sideMenu, "TOPRIGHT", 0, 0)
-	panel.content:SetPoint("TOPRIGHT", panel.header, "BOTTOMRIGHT", 0, 0)
-	panel.content:SetPoint("BOTTOMRIGHT", panel.statusBar, "TOPRIGHT", 0, 0)
-
-	if not tContains(UISpecialFrames, panel:GetName()) then
-		table.insert(UISpecialFrames, panel:GetName())
-	end
-
-	panel:SetScript("OnDragStart", function(self)
-		self:StartMoving()
-	end)
-
-	panel:HookScript("OnHide", function()
+	panel.frame:HookScript("OnHide", function()
 		addon.FrameRegistry:SetUnlocked(false)
 	end)
 
-	panel:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-
-		local panelCenterX, panelCenterY = self:GetCenter()
-		local parentCenterX, parentCenterY = UIParent:GetCenter()
-		local _, physicalHeight = GetPhysicalScreenSize()
-		local pixelStep = (768 / physicalHeight) / UIParent:GetEffectiveScale()
-		local scale = (physicalHeight / 1080) * PP.globalScale
-		panelOffsetX = (panelCenterX - parentCenterX) / (pixelStep * scale)
-		panelOffsetY = (panelCenterY - parentCenterY) / (pixelStep * scale)
-		PP:CenterElement(self, UIParent, panelOffsetX, panelOffsetY)
+	panel:SetFooterUpdater(function()
+		return ("Version %s | Active Profile: |cff00ff00%s|r"):format(
+			addonVersion,
+			addon.Database:GetCurrentProfileName() or "Default"
+		)
 	end)
 
-	PP:RegisterForUpdate(function()
-		Options:UpdateLayout()
-	end)
+	self.Pages.General:Create(panel)
+	self.Pages.Layout:Create(panel)
+	self.Pages.Bars:Create(panel)
+	self.Pages.Texts:Create(panel)
+	self.Pages.Auras:Create(panel)
+	self.Pages.Indicators:Create(panel)
+	self.Pages.Profiles:Create(panel)
+	panel:SetDefaultPage("general")
+	panel:UpdateLayout()
 end
 
-function Options:UpdateLayout()
-	panel:SetSize(PP:ToUI(800), PP:ToUI(500))
-	PP:CenterElement(panel, UIParent, panelOffsetX, panelOffsetY)
-
-	local borderThickness = PP:ToUI(1)
-	panel.topBorder:SetHeight(borderThickness)
-	panel.bottomBorder:SetHeight(borderThickness)
-	panel.leftBorder:SetWidth(borderThickness)
-	panel.rightBorder:SetWidth(borderThickness)
-
-	panel.header:SetHeight(PP:ToUI(40))
-	panel.statusBar:SetHeight(PP:ToUI(32))
-	panel.sideMenu:SetWidth(PP:ToUI(154))
-
-	addon.Options.Sections.Header:UpdateLayout()
-	addon.Options.Sections.StatusBar:UpdateLayout()
-	addon.Options.Sections.SideMenu:UpdateLayout()
-	addon.Options.Sections.Content:UpdateLayout()
+function Options:GetSelectedUnit()
+	return panel and panel:GetActiveMode() or "player"
 end
 
 function Options:RefreshProfile()
-	if not panel then
-		return
+	if panel then
+		panel:UpdateState()
 	end
-
-	addon.Options.Sections.Content:RefreshProfile()
-	addon.Options.Sections.StatusBar:UpdateState()
 end
 
 function Options:IsOpen()
@@ -164,7 +107,6 @@ function Options:Open()
 
 	deferredOpen = false
 	self:Ensure()
-	self:RefreshProfile()
 	panel:Show()
 end
 

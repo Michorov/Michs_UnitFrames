@@ -8,24 +8,21 @@ addon.Options.Pages.Bars.Power = addon.Options.Pages.Bars.Power or {}
 local Power = addon.Options.Pages.Bars.Power
 local subpage
 
-function Power:Ensure(parent)
-	if subpage then
-		return subpage
-	end
+function Power:Create(page)
+	local owner = page:RegisterSubPage("power", { title = "Power" })
+	subpage = owner.frame
 
-	subpage = CreateFrame("Frame", nil, parent)
-
-	subpage.enabledCheckbox = addon.Options.Controls.Checkbox:Create(subpage, "Enabled")
-	subpage.enabledCheckbox:SetLayoutWidth(178)
+	subpage.enabledCheckbox = owner:CreateControl("Checkbox", "Enabled")
+	subpage.enabledCheckbox:SetLayoutWidth(176)
 	subpage.enabledCheckbox:SetLayoutPoint("TOPLEFT", subpage, "TOPLEFT", 0, 0)
 	subpage.enabledCheckbox:SetOnValueChanged(function(_, enabled)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].power.enabled = enabled
 		addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
 	end)
 
-	subpage.textureDropdown = addon.Options.Controls.Dropdown:Create(subpage, "Texture")
-	subpage.textureDropdown:SetLayoutWidth(178)
+	subpage.textureDropdown = owner:CreateControl("Dropdown", "Texture")
+	subpage.textureDropdown:SetLayoutWidth(176)
 	subpage.textureDropdown:SetOptions(addon.Style.Textures:GetOptions(nil, true))
 	subpage.textureDropdown:SetLayoutPoint(
 		"TOPLEFT",
@@ -35,13 +32,13 @@ function Power:Ensure(parent)
 		-24
 	)
 	subpage.textureDropdown:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].power.texture = value
 		addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
 	end)
 
-	subpage.sizeSlider = addon.Options.Controls.Slider:Create(subpage, "Size")
-	subpage.sizeSlider:SetLayoutWidth(178)
+	subpage.sizeSlider = owner:CreateControl("Slider", "Size")
+	subpage.sizeSlider:SetLayoutWidth(176)
 	subpage.sizeSlider:SetMinMaxValues(1, 20)
 	subpage.sizeSlider:SetStep(1)
 	subpage.sizeSlider:SetLayoutPoint(
@@ -52,7 +49,7 @@ function Power:Ensure(parent)
 		-24
 	)
 	subpage.sizeSlider:SetOnValueChanged(function(_, value)
-		local unit = addon.Options.Sections.Content:GetSelectedUnit()
+		local unit = addon.Options:GetSelectedUnit()
 		addon.Database:GetProfile().frames[unit].power.height = value
 		addon.UpdateScheduler:Notify("powerSettingsChanged", unit)
 	end)
@@ -66,5 +63,9 @@ function Power:Ensure(parent)
 		self.sizeSlider:SetValueSilently(settings.height)
 	end
 
-	return subpage
+	owner:SetStateUpdater(function(profile, unit)
+		subpage:UpdateState(profile, unit)
+	end)
+
+	return owner
 end
