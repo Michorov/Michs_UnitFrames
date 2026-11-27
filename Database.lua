@@ -26,10 +26,14 @@ local DEFAULTS = {
 				position = { x = -300, y = -250 },
 				totems = {
 					enabled = true,
+					anchor = "BOTTOMLEFT",
 					maxIcons = 4,
 					iconsPerRow = 4,
 					iconSize = 24,
 					spacing = 1,
+					showCooldown = true,
+					cooldownFontSize = 11,
+					position = { x = 0, y = -55 },
 				},
 				power = {
 					enabled = true,

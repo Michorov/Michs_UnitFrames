@@ -132,7 +132,7 @@ function Debuffs:Create(page)
 
 	subpage.spacingSlider = owner:CreateControl("Slider", "Spacing")
 	subpage.spacingSlider:SetLayoutWidth(126)
-	subpage.spacingSlider:SetMinMaxValues(-4, 12)
+	subpage.spacingSlider:SetMinMaxValues(0, 12)
 	subpage.spacingSlider:SetStep(1)
 	subpage.spacingSlider:SetLayoutPoint("TOPLEFT", subpage.iconSizeSlider, "TOPRIGHT", 24, 0)
 	subpage.spacingSlider:SetOnValueChanged(function(_, value)

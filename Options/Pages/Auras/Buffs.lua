@@ -126,7 +126,7 @@ function Buffs:Create(page)
 
 	subpage.spacingSlider = owner:CreateControl("Slider", "Spacing")
 	subpage.spacingSlider:SetLayoutWidth(126)
-	subpage.spacingSlider:SetMinMaxValues(-4, 12)
+	subpage.spacingSlider:SetMinMaxValues(0, 12)
 	subpage.spacingSlider:SetStep(1)
 	subpage.spacingSlider:SetOnValueChanged(function(_, value)
 		local unit = addon.Options:GetSelectedUnit()

@@ -8,21 +8,49 @@ local Totems = addon.Frames.Widgets.Totems
 local PP = addon.PixelPerfect
 local settingsCache = {}
 
-local OFFSET_Y = -55
-local FONT_SIZE = 11
+local anchorLayouts = {
+	TOPLEFT = {
+		containerPoint = "BOTTOMLEFT",
+		framePoint = "TOPLEFT",
+		xDirection = 1,
+		yDirection = 1,
+	},
+	TOPRIGHT = {
+		containerPoint = "BOTTOMRIGHT",
+		framePoint = "TOPRIGHT",
+		xDirection = -1,
+		yDirection = 1,
+	},
+	BOTTOMLEFT = {
+		containerPoint = "TOPLEFT",
+		framePoint = "BOTTOMLEFT",
+		xDirection = 1,
+		yDirection = -1,
+	},
+	BOTTOMRIGHT = {
+		containerPoint = "TOPRIGHT",
+		framePoint = "BOTTOMRIGHT",
+		xDirection = -1,
+		yDirection = -1,
+	},
+}
 
 local function UpdateSettingsCache(frame)
 	local settings = addon.Database:GetProfile().frames[frame.settingsUnit].totems
 	local result = {
 		enabled = settings.enabled,
+		anchor = settings.anchor,
 		maxIcons = math.min(settings.maxIcons, #frame.totems.slots),
 		iconsPerRow = settings.iconsPerRow,
 		iconSize = settings.iconSize,
 		spacing = math.max(0, settings.spacing),
+		showCooldown = settings.showCooldown,
+		cooldownFontSize = settings.cooldownFontSize,
+		position = {
+			x = settings.position.x,
+			y = settings.position.y,
+		},
 	}
-	if result.spacing == 0 then
-		result.spacing = -1
-	end
 	result.iconsPerRow = math.min(result.iconsPerRow, result.maxIcons)
 	settingsCache[frame.settingsUnit] = result
 end
@@ -61,7 +89,6 @@ function Totems:Ensure(frame)
 		slot.cooldown:SetReverse(true)
 		slot.cooldown:SetDrawEdge(false)
 		slot.cooldown:SetDrawBling(false)
-		slot.cooldown:SetHideCountdownNumbers(false)
 		slot.cooldown:SetSwipeColor(0, 0, 0, 0.65)
 
 		container.slots[slotIndex] = slot
@@ -86,26 +113,43 @@ function Totems:UpdateSettings(frame)
 	local iconSize = PP:ToUI(cachedSettings.iconSize)
 	local spacing = PP:ToUI(cachedSettings.spacing)
 	local borderSize = PP:ToUI(1)
+	if spacing == 0 then
+		spacing = -borderSize
+	end
 	local columns = cachedSettings.iconsPerRow
 	local rows = math.ceil(cachedSettings.maxIcons / columns)
+	local layout = anchorLayouts[cachedSettings.anchor]
 
 	container:ClearAllPoints()
-	container:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, PP:ToUI(OFFSET_Y))
+	container:SetPoint(
+		layout.containerPoint,
+		frame,
+		layout.framePoint,
+		PP:ToUI(cachedSettings.position.x),
+		PP:ToUI(cachedSettings.position.y)
+	)
 	container:SetSize(iconSize * columns + spacing * (columns - 1), iconSize * rows + spacing * (rows - 1))
 
 	for index, slot in ipairs(container.slots) do
 		local column = (index - 1) % columns
 		local row = math.floor((index - 1) / columns)
 		slot:ClearAllPoints()
-		slot:SetPoint("TOPLEFT", container, "TOPLEFT", column * (iconSize + spacing), -row * (iconSize + spacing))
+		slot:SetPoint(
+			layout.containerPoint,
+			container,
+			layout.containerPoint,
+			column * (iconSize + spacing) * layout.xDirection,
+			row * (iconSize + spacing) * layout.yDirection
+		)
 		slot:SetSize(iconSize, iconSize)
 		slot:SetShown(index <= cachedSettings.maxIcons)
 		slot.icon:ClearAllPoints()
 		slot.icon:SetPoint("TOPLEFT", slot, "TOPLEFT", borderSize, -borderSize)
 		slot.icon:SetPoint("BOTTOMRIGHT", slot, "BOTTOMRIGHT", -borderSize, borderSize)
 
+		slot.cooldown:SetHideCountdownNumbers(not cachedSettings.showCooldown)
 		local countdown = slot.cooldown:GetCountdownFontString()
-		countdown:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(FONT_SIZE), "OUTLINE")
+		countdown:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(cachedSettings.cooldownFontSize), "OUTLINE")
 		countdown:SetTextColor(1, 1, 1, 1)
 	end
 

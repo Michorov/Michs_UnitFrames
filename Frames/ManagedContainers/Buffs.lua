@@ -87,7 +87,7 @@ local function UpdateSettingsCache(frame)
 		maxIcons = maxIcons,
 		iconsPerRow = frame.settingsUnit == "boss" and maxIcons or math.max(1, settings.iconsPerRow or 6),
 		iconSize = settings.iconSize or 24,
-		spacing = settings.spacing or 2,
+		spacing = math.max(0, settings.spacing or 2),
 		showStacks = settings.showStacks ~= false,
 		stacksFontSize = settings.stacksFontSize or 10,
 		showCooldown = settings.showCooldown == true,
@@ -105,6 +105,10 @@ local function UpdateContainerLayout(frame, cachedSettings)
 	local layout = anchorLayouts[cachedSettings.anchor] or anchorLayouts.TOPRIGHT
 	local iconSize = PP:ToUI(cachedSettings.iconSize)
 	local spacing = PP:ToUI(cachedSettings.spacing)
+	local borderSize = PP:ToUI(1)
+	if spacing == 0 then
+		spacing = -borderSize
+	end
 	local visibleColumns = math.min(cachedSettings.maxIcons, cachedSettings.iconsPerRow)
 	local rowWidth = (iconSize * visibleColumns) + (spacing * (visibleColumns - 1)) + 1
 
@@ -124,6 +128,10 @@ end
 local function UpdateAuraGroupSettings(frame, cachedSettings)
 	local container = frame.buffs
 	local spacing = PP:ToUI(cachedSettings.spacing)
+	local borderSize = PP:ToUI(1)
+	if spacing == 0 then
+		spacing = -borderSize
+	end
 	local maxFrameCount = cachedSettings.enabled and cachedSettings.maxIcons or 0
 
 	container:SetAuraGroupMaxFrameCount("buffs", maxFrameCount)
