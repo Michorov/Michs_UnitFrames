@@ -140,17 +140,17 @@ function Totems:UpdateState(frame)
 	end
 
 	for slotIndex, slot in ipairs(frame.totems.slots) do
-		local haveTotem, _, _, _, icon = GetTotemInfo(slotIndex)
+		local _, _, _, _, icon = GetTotemInfo(slotIndex)
 
 		slot.icon:SetTexture(icon)
 
 		local duration = GetTotemDuration(slotIndex)
 		if duration then
 			slot.cooldown:SetCooldownFromDurationObject(duration, true)
+			slot:SetAlphaFromBoolean(duration:IsZero(), 0, 1)
 		else
 			slot.cooldown:Clear()
+			slot:SetAlpha(0)
 		end
-
-		slot:SetAlphaFromBoolean(haveTotem, 1, 0)
 	end
 end
