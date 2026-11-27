@@ -12,6 +12,7 @@ local function UpdateUnitState(frame)
 	addon.Frames.Widgets.Background:UpdateState(frame)
 	addon.Frames.Widgets.Bars.Absorbs:UpdateState(frame)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateState(frame)
+	addon.Frames.Widgets.Totems:UpdateState(frame)
 	addon.Frames.ManagedContainers.Buffs:SetUnit(frame)
 	addon.Frames.ManagedContainers.Debuffs:SetUnit(frame)
 	addon.Frames.Widgets.Texts.Name:UpdateState(frame)
@@ -33,6 +34,7 @@ local function UpdateUnitSettings(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.Absorbs:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame)
+	addon.Frames.Widgets.Totems:UpdateSettings(frame)
 	addon.Frames.ManagedContainers.Buffs:UpdateSettings(frame)
 	addon.Frames.ManagedContainers.Debuffs:UpdateSettings(frame)
 	addon.Frames.Widgets.Texts.Health:UpdateSettings(frame)
@@ -74,6 +76,10 @@ local function BuildSettingsUpdater(updateReasons)
 
 		if updateReasons.healAbsorbsSettingsChanged then
 			addon.Frames.Widgets.Bars.HealAbsorbs:UpdateSettings(frame)
+		end
+
+		if updateReasons.totemsSettingsChanged then
+			addon.Frames.Widgets.Totems:UpdateSettings(frame)
 		end
 
 		if updateReasons.buffsSettingsChanged then
@@ -179,6 +185,10 @@ local function BuildStateUpdater(updateReasons)
 
 		if updateReasons.castStateChanged then
 			addon.Frames.Widgets.Bars.Cast:UpdateState(frame)
+		end
+
+		if updateReasons.totemsStateChanged then
+			addon.Frames.Widgets.Totems:UpdateState(frame)
 		end
 
 		if updateReasons.combatStateChanged then

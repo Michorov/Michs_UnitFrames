@@ -24,6 +24,13 @@ local DEFAULTS = {
 				hideBlizzardFrame = true,
 				size = { width = 200, height = 48 },
 				position = { x = -300, y = -250 },
+				totems = {
+					enabled = true,
+					maxIcons = 4,
+					iconsPerRow = 4,
+					iconSize = 24,
+					spacing = 1,
+				},
 				power = {
 					enabled = true,
 					texture = -1,

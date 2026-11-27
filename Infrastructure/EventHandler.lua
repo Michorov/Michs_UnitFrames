@@ -100,6 +100,9 @@ function EventHandler:Initialize()
 
 	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventFrame:RegisterEvent("PLAYER_LEVEL_CHANGED")
+	eventFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
+	eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+	eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
 	eventFrame:RegisterEvent("ENCOUNTER_START")
 	eventFrame:RegisterEvent("ENCOUNTER_END")
 	eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -108,6 +111,7 @@ function EventHandler:Initialize()
 	eventFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 	eventFrame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	eventFrame:RegisterUnitEvent("UNIT_PET", "player")
+	eventFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 	if C_PetInfo and C_PetInfo.GetPetHappiness then
 		eventFrame:RegisterUnitEvent("UNIT_HAPPINESS", "pet")
 	end
@@ -218,6 +222,22 @@ end
 
 function EventHandler:UNIT_HAPPINESS()
 	addon.UpdateScheduler:Notify("petHappinessStateChanged", "pet")
+end
+
+function EventHandler:PLAYER_TOTEM_UPDATE()
+	addon.UpdateScheduler:Notify("totemsStateChanged", "player")
+end
+
+function EventHandler:UPDATE_SHAPESHIFT_FORM()
+	addon.UpdateScheduler:Notify("totemsStateChanged", "player")
+end
+
+function EventHandler:PLAYER_TALENT_UPDATE()
+	addon.UpdateScheduler:Notify("totemsStateChanged", "player")
+end
+
+function EventHandler:PLAYER_SPECIALIZATION_CHANGED()
+	addon.UpdateScheduler:Notify("totemsStateChanged", "player")
 end
 
 function EventHandler:UNIT_PET(event, unit)

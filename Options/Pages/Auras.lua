@@ -17,6 +17,7 @@ function Auras:Create(panel)
 
 	self.Buffs:Create(page)
 	self.Debuffs:Create(page)
+	self.Totems:Create(page)
 
 	return page
 end

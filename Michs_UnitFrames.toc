@@ -27,6 +27,7 @@ Style/Textures.lua
 Frames/Widgets/Background.lua
 Frames/Widgets/Border.lua
 Frames/Widgets/MouseoverHighlight.lua
+Frames/Widgets/Totems.lua
 Frames/Widgets/Indicators/Combat.lua
 Frames/Widgets/Indicators/RaidMarker.lua
 Frames/Widgets/Indicators/Classification.lua
@@ -65,6 +66,7 @@ Options/Pages/Texts/Power.lua
 Options/Pages/Texts.lua
 Options/Pages/Auras/Buffs.lua
 Options/Pages/Auras/Debuffs.lua
+Options/Pages/Auras/Totems.lua
 Options/Pages/Auras.lua
 Options/Pages/Indicators/Combat.lua
 Options/Pages/Indicators/RaidMarker.lua
