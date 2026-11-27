@@ -26,14 +26,14 @@ local DEFAULTS = {
 				position = { x = -300, y = -250 },
 				totems = {
 					enabled = true,
-					anchor = "BOTTOMLEFT",
+					growthDirection = "UP_RIGHT",
 					maxIcons = 4,
 					iconsPerRow = 4,
 					iconSize = 24,
 					spacing = 1,
 					showCooldown = true,
-					cooldownFontSize = 11,
-					position = { x = 0, y = -55 },
+					cooldownFontSize = 12,
+					position = { x = 0, y = 26 },
 				},
 				power = {
 					enabled = true,
@@ -491,7 +491,7 @@ local DEFAULTS = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
-				position = { x = -350, y = -180 },
+				position = { x = -451, y = -238 },
 				power = {
 					enabled = true,
 					texture = -1,
@@ -589,7 +589,7 @@ local DEFAULTS = {
 				enabled = true,
 				hideBlizzardFrame = true,
 				size = { width = 100, height = 24 },
-				position = { x = -250, y = -180 },
+				position = { x = -451, y = -262 },
 				power = {
 					enabled = true,
 					texture = -1,

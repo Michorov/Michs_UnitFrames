@@ -43,22 +43,28 @@ local function EnableDragging(frame)
 			return
 		end
 
-		local centerX, centerY = self:GetCenter()
-		local parentCenterX, parentCenterY = UIParent:GetCenter()
-		if not centerX or not centerY or not parentCenterX or not parentCenterY then
+		local settings = addon.Database:GetProfile().frames[self.settingsUnit]
+		local position = settings.position
+		local positionX, positionY = self:GetCenter()
+		local referenceX, referenceY = UIParent:GetCenter()
+		if self.playerDummy then
+			position = settings.totems.position
+			positionX = self.xDirection == 1 and self:GetLeft() or self:GetRight()
+			positionY = self.yDirection == 1 and self:GetBottom() or self:GetTop()
+			referenceX, referenceY = self.playerDummy:GetLeft(), self.playerDummy:GetTop()
+		end
+		if not positionX or not positionY or not referenceX or not referenceY then
 			return
 		end
 
 		local _, physicalHeight = GetPhysicalScreenSize()
 		local pixelStep = (768 / physicalHeight) / UIParent:GetEffectiveScale()
 		local scale = (physicalHeight / 1080) * PP.globalScale
-		local positionXPx = RoundToNearestInt((centerX - parentCenterX) / pixelStep)
-		local positionYPx = RoundToNearestInt((centerY - parentCenterY) / pixelStep)
+		local positionXPx = RoundToNearestInt((positionX - referenceX) / pixelStep)
+		local positionYPx = RoundToNearestInt((positionY - referenceY) / pixelStep)
 
-		local position = addon.Database:GetProfile().frames[self.settingsUnit].position
 		position.x = RoundToNearestInt(positionXPx / scale)
 		position.y = RoundToNearestInt(positionYPx / scale)
-
 		addon.UpdateScheduler:Notify("layoutChanged", self.settingsUnit)
 		addon.Options:RefreshProfile()
 	end)
@@ -102,6 +108,17 @@ function Frames:CreateDummyFrame(unit, frameName, parent)
 		frame.label:SetFont("Fonts\\ARIALN.TTF", PP:ToUI(12), "OUTLINE")
 	end)
 
+	return frame
+end
+
+function Frames:CreateDummyTotemsFrame(frameName, playerDummy)
+	if GetNumTotemSlots() == 0 then
+		return
+	end
+
+	local frame = self:CreateDummyFrame("player", frameName)
+	frame.playerDummy = playerDummy
+	frame.label:SetText("Totems")
 	return frame
 end
 

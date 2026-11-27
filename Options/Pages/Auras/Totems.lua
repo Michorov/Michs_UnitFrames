@@ -16,11 +16,11 @@ local visibilityOptions = {
 	{ value = false, text = "Hide" },
 }
 
-local anchorOptions = {
-	{ value = "TOPRIGHT", text = "Top Right" },
-	{ value = "TOPLEFT", text = "Top Left" },
-	{ value = "BOTTOMRIGHT", text = "Bottom Right" },
-	{ value = "BOTTOMLEFT", text = "Bottom Left" },
+local growthDirectionOptions = {
+	{ value = "UP_LEFT", text = "Up and Left" },
+	{ value = "UP_RIGHT", text = "Up and Right" },
+	{ value = "DOWN_LEFT", text = "Down and Left" },
+	{ value = "DOWN_RIGHT", text = "Down and Right" },
 }
 
 function Totems:Create(page)
@@ -80,15 +80,15 @@ function Totems:Create(page)
 	subpage.positionRow = owner:CreateRow(4)
 	subpage.positionRow:SetLayoutPoint("TOPLEFT", subpage.iconsRow.frame, "BOTTOMLEFT", 0, -16)
 
-	subpage.anchorDropdown = subpage.positionRow:CreateControl("Dropdown", "Position")
-	subpage.anchorDropdown:SetOptions(anchorOptions)
-	subpage.anchorDropdown:SetOnValueChanged(function(_, value)
-		addon.Database:GetProfile().frames.player.totems.anchor = value
+	subpage.growthDirectionDropdown = subpage.positionRow:CreateControl("Dropdown", "Growth Direction")
+	subpage.growthDirectionDropdown:SetOptions(growthDirectionOptions)
+	subpage.growthDirectionDropdown:SetOnValueChanged(function(_, value)
+		addon.Database:GetProfile().frames.player.totems.growthDirection = value
 		addon.UpdateScheduler:Notify("totemsSettingsChanged", "player")
 	end)
 
 	subpage.offsetXSlider = subpage.positionRow:CreateControl("Slider", "Offset X")
-	subpage.offsetXSlider:SetMinMaxValues(-100, 100)
+	subpage.offsetXSlider:SetMinMaxValues(-2000, 2000)
 	subpage.offsetXSlider:SetStep(1)
 	subpage.offsetXSlider:SetOnValueChanged(function(_, value)
 		addon.Database:GetProfile().frames.player.totems.position.x = value
@@ -96,7 +96,7 @@ function Totems:Create(page)
 	end)
 
 	subpage.offsetYSlider = subpage.positionRow:CreateControl("Slider", "Offset Y")
-	subpage.offsetYSlider:SetMinMaxValues(-100, 100)
+	subpage.offsetYSlider:SetMinMaxValues(-2000, 2000)
 	subpage.offsetYSlider:SetStep(1)
 	subpage.offsetYSlider:SetOnValueChanged(function(_, value)
 		addon.Database:GetProfile().frames.player.totems.position.y = value
@@ -143,7 +143,7 @@ function Totems:Create(page)
 		self.iconsPerRowSlider:SetValueSilently(settings.iconsPerRow)
 		self.iconSizeSlider:SetValueSilently(settings.iconSize)
 		self.spacingSlider:SetValueSilently(settings.spacing)
-		self.anchorDropdown:SetValue(settings.anchor)
+		self.growthDirectionDropdown:SetValue(settings.growthDirection)
 		self.offsetXSlider:SetValueSilently(settings.position.x)
 		self.offsetYSlider:SetValueSilently(settings.position.y)
 		self.showCooldownDropdown:SetValue(settings.showCooldown)

@@ -223,6 +223,19 @@ local function UpdateFrameLayout(unit)
 	addon.Frames.Widgets.Bars.Power:UpdateSettings(frame)
 	addon.Frames.Widgets.Bars.Cast:UpdateLayout(frame)
 	addon.Frames.Widgets.Totems:UpdateSettings(frame)
+	if frame.totems then
+		local dummy = dummyFrames.totems
+		dummy.enabled = settings.totems.enabled
+		if dummy.enabled then
+			local point, _, relativePoint, x, y = frame.totems:GetPoint()
+			dummy:SetSize(frame.totems:GetSize())
+			dummy:ClearAllPoints()
+			dummy:SetPoint(point, dummyFrames.player, relativePoint, x, y)
+			dummy.xDirection = point:find("LEFT") and 1 or -1
+			dummy.yDirection = point:find("BOTTOM") and 1 or -1
+		end
+		dummy:SetShown(framesUnlocked and dummy.enabled)
+	end
 	addon.Frames.ManagedContainers.Buffs:UpdateSettings(frame)
 	addon.Frames.ManagedContainers.Debuffs:UpdateSettings(frame)
 	addon.Frames.Widgets.Indicators.Combat:UpdateSettings(frame)
@@ -404,7 +417,7 @@ function FrameRegistry:SetUnlocked(unlocked)
 
 	framesUnlocked = unlocked
 	for _, frame in pairs(dummyFrames) do
-		frame:SetShown(unlocked)
+		frame:SetShown(unlocked and frame.enabled ~= false)
 	end
 
 	self:UpdateStateDrivers()
@@ -445,6 +458,7 @@ function FrameRegistry:Initialize()
 	dummyFrames.focus = addon.Frames:CreateDummyFrame("focus", "MUF_DummyFocusFrame")
 	dummyFrames.focustarget = addon.Frames:CreateDummyFrame("focustarget", "MUF_DummyFocusTargetFrame")
 	dummyFrames.boss = addon.Frames:CreateDummyBossGroup("MUF_DummyBossContainer")
+	dummyFrames.totems = addon.Frames:CreateDummyTotemsFrame("MUF_DummyTotems", dummyFrames.player)
 
 	UpdateFrameVisibility("player")
 	UpdateFrameVisibility("target")

@@ -79,7 +79,7 @@ local function BuildSettingsUpdater(updateReasons)
 		end
 
 		if updateReasons.totemsSettingsChanged then
-			addon.Frames.Widgets.Totems:UpdateSettings(frame)
+			addon.FrameRegistry:UpdateLayout(frame.settingsUnit)
 		end
 
 		if updateReasons.buffsSettingsChanged then
